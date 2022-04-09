@@ -35,6 +35,7 @@ import lombok.AllArgsConstructor;
 public class CertificateService {
 
     private final SignatureService signatureService;
+    private final KeyStoreReaderService keyStoreReaderService;
 
     //TODO make Certificate Signing Request a parameter instad of SubjectData
     public X509Certificate generateCertificate(SubjectData subjectData) throws CertificateException {
@@ -43,11 +44,11 @@ public class CertificateService {
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
         builder = builder.setProvider("BC");
 
-        // TODO getting issuer certificate from wherever we generated it
-        X509Certificate issuerCert = null; 
+        // getting issuer certificate from wherever we generated it
+        X509Certificate issuerCert = keyStoreReaderService.readCertificate("rootKeyStore.jks", "admin", "adagradinterm"); //TODO hide pass, switch to config constants?
 
-        // TODO getting issuer private key from wherever we generated it
-        PrivateKey issuerPrivateKey = null;
+        // getting issuer private key from wherever we generated it
+        PrivateKey issuerPrivateKey = keyStoreReaderService.readPrivateKey("rootKeyStore.jks", "admin", "adagradinterm", "admin"); //TODO hide lol
 
         // building the object containing the private key, used for signing
         ContentSigner contentSigner = null;
@@ -57,7 +58,7 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        //TODO generating x500Name
+        //TODO generating x500Name based on data from CSR
         X500Name x500Name = null;
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
@@ -75,7 +76,6 @@ public class CertificateService {
         x500Name = x500NameBuilder.build();
         
         //generating new key pair
-        // TODO maybe put this in CSR creation???
         KeyPair keyPair = signatureService.generateKeys();
 
         //setting cert data

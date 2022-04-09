@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.ib.crypto.primeri.pki.data;
+package com.backend.admin.model;
 
 import java.security.PrivateKey;
 

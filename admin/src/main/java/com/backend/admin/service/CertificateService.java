@@ -155,7 +155,6 @@ public class CertificateService {
         X509Certificate newCertificate = certConverter.getCertificate(certHolder);
 
         //TODO save newly created certificate to key stores, based on whether it is a root, ca, or end user
-        //Should we have 3 different key stores, one for root, one for CAs, one for end user? 
 
         // if(data.isRootCert()) {
         //     _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(), config.getRootFileName(), config.getKsPassword(), certConverter.getCertificate(certHolder));

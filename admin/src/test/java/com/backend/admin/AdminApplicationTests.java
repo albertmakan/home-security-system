@@ -18,6 +18,7 @@ class AdminApplicationTests {
         X509Certificate issuerCert = ksr.readCertificate("rootKeyStore.jks", "admin", "adagradinterm");
         System.out.println(issuerCert.getSerialNumber());
         PrivateKey issuerPrivateKey = ksr.readPrivateKey("rootKeyStore.jks", "admin", "adagradinterm", "admin");
+        
 
 	}
 

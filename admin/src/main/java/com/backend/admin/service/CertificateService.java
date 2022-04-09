@@ -36,8 +36,10 @@ public class CertificateService {
 
     private final SignatureService signatureService;
     private final KeyStoreReaderService keyStoreReaderService;
+    private final KeyStoreWriterService keyStoreWriterService;
 
     //TODO make Certificate Signing Request a parameter instad of SubjectData
+    //TODO test this method once fully implemented
     public X509Certificate generateCertificate(SubjectData subjectData) throws CertificateException {
 
         // builder to create object which contain issuer private key, used for signing
@@ -147,7 +149,6 @@ public class CertificateService {
         //     }
         // }
 
-
         X509CertificateHolder certHolder = certGen.build(contentSigner);
         JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
         certConverter = certConverter.setProvider("BC");
@@ -156,7 +157,11 @@ public class CertificateService {
         X509Certificate newCertificate = certConverter.getCertificate(certHolder);
 
         //TODO save newly created certificate to key stores, based on whether it is a root, ca, or end user
+        //TODO test this saving method
+        String newAlias = "tempAlias"; //How do we come up with aliases?
+        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", newCertificate); //TODO save to end user KS?
 
+        //TODO Do we need this saving logic or are we saving all to the same ks?
         // if(data.isRootCert()) {
         //     _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(), config.getRootFileName(), config.getKsPassword(), certConverter.getCertificate(certHolder));
         // }

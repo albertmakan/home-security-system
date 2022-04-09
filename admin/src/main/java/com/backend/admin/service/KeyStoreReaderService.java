@@ -24,11 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class KeyStoreReaderService {
     
-    // KeyStore je Java klasa za citanje specijalizovanih datoteka koje se koriste za cuvanje kljuceva
-    // Tri tipa entiteta koji se obicno nalaze u ovakvim datotekama su:
-    // - Sertifikati koji ukljucuju javni kljuc
-    // - Privatni kljucevi
-    // - Tajni kljucevi, koji se koriste u simetricnima siframa
     private KeyStore keyStore;
 
     public KeyStoreReaderService() {
@@ -39,16 +34,7 @@ public class KeyStoreReaderService {
         }
     }
 
-    /**
-     * Zadatak ove funkcije jeste da ucita podatke o izdavaocu i odgovarajuci privatni kljuc.
-     * Ovi podaci se mogu iskoristiti da se novi sertifikati izdaju.
-     *
-     * @param keyStoreFile - datoteka odakle se citaju podaci
-     * @param alias        - alias putem kog se identifikuje sertifikat izdavaoca
-     * @param password     - lozinka koja je neophodna da se otvori key store
-     * @param keyPass      - lozinka koja je neophodna da se izvuce privatni kljuc
-     * @return - podatke o izdavaocu i odgovarajuci privatni kljuc
-     */
+    
     public IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
         try {
             // Datoteka se ucitava
@@ -70,15 +56,11 @@ public class KeyStoreReaderService {
         return null;
     }
 
-    /**
-     * Ucitava sertifikat is KS fajla
-     */
+
     public X509Certificate readCertificate(String keyStoreFile, String keyStorePass, String alias) {
         try {
-            // kreiramo instancu KeyStore
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 
-            // ucitavamo podatke
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
             System.out.println("HEEEREEE");
@@ -89,7 +71,7 @@ public class KeyStoreReaderService {
                 Certificate cert = ks.getCertificate(alias);
                 CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
                 InputStream inp = new ByteArrayInputStream(cert.getEncoded());
-                return (X509Certificate)certFactory.generateCertificate(inp); //cast from Certificate to X509Certificate class
+                return (X509Certificate)certFactory.generateCertificate(inp); //adagrad: cast from Certificate to X509Certificate class
             }
         } catch (KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException |
                 CertificateException | IOException e) {
@@ -98,15 +80,10 @@ public class KeyStoreReaderService {
         return null;
     }
 
-    /**
-     * Ucitava privatni kljuc is KS fajla
-     */
     public PrivateKey readPrivateKey(String keyStoreFile, String keyStorePass, String alias, String pass) {
         try {
-            // kreiramo instancu KeyStore
             KeyStore ks = KeyStore.getInstance("JKS", "SUN");
 
-            // ucitavamo podatke
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
 

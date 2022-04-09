@@ -36,7 +36,7 @@ public class CertificateService {
 
     private final SignatureService signatureService;
 
-    //TODO make certificate signing request a parameter instad of SubjectData
+    //TODO make Certificate Signing Request a parameter instad of SubjectData
     public X509Certificate generateCertificate(SubjectData subjectData) throws CertificateException {
 
         // builder to create object which contain issuer private key, used for signing
@@ -75,6 +75,7 @@ public class CertificateService {
         x500Name = x500NameBuilder.build();
         
         //generating new key pair
+        // TODO maybe put this in CSR creation???
         KeyPair keyPair = signatureService.generateKeys();
 
         //setting cert data
@@ -86,7 +87,7 @@ public class CertificateService {
                 keyPair.getPublic()); //newly generated public key
 
 
-        ////TODO EXTENSIONS
+        ////TODO adding extensions based on csr
         ////similar logic to this (but cleaner):
 
         // if(data.isCertificateAuthority() || data.isRootCert()){

@@ -38,6 +38,11 @@ public class CertificateService {
     private final KeyStoreReaderService keyStoreReaderService;
     private final KeyStoreWriterService keyStoreWriterService;
 
+    private final String rootKeyStoreFile = "rootKeyStore.jks";
+    private final String rootKeyStorePassword = "admin"; //TODO hide pass, switch to config constants
+    private final String intermAlias = "adagradinterm";
+
+
     //TODO make Certificate Signing Request a parameter instad of SubjectData
     //TODO test this method once fully implemented
     public X509Certificate generateCertificate(SubjectData subjectData) throws CertificateException {
@@ -47,10 +52,10 @@ public class CertificateService {
         builder = builder.setProvider("BC");
 
         // getting issuer certificate from wherever we generated it
-        X509Certificate issuerCert = keyStoreReaderService.readCertificate("rootKeyStore.jks", "admin", "adagradinterm"); //TODO hide pass, switch to config constants?
+        X509Certificate issuerCert = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword, intermAlias); 
 
         // getting issuer private key from wherever we generated it
-        PrivateKey issuerPrivateKey = keyStoreReaderService.readPrivateKey("rootKeyStore.jks", "admin", "adagradinterm", "admin"); //TODO hide lol
+        PrivateKey issuerPrivateKey = keyStoreReaderService.readPrivateKey(rootKeyStoreFile, rootKeyStorePassword, intermAlias, rootKeyStorePassword); 
 
         // building the object containing the private key, used for signing
         ContentSigner contentSigner = null;
@@ -156,7 +161,7 @@ public class CertificateService {
         // converting holder to certificate
         X509Certificate newCertificate = certConverter.getCertificate(certHolder);
 
-        //TODO save newly created certificate to key stores, based on whether it is a root, ca, or end user
+        //saving new certificate to KS
         //TODO test this saving method
         String newAlias = "tempAlias"; //How do we come up with aliases?
         keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", newCertificate); //TODO save to end user KS?

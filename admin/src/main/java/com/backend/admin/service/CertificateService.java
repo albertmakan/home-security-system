@@ -3,6 +3,7 @@ package com.backend.admin.service;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -46,11 +47,10 @@ public class CertificateService {
     private final String intermAlias = "adagradinterm";
 
 
-    //TODO make Certificate Signing Request a parameter instad of SubjectData
-    //TODO test this method once fully implemented
-
     public X509Certificate generateCertificate(CertSigningRequestDummy request) throws CertificateException {
 
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //fixes the "no such provider: BC" exception
+        
         // builder to create object which contain issuer private key, used for signing
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
         builder = builder.setProvider("BC");
@@ -89,8 +89,8 @@ public class CertificateService {
         //generating new key pair
         KeyPair keyPair = signatureService.generateKeys();
 
-        //TODO generating new serial number
-        String newSerial = "";
+        //TODO generating new serial number same way as UID?
+        String newSerial = uuidService.getUUID();
 
         //setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(new JcaX509CertificateHolder(issuerCert).getSubject(), //vezbe: issuerData.getX500name()
@@ -173,7 +173,6 @@ public class CertificateService {
         String newAlias = request.getEmail();
 
         //saving new certificate to KS
-        //TODO test this saving method
         keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", newCertificate); //TODO save to end user KS?
 
         //TODO Do we need this saving logic or are we saving all to the same ks?

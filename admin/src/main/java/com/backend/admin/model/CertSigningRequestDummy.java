@@ -23,18 +23,14 @@ public class CertSigningRequestDummy {
 
     private String organisationUnit;
 
-    private String extension;
-
-    private boolean certificateAuthority;
-
-    private boolean rootCert;
-
-    private String issuerEmail;
-
     private Date endDate;
 
     // TODO idk if these are just some extensions? 
     // Check if there are others that need to be added
+
+    private boolean certificateAuthority; //we probably won't be using this one
+
+    private boolean rootCert; //we probably won't be using this one
 
     private boolean digitalSignature;
 
@@ -43,6 +39,8 @@ public class CertSigningRequestDummy {
     private boolean keyAgreement;
 
     private boolean keyEncipherment;
+
+    //signingCertificate se podrazumeva kada je CA - koristiti kada se javni kljuc subjekta koristi za verifikaciju potpisa na sertifikatima
 
 
 }

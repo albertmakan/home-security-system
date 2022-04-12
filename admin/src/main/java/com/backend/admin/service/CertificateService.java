@@ -28,7 +28,6 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.stereotype.Service;
 
 import com.backend.admin.model.CertSigningRequestDummy;
-import com.backend.admin.model.SubjectData;
 
 import lombok.AllArgsConstructor;
 
@@ -39,6 +38,8 @@ public class CertificateService {
     private final SignatureService signatureService;
     private final KeyStoreReaderService keyStoreReaderService;
     private final KeyStoreWriterService keyStoreWriterService;
+    private final UUIDService uuidService;
+
 
     private final String rootKeyStoreFile = "rootKeyStore.jks";
     private final String rootKeyStorePassword = "admin"; //TODO hide pass, switch to config constants
@@ -68,7 +69,7 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        //TODO generating x500Name based on data from CSR
+        //generating x500 name based on CSR info
         X500Name x500Name = null;
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
@@ -80,8 +81,9 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 
-        String id = null; //TODO generate UUID
-        // builder.addRDN(BCStyle.UID, String.valueOf(id)); //UID = User Id
+        //generate UUID for user ID (UID)
+        String id = uuidService.getUUID(); 
+        x500NameBuilder.addRDN(BCStyle.UID, String.valueOf(id));
         x500Name = x500NameBuilder.build();
         
         //generating new key pair
@@ -99,8 +101,8 @@ public class CertificateService {
                 keyPair.getPublic()); //newly generated public key
 
 
-        ////TODO adding extensions based on csr
-        ////similar logic to this (but cleaner):
+        //TODO adding extensions based on csr
+        //similar logic to this (but cleaner):
 
         // if(data.isCertificateAuthority() || data.isRootCert()){
 
@@ -166,9 +168,12 @@ public class CertificateService {
         // converting holder to certificate
         X509Certificate newCertificate = certConverter.getCertificate(certHolder);
 
+        //TODO How do we come up with aliases?
+        //Maybe emails?
+        String newAlias = request.getEmail();
+
         //saving new certificate to KS
         //TODO test this saving method
-        String newAlias = "tempAlias"; //How do we come up with aliases?
         keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", newCertificate); //TODO save to end user KS?
 
         //TODO Do we need this saving logic or are we saving all to the same ks?

@@ -2,6 +2,7 @@ package com.backend.admin;
 
 
 import java.security.cert.CertificateException;
+import java.util.Calendar;
 import java.util.Date;
 
 import com.backend.admin.model.CertSigningRequestDummy;
@@ -28,9 +29,12 @@ class AdminApplicationTests {
         ////Testing read issuer private key method
         // PrivateKey issuerPrivateKey = ksr.readPrivateKey("rootKeyStore.jks", "admin", "adagradinterm", "admin");
 
-        ////Testing generate sert
-        // CertSigningRequestDummy req = new CertSigningRequestDummy("firstName", "lastName", "email", "RS", "organisation", "organisationUnit", new Date(2032, 4, 2), false, false, false, false, false, false);
-        // cs.generateCertificate(req);
+        ////Testing generate cert
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.YEAR, 5);
+        CertSigningRequestDummy req = new CertSigningRequestDummy("firstName", "lastName", "email", "RS", "organisation", "organisationUnit", c.getTime(), false, false, false, false, false, false);
+        cs.generateCertificate(req);
 
 
         

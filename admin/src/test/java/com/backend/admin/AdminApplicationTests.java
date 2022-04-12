@@ -29,7 +29,7 @@ class AdminApplicationTests {
         ////Testing read issuer private key method
         // PrivateKey issuerPrivateKey = ksr.readPrivateKey("rootKeyStore.jks", "admin", "adagradinterm", "admin");
 
-        ////Testing generate cert
+        //Testing generate cert (NO EXTENSIONS FOR NOW)
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);

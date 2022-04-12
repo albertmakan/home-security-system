@@ -63,11 +63,8 @@ public class KeyStoreReaderService {
 
             BufferedInputStream in = new BufferedInputStream(new FileInputStream(keyStoreFile));
             ks.load(in, keyStorePass.toCharArray());
-            System.out.println("HEEEREEE");
 
             if (ks.isKeyEntry(alias)) {
-                System.out.println("THEEEREEE");
-
                 Certificate cert = ks.getCertificate(alias);
                 CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
                 InputStream inp = new ByteArrayInputStream(cert.getEncoded());

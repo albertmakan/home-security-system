@@ -6,6 +6,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
@@ -26,6 +27,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import org.springframework.stereotype.Service;
 
+import com.backend.admin.model.CertSigningRequestDummy;
 import com.backend.admin.model.SubjectData;
 
 import lombok.AllArgsConstructor;
@@ -45,7 +47,8 @@ public class CertificateService {
 
     //TODO make Certificate Signing Request a parameter instad of SubjectData
     //TODO test this method once fully implemented
-    public X509Certificate generateCertificate(SubjectData subjectData) throws CertificateException {
+
+    public X509Certificate generateCertificate(CertSigningRequestDummy request) throws CertificateException {
 
         // builder to create object which contain issuer private key, used for signing
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
@@ -69,14 +72,13 @@ public class CertificateService {
         X500Name x500Name = null;
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
-        // String cn = data.getFirstName() + ' ' + data.getLastName();
-        // builder.addRDN(BCStyle.CN, cn);
-        // builder.addRDN(BCStyle.SURNAME, data.getLastName());
-        // builder.addRDN(BCStyle.GIVENNAME, data.getFirstName());
-        // builder.addRDN(BCStyle.O, data.getOrganisation());
-        // builder.addRDN(BCStyle.OU, data.getOrganisationUnit());
-        // builder.addRDN(BCStyle.C, data.getCountry());
-        // builder.addRDN(BCStyle.E, data.getEmail());
+        x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
+        x500NameBuilder.addRDN(BCStyle.SURNAME, request.getLastName());
+        x500NameBuilder.addRDN(BCStyle.GIVENNAME, request.getFirstName());
+        x500NameBuilder.addRDN(BCStyle.O, request.getOrganisation());
+        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganisationUnit());
+        x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
+        x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 
         String id = null; //TODO generate UUID
         // builder.addRDN(BCStyle.UID, String.valueOf(id)); //UID = User Id
@@ -85,11 +87,14 @@ public class CertificateService {
         //generating new key pair
         KeyPair keyPair = signatureService.generateKeys();
 
+        //TODO generating new serial number
+        String newSerial = "";
+
         //setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(new JcaX509CertificateHolder(issuerCert).getSubject(), //vezbe: issuerData.getX500name()
-                new BigInteger(subjectData.getSerialNumber()),
-                subjectData.getStartDate(),
-                subjectData.getEndDate(),
+                new BigInteger(newSerial),
+                new Date(),
+                request.getEndDate(),
                 x500Name, 
                 keyPair.getPublic()); //newly generated public key
 

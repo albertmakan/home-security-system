@@ -41,26 +41,27 @@ public class CertificateService {
     private final KeyStoreWriterService keyStoreWriterService;
     private final UUIDService uuidService;
 
-
     private final String rootKeyStoreFile = "rootKeyStore.jks";
-    private final String rootKeyStorePassword = "admin"; //TODO hide pass, switch to config constants
+    private final String rootKeyStorePassword = "admin"; // TODO hide pass, switch to config constants
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-
     public X509Certificate generateCertificate(CertSigningRequestDummy request) throws CertificateException {
 
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //fixes the "no such provider: BC" exception
-        
+        // fixes the "no such provider: BC" exception
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+
         // builder to create object which contain issuer private key, used for signing
         JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
         builder = builder.setProvider("BC");
 
-        // getting issuer certificate from wherever we generated it
-        X509Certificate issuerCert = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword, intermAlias); 
+        // getting issuer certificate
+        X509Certificate issuerCert = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword,
+                intermAlias);
 
-        // getting issuer private key from wherever we generated it
-        PrivateKey issuerPrivateKey = keyStoreReaderService.readPrivateKey(rootKeyStoreFile, rootKeyStorePassword, intermAlias, rootKeyStorePassword); 
+        // getting issuer private key
+        PrivateKey issuerPrivateKey = keyStoreReaderService.readPrivateKey(rootKeyStoreFile, rootKeyStorePassword,
+                intermAlias, rootKeyStorePassword);
 
         // building the object containing the private key, used for signing
         ContentSigner contentSigner = null;
@@ -70,8 +71,7 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        //generating x500 name based on CSR info
-        X500Name x500Name = null;
+        // generating x500 name based on CSR info
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
         x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
@@ -82,84 +82,91 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 
-        //generate UUID for user ID (UID)
-        String id = uuidService.getUUID(); 
+        // generate UUID for user ID (UID)
+        String id = uuidService.getUUID();
         x500NameBuilder.addRDN(BCStyle.UID, String.valueOf(id));
-        x500Name = x500NameBuilder.build();
-        
-        //generating new key pair
+        X500Name x500Name = x500NameBuilder.build();
+
+        // generating new key pair
         KeyPair keyPair = signatureService.generateKeys();
 
-        //TODO generating new serial number same way as UID?
+        // TODO generating new serial number same way as UID?
         String newSerial = uuidService.getUUID();
 
-        //setting cert data
-        X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(new JcaX509CertificateHolder(issuerCert).getSubject(), //vezbe: issuerData.getX500name()
+        // setting cert data
+        X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                new JcaX509CertificateHolder(issuerCert).getSubject(), // vezbe: issuerData.getX500name()
                 new BigInteger(newSerial),
                 new Date(),
                 request.getEndDate(),
-                x500Name, 
-                keyPair.getPublic()); //newly generated public key
+                x500Name,
+                keyPair.getPublic()); // newly generated public key
 
-
-        //TODO adding extensions based on csr
-        //similar logic to this (but cleaner):
+        // TODO adding extensions based on csr
+        // similar logic to this (but cleaner):
 
         // if(data.isCertificateAuthority() || data.isRootCert()){
 
-        //     KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign
-        //             | (data.isDigitalSignature() ? KeyUsage.digitalSignature : KeyUsage.keyCertSign )
-        //             | (data.isNonRepudiation() ? KeyUsage.nonRepudiation : KeyUsage.keyCertSign  )
-        //             | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.keyCertSign )
-        //             | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.keyCertSign ));
+        // KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign
+        // | (data.isDigitalSignature() ? KeyUsage.digitalSignature :
+        // KeyUsage.keyCertSign )
+        // | (data.isNonRepudiation() ? KeyUsage.nonRepudiation : KeyUsage.keyCertSign )
+        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.keyCertSign )
+        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.keyCertSign
+        // ));
 
-        //     try {
-        //         certGen.addExtension(X509Extensions.BasicConstraints, true,
-        //                 new BasicConstraints(true));
-        //         certGen.addExtension(Extension.keyUsage, true, usage);
-        //     } catch (CertIOException e) {
-        //         e.printStackTrace();
-        //     }
+        // try {
+        // certGen.addExtension(X509Extensions.BasicConstraints, true,
+        // new BasicConstraints(true));
+        // certGen.addExtension(Extension.keyUsage, true, usage);
+        // } catch (CertIOException e) {
+        // e.printStackTrace();
+        // }
         // } else {
-        //     if(data.isDigitalSignature()){
-        //         KeyUsage usage = new KeyUsage(KeyUsage.digitalSignature
-        //                 | (data.isNonRepudiation() ? KeyUsage.nonRepudiation : KeyUsage.digitalSignature  )
-        //                 | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.digitalSignature )
-        //                 | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.digitalSignature ));
+        // if(data.isDigitalSignature()){
+        // KeyUsage usage = new KeyUsage(KeyUsage.digitalSignature
+        // | (data.isNonRepudiation() ? KeyUsage.nonRepudiation :
+        // KeyUsage.digitalSignature )
+        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.digitalSignature
+        // )
+        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
+        // KeyUsage.digitalSignature ));
 
-        //         try {
-        //             certGen.addExtension(Extension.keyUsage, true, usage);
-        //         } catch (CertIOException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }else if(data.isNonRepudiation()){
-        //         KeyUsage usage = new KeyUsage(KeyUsage.nonRepudiation
-        //                 | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.nonRepudiation )
-        //                 | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.nonRepudiation ));
+        // try {
+        // certGen.addExtension(Extension.keyUsage, true, usage);
+        // } catch (CertIOException e) {
+        // e.printStackTrace();
+        // }
+        // }else if(data.isNonRepudiation()){
+        // KeyUsage usage = new KeyUsage(KeyUsage.nonRepudiation
+        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.nonRepudiation )
+        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
+        // KeyUsage.nonRepudiation ));
 
-        //         try {
-        //             certGen.addExtension(Extension.keyUsage, true, usage);
-        //         } catch (CertIOException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }else if(data.isKeyAgreement()){
-        //         KeyUsage usage = new KeyUsage(KeyUsage.keyAgreement
-        //                 | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.keyAgreement ));
+        // try {
+        // certGen.addExtension(Extension.keyUsage, true, usage);
+        // } catch (CertIOException e) {
+        // e.printStackTrace();
+        // }
+        // }else if(data.isKeyAgreement()){
+        // KeyUsage usage = new KeyUsage(KeyUsage.keyAgreement
+        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
+        // KeyUsage.keyAgreement ));
 
-        //         try {
-        //             certGen.addExtension(Extension.keyUsage, true, usage);
-        //         } catch (CertIOException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }else if(data.isKeyEncipherment()){
-        //         KeyUsage usage = new KeyUsage(KeyUsage.keyEncipherment);
+        // try {
+        // certGen.addExtension(Extension.keyUsage, true, usage);
+        // } catch (CertIOException e) {
+        // e.printStackTrace();
+        // }
+        // }else if(data.isKeyEncipherment()){
+        // KeyUsage usage = new KeyUsage(KeyUsage.keyEncipherment);
 
-        //         try {
-        //             certGen.addExtension(Extension.keyUsage, true, usage);
-        //         } catch (CertIOException e) {
-        //             e.printStackTrace();
-        //         }
-        //     }
+        // try {
+        // certGen.addExtension(Extension.keyUsage, true, usage);
+        // } catch (CertIOException e) {
+        // e.printStackTrace();
+        // }
+        // }
         // }
 
         X509CertificateHolder certHolder = certGen.build(contentSigner);
@@ -169,33 +176,37 @@ public class CertificateService {
         // converting holder to certificate
         X509Certificate newCertificate = certConverter.getCertificate(certHolder);
 
-        //TODO How do we come up with aliases?
-        //Maybe emails?
+        // TODO How do we come up with aliases?
+        // Maybe emails?
         String newAlias = request.getEmail();
 
-        //getting root for certificate chain
-        X509Certificate root = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword, rootAlias); 
+        // getting root for certificate chain
+        X509Certificate root = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword, rootAlias);
 
-        //NOTICE -> this chain is only valid if we have one root and one interm! 
-        //TODO check if this is the correct way to chain certificates
-        X509Certificate[] certificateChain = {newCertificate, issuerCert, root};  
+        // NOTICE -> this chain is only valid if we have one root and one interm!
+        X509Certificate[] certificateChain = { newCertificate, issuerCert, root };
 
-        //saving new certificate (with hierarchy chain) to KS
-        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain); //TODO save to end user KS?
+        // saving new certificate (with hierarchy chain) to KS
+        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain); 
 
+        // TODO Do we need this saving logic or are we saving all to the same ks?
 
-        //TODO Do we need this saving logic or are we saving all to the same ks?
         // if(data.isRootCert()) {
-        //     _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(), config.getRootFileName(), config.getKsPassword(), certConverter.getCertificate(certHolder));
+        // _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(),
+        // config.getRootFileName(), config.getKsPassword(),
+        // certConverter.getCertificate(certHolder));
         // }
         // else if(data.isCertificateAuthority()){
-        //     _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(), config.getCAFileName(), config.getKsPassword(), certConverter.getCertificate(certHolder));
+        // _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(),
+        // config.getCAFileName(), config.getKsPassword(),
+        // certConverter.getCertificate(certHolder));
         // }else {
-        //     _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(), config.getEnd_userFileName(), config.getKsPassword(), certConverter.getCertificate(certHolder));
+        // _keyStoreWriterService.write(data.getEmail(), keyPair.getPrivate(),
+        // config.getEnd_userFileName(), config.getKsPassword(),
+        // certConverter.getCertificate(certHolder));
         // }
-
 
         return newCertificate;
 
-    } 
+    }
 }

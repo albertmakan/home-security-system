@@ -51,11 +51,11 @@ public class KeyStoreWriterService {
 
 
     // saving certificate to keystore
-    public void write(String alias, PrivateKey privateKey, String fileName, String password, Certificate certificate) {
+    public void write(String alias, PrivateKey privateKey, String fileName, String password, Certificate[] certChain) {
         try {
             this.loadKeyStore(fileName,password.toCharArray());
             if(!keyStore.containsAlias(alias)) {
-                keyStore.setKeyEntry(alias, privateKey, password.toCharArray(), new Certificate[]{certificate}); //todo idk da l samo password umesto password.tochar
+                keyStore.setKeyEntry(alias, privateKey, password.toCharArray(), certChain);
                 this.saveKeyStore(fileName,password.toCharArray());
             }
         } catch (KeyStoreException e) {

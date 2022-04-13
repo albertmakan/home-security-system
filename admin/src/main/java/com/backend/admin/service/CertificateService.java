@@ -45,6 +45,7 @@ public class CertificateService {
     private final String rootKeyStoreFile = "rootKeyStore.jks";
     private final String rootKeyStorePassword = "admin"; //TODO hide pass, switch to config constants
     private final String intermAlias = "adagradinterm";
+    private final String rootAlias = "adagrad root";
 
 
     public X509Certificate generateCertificate(CertSigningRequestDummy request) throws CertificateException {
@@ -172,8 +173,16 @@ public class CertificateService {
         //Maybe emails?
         String newAlias = request.getEmail();
 
-        //saving new certificate to KS
-        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", newCertificate); //TODO save to end user KS?
+        //getting root for certificate chain
+        X509Certificate root = keyStoreReaderService.readCertificate(rootKeyStoreFile, rootKeyStorePassword, rootAlias); 
+
+        //NOTICE -> this chain is only valid if we have one root and one interm! 
+        //TODO check if this is the correct way to chain certificates
+        X509Certificate[] certificateChain = {newCertificate, issuerCert, root};  
+
+        //saving new certificate (with hierarchy chain) to KS
+        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain); //TODO save to end user KS?
+
 
         //TODO Do we need this saving logic or are we saving all to the same ks?
         // if(data.isRootCert()) {

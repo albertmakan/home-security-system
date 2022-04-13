@@ -1,10 +1,14 @@
 package com.backend.admin.service;
 
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.Signature;
+import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
@@ -185,6 +189,14 @@ public class CertificateService {
 
         // NOTICE -> this chain is only valid if we have one root and one interm!
         X509Certificate[] certificateChain = { newCertificate, issuerCert, root };
+
+        // Verify the issued cert signature against the issuer cert
+        try {
+            newCertificate.verify(issuerCert.getPublicKey(), "BC");
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException | SignatureException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // saving new certificate (with hierarchy chain) to KS
         keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain); 

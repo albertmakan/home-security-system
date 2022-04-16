@@ -1,5 +1,5 @@
 const config = {
-  apiHost: 'http://localhost:8000',
+  apiHost: 'http://localhost:8080',
   apiUrlPrefix: '/api',
 };
 

@@ -17,6 +17,14 @@ class CSRService {
       url: `${API_URL}`,
     });
   }
+
+  generateCertificate(csr) {
+    return axios({
+      method: 'POST',
+      data: csr,
+      url: `${API_URL}/generate-certificate`,
+    });
+  }
 }
 
 export default new CSRService();

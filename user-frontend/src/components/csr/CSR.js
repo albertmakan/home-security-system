@@ -5,9 +5,7 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 
-const CSR = ({ csr, onGenerateCertificate }) => {
-  const handleGenerateCertificate = (csr) => {};
-
+const CSR = ({ csr, onGenerate }) => {
   return (
     <Card as={Col} md="2" className="mb-2">
       <Card.Body>
@@ -35,7 +33,9 @@ const CSR = ({ csr, onGenerateCertificate }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="danger">Generate certificate</Button>
+        <Button variant="danger" onClick={() => onGenerate(csr)}>
+          Generate certificate
+        </Button>
       </Card.Body>
     </Card>
   );

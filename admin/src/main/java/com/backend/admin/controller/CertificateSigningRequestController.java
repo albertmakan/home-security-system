@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.cert.CertificateException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,12 @@ public class CertificateSigningRequestController {
     @PostMapping
     public ResponseEntity<CertificateSigningRequest> create(@RequestBody CertificateSigningRequest csr) {
         return new ResponseEntity<>(certificateSigningRequestService.create(csr), HttpStatus.OK);
+    }
+    
+    @PostMapping("/generate-certificate")
+    public ResponseEntity<List<CertificateSigningRequest>> generateCertificate(
+            @RequestBody CertificateSigningRequest csr) throws CertificateException {
+        return new ResponseEntity<>(certificateSigningRequestService.generateCertificate(csr), HttpStatus.OK);
     }
 
 }

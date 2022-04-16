@@ -35,6 +35,8 @@ const CreateCSR = () => {
       commonName: '',
       organization: '',
       organizationalUnit: '',
+      city: '',
+      state: '',
       country: '',
     },
     validationSchema: validationSchema,
@@ -74,6 +76,17 @@ const CreateCSR = () => {
         </Row>
         <Row className="mb-3">
           <Form.Group as={Col} md="4" className="offset-2">
+            <Form.Label>Email:</Form.Label>
+            <Form.Control
+              id="email"
+              name="email"
+              type="text"
+              placeholder="john@email.com"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+            />
+          </Form.Group>
+          <Form.Group as={Col} md="4">
             <Form.Label>Common name:</Form.Label>
             <Form.Control
               id="common-name"
@@ -87,20 +100,9 @@ const CreateCSR = () => {
               <small className="form-text text-danger">{formik.errors.commonName}</small>
             )}
           </Form.Group>
-          <Form.Group as={Col} md="4">
-            <Form.Label>Email:</Form.Label>
-            <Form.Control
-              id="email"
-              name="email"
-              type="text"
-              placeholder="john@email.com"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-            />
-          </Form.Group>
         </Row>
-        <Row className="mb-4">
-          <Form.Group as={Col} md="3" className="offset-2">
+        <Row className="mb-3">
+          <Form.Group as={Col} md="4" className="offset-2">
             <Form.Label>Organization:</Form.Label>
             <Form.Control
               id="organization"
@@ -114,7 +116,7 @@ const CreateCSR = () => {
               <small className="form-text text-danger">{formik.errors.organization}</small>
             )}
           </Form.Group>
-          <Form.Group as={Col} md="2">
+          <Form.Group as={Col} md="4">
             <Form.Label>Organizational unit:</Form.Label>
             <Form.Control
               id="organizational-unit"
@@ -128,7 +130,31 @@ const CreateCSR = () => {
               <small className="form-text text-danger">{formik.errors.organizationalUnit}</small>
             )}
           </Form.Group>
-          <Form.Group as={Col} md="3">
+        </Row>
+        <Row className="mb-4">
+          <Form.Group as={Col} md="2" className="offset-2">
+            <Form.Label>City/locality:</Form.Label>
+            <Form.Control
+              id="city"
+              name="city"
+              type="text"
+              placeholder="Lindon"
+              value={formik.values.city}
+              onChange={formik.handleChange}
+            />
+          </Form.Group>
+          <Form.Group as={Col} md="2">
+            <Form.Label>State/province:</Form.Label>
+            <Form.Control
+              id="state"
+              name="state"
+              type="text"
+              placeholder="Utah"
+              value={formik.values.state}
+              onChange={formik.handleChange}
+            />
+          </Form.Group>
+          <Form.Group as={Col} md="4">
             <Form.Label>Country/region:</Form.Label>
             <Form.Control
               id="country"
@@ -143,6 +169,7 @@ const CreateCSR = () => {
             )}
           </Form.Group>
         </Row>
+
         <Button variant="success" type="submit">
           Create
         </Button>

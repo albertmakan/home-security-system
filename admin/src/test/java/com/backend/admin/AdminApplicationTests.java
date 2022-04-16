@@ -33,8 +33,9 @@ class AdminApplicationTests {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);
-        CertificateSigningRequest req = new CertificateSigningRequest("1","commonName", "firstName", "lastName", "emaillll", "RS",
-                "organisation", "organisationUnit", c.getTime(), false, false, false, false, false, false);
+        CertificateSigningRequest req = new CertificateSigningRequest("1", "commonName", "firstName", "lastName",
+                "emaillll", "", "", "RS", "organisation", "organisationUnit", c.getTime(), false, false, false, false,
+                false, false);
         cs.generateCertificate(req);
 
     }

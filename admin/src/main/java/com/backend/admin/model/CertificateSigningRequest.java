@@ -22,6 +22,8 @@ public class CertificateSigningRequest {
     private String firstName;
     private String lastName;
     private String email;
+    private String city;
+    private String state;
     private String country;
     private String organisation;
     private String organisationalUnit;

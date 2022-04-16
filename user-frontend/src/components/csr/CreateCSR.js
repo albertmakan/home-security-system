@@ -11,6 +11,8 @@ import * as Yup from 'yup';
 
 import CertificateSigningRequestService from '../../services/CertificateSigningRequestService';
 
+import { toastSuccessMessage } from '../../toast/toastMessages';
+
 const validationSchema = Yup.object({
   commonName: Yup.string().max(100, 'Must be 100 characters or less').required('Required'),
   organization: Yup.string().max(100, 'Must be 100 characters or less').required('Required'),
@@ -20,7 +22,9 @@ const CreateCSR = () => {
   useEffect(() => {}, []);
 
   const onSubmit = (values) => {
-    CertificateSigningRequestService.create(values).then((response) => {});
+    CertificateSigningRequestService.create(values).then((response) => {
+      toastSuccessMessage('CSR Successfully Created!');
+    });
   };
 
   const formik = useFormik({
@@ -34,8 +38,9 @@ const CreateCSR = () => {
       country: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       onSubmit(values);
+      resetForm();
     },
   });
 

@@ -25,8 +25,8 @@ public class CertificateSigningRequest {
     private String city;
     private String state;
     private String country;
-    private String organisation;
-    private String organisationalUnit;
+    private String organization;
+    private String organizationalUnit;
     private Date endDate;
 
     // TODO idk if these are just some extensions?

@@ -76,8 +76,8 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
         x500NameBuilder.addRDN(BCStyle.SURNAME, request.getLastName());
         x500NameBuilder.addRDN(BCStyle.GIVENNAME, request.getFirstName());
-        x500NameBuilder.addRDN(BCStyle.O, request.getOrganisation());
-        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganisationalUnit());
+        x500NameBuilder.addRDN(BCStyle.O, request.getOrganization());
+        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganizationalUnit());
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 

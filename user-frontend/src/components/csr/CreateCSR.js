@@ -9,7 +9,7 @@ import Col from 'react-bootstrap/Col';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-import CertificateSigningRequestService from '../../services/CertificateSigningRequestService';
+import CSRService from '../../services/CSRService';
 
 import { toastSuccessMessage } from '../../toast/toastMessages';
 
@@ -22,7 +22,7 @@ const CreateCSR = () => {
   useEffect(() => {}, []);
 
   const onSubmit = (values) => {
-    CertificateSigningRequestService.create(values).then((response) => {
+    CSRService.create(values).then((response) => {
       toastSuccessMessage('CSR Successfully Created!');
     });
   };

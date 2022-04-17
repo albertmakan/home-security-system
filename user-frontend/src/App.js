@@ -12,7 +12,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="*" element={<CreateCSR />} />
-        <Route path="/admin/csr/all" element={<CSRList />} />
+        <Route path="/admin/csr" element={<CSRList />} />
       </Routes>
       <ToastContainer />
     </div>

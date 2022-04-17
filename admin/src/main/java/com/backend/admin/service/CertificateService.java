@@ -1,5 +1,21 @@
 package com.backend.admin.service;
 
+import java.lang.reflect.Field;
+
+import java.math.BigInteger;
+
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import com.backend.admin.model.CertificateInfo;
 import com.backend.admin.model.CertificateSigningRequest;
 import com.backend.admin.model.Revocation;
@@ -11,6 +27,11 @@ import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
+import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -20,15 +41,12 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.security.*;
-import java.security.cert.CertificateException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
-import java.security.cert.X509Certificate;
-import java.util.Date;
 
 @Service
 @AllArgsConstructor
@@ -72,6 +90,8 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.OU, request.getOrganizationalUnit());
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
+        x500NameBuilder.addRDN(BCStyle.L, request.getCity());
+        x500NameBuilder.addRDN(BCStyle.ST, request.getState());
 
         // generate UUID for user ID (UID)
         String id = uuidService.getUUID();
@@ -86,12 +106,43 @@ public class CertificateService {
 
         // setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
-                new JcaX509CertificateHolder(issuerCert).getSubject(),
-                new BigInteger(newSerial),
-                new Date(),
-                request.getEndDate(),
-                x500Name,
-                keyPair.getPublic()); // newly generated public key
+                new JcaX509CertificateHolder(issuerCert).getSubject(), // vezbe: issuerData.getX500name()
+                new BigInteger(newSerial), new Date(), request.getEndDate(), x500Name, keyPair.getPublic()); // newly
+                                                                                                             // generated
+                                                                                                             // public
+                                                                                                             // key
+
+        // E X T E N S I O N S
+        if (request.getKeyUsage() != null) {
+            Class<KeyUsage> keyUsage = KeyUsage.class;
+            Field field;
+            int usage = 0;
+            for (String variable : request.getKeyUsage()) {
+                field = keyUsage.getField(variable);
+                usage |= field.getInt(null);
+            }
+            KeyUsage ku = new KeyUsage(usage);
+            certGen.addExtension(Extension.keyUsage, true, ku);
+        }
+
+        if (request.getExtendedKeyUsage() != null) {
+            Class<KeyPurposeId> keyPurposeId = KeyPurposeId.class;
+            Field field;
+            List<KeyPurposeId> keyPurposeIdList = new ArrayList<KeyPurposeId>();
+            for (String variable : request.getExtendedKeyUsage()) {
+                field = keyPurposeId.getField(variable);
+                keyPurposeIdList.add((KeyPurposeId) field.get(null));
+            }
+            ExtendedKeyUsage eku = new ExtendedKeyUsage(keyPurposeIdList.toArray(new KeyPurposeId[0]));
+            certGen.addExtension(Extension.extendedKeyUsage, true, eku);
+        }
+
+        if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
+            certGen.addExtension(Extension.basicConstraints, true,
+                    new BasicConstraints(request.getPathLenConstraint()));
+        } else if (request.isCA()) {
+            certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+        }
 
         X509CertificateHolder certHolder = certGen.build(contentSigner);
         JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();

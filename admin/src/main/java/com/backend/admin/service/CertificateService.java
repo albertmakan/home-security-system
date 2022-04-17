@@ -1,25 +1,9 @@
 package com.backend.admin.service;
 
-import java.lang.reflect.Field;
-
-import java.math.BigInteger;
-
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Security;
-import java.security.SignatureException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.backend.admin.dto.RevokeCertificateDTO;
 import com.backend.admin.model.CertificateInfo;
 import com.backend.admin.model.CertificateSigningRequest;
 import com.backend.admin.model.Revocation;
-import com.backend.admin.dto.RevokeCertificateDTO;
 import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.model.enums.CertificateType;
 import com.backend.admin.repository.CertificateInfoRepository;
@@ -27,11 +11,7 @@ import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.KeyPurposeId;
-import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -42,12 +22,19 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -214,5 +201,23 @@ public class CertificateService {
     private CertificateInfo findInfoBySerialNumber(String serialNumber) throws Exception {
         return certificateInfoRepository.findBySerialNumber(serialNumber)
                 .orElseThrow(() -> new Exception("Certificate not found."));
+    }
+
+    public void loadCertificateToFile(String serialNumber) throws Exception {
+        String LINE_SEPARATOR = System.getProperty("line.separator");
+        Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
+        byte[] bytes = findBySerialNumber(serialNumber).getEncoded();
+
+        String certificate = "-----BEGIN CERTIFICATE-----" +
+                LINE_SEPARATOR + new String(encoder.encode(bytes)) + LINE_SEPARATOR
+                + "-----END CERTIFICATE-----";
+
+        try (FileOutputStream fos = new FileOutputStream("certificates/" + serialNumber + ".cer")) {
+            fos.write(certificate.getBytes());
+        }
+    }
+
+    public List<CertificateInfo> getCertificateInfos() {
+        return certificateInfoRepository.findAll();
     }
 }

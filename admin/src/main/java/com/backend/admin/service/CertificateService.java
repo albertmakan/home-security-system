@@ -13,12 +13,17 @@ import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -108,16 +113,35 @@ public class CertificateService {
                                                                                                              // key
 
         // E X T E N S I O N S
-        if (request.getKeyUsageExtension() != null) {
+        if (request.getKeyUsage() != null) {
             Class<KeyUsage> keyUsage = KeyUsage.class;
             Field field;
             int usage = 0;
-            for (String variable : request.getKeyUsageExtension()) {
+            for (String variable : request.getKeyUsage()) {
                 field = keyUsage.getField(variable);
                 usage |= field.getInt(null);
             }
             KeyUsage ku = new KeyUsage(usage);
             certGen.addExtension(Extension.keyUsage, true, ku);
+        }
+
+        if (request.getExtendedKeyUsage() != null) {
+            Class<KeyPurposeId> keyPurposeId = KeyPurposeId.class;
+            Field field;
+            List<KeyPurposeId> keyPurposeIdList = new ArrayList<KeyPurposeId>();
+            for (String variable : request.getExtendedKeyUsage()) {
+                field = keyPurposeId.getField(variable);
+                keyPurposeIdList.add((KeyPurposeId) field.get(null));
+            }
+            ExtendedKeyUsage eku = new ExtendedKeyUsage(keyPurposeIdList.toArray(new KeyPurposeId[0]));
+            certGen.addExtension(Extension.extendedKeyUsage, true, eku);
+        }
+
+        if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
+            certGen.addExtension(Extension.basicConstraints, true,
+                    new BasicConstraints(request.getPathLenConstraint()));
+        } else if (request.isCA()) {
+            certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
         }
 
         X509CertificateHolder certHolder = certGen.build(contentSigner);

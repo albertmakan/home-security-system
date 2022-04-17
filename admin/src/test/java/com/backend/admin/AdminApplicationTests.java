@@ -1,4 +1,5 @@
 package com.backend.admin;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -32,7 +33,7 @@ class AdminApplicationTests {
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);
         CertificateSigningRequest req = new CertificateSigningRequest("1", "commonName", "firstName", "lastName",
-                "emaillll", "", "", "RS", "organisation", "organisationUnit", c.getTime(), null);
+                "emaillll", "", "", "RS", "organisation", "organisationUnit", c.getTime(), null, null, false, 0);
         cs.generateCertificate(req);
 
     }

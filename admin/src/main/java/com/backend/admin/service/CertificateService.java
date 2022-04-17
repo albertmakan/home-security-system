@@ -32,6 +32,7 @@ import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -59,7 +60,7 @@ public class CertificateService {
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-    public X509Certificate generateCertificate(CertificateSigningRequest request) throws CertificateException {
+    public X509Certificate generateCertificate(CertificateSigningRequest request) throws Exception {
         Provider provider = new BouncyCastleProvider();
         Security.addProvider(provider);
 
@@ -80,7 +81,6 @@ public class CertificateService {
             e.printStackTrace();
         }
 
-        // generating x500 name based on CSR info
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
         x500NameBuilder.addRDN(BCStyle.CN, request.getCommonName());
@@ -98,7 +98,6 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.UID, String.valueOf(id));
         X500Name x500Name = x500NameBuilder.build();
 
-        // generating new key pair
         KeyPair keyPair = signatureService.generateKeys();
 
         // TODO generating new serial number same way as UID?
@@ -106,43 +105,11 @@ public class CertificateService {
 
         // setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
-                new JcaX509CertificateHolder(issuerCert).getSubject(), // vezbe: issuerData.getX500name()
-                new BigInteger(newSerial), new Date(), request.getEndDate(), x500Name, keyPair.getPublic()); // newly
-                                                                                                             // generated
-                                                                                                             // public
-                                                                                                             // key
+                new JcaX509CertificateHolder(issuerCert).getSubject(),
+                new BigInteger(newSerial), new Date(), request.getEndDate(), x500Name, keyPair.getPublic());
 
         // E X T E N S I O N S
-        if (request.getKeyUsage() != null) {
-            Class<KeyUsage> keyUsage = KeyUsage.class;
-            Field field;
-            int usage = 0;
-            for (String variable : request.getKeyUsage()) {
-                field = keyUsage.getField(variable);
-                usage |= field.getInt(null);
-            }
-            KeyUsage ku = new KeyUsage(usage);
-            certGen.addExtension(Extension.keyUsage, true, ku);
-        }
-
-        if (request.getExtendedKeyUsage() != null) {
-            Class<KeyPurposeId> keyPurposeId = KeyPurposeId.class;
-            Field field;
-            List<KeyPurposeId> keyPurposeIdList = new ArrayList<KeyPurposeId>();
-            for (String variable : request.getExtendedKeyUsage()) {
-                field = keyPurposeId.getField(variable);
-                keyPurposeIdList.add((KeyPurposeId) field.get(null));
-            }
-            ExtendedKeyUsage eku = new ExtendedKeyUsage(keyPurposeIdList.toArray(new KeyPurposeId[0]));
-            certGen.addExtension(Extension.extendedKeyUsage, true, eku);
-        }
-
-        if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
-            certGen.addExtension(Extension.basicConstraints, true,
-                    new BasicConstraints(request.getPathLenConstraint()));
-        } else if (request.isCA()) {
-            certGen.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
-        }
+        addExtensions(request, certGen);
 
         X509CertificateHolder certHolder = certGen.build(contentSigner);
         JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();
@@ -174,6 +141,41 @@ public class CertificateService {
                 CertificateType.END_ENTITY, null));
 
         return newCertificate;
+    }
+
+    private void addExtensions(CertificateSigningRequest request, X509v3CertificateBuilder certificateBuilder)
+            throws NoSuchFieldException, IllegalAccessException, CertIOException {
+
+        if (request.getKeyUsage() != null) {
+            Class<KeyUsage> keyUsage = KeyUsage.class;
+            Field field;
+            int usage = 0;
+            for (String variable : request.getKeyUsage()) {
+                field = keyUsage.getField(variable);
+                usage |= field.getInt(null);
+            }
+            KeyUsage ku = new KeyUsage(usage);
+            certificateBuilder.addExtension(Extension.keyUsage, true, ku);
+        }
+
+        if (request.getExtendedKeyUsage() != null) {
+            Class<KeyPurposeId> keyPurposeId = KeyPurposeId.class;
+            Field field;
+            List<KeyPurposeId> keyPurposeIdList = new ArrayList<>();
+            for (String variable : request.getExtendedKeyUsage()) {
+                field = keyPurposeId.getField(variable);
+                keyPurposeIdList.add((KeyPurposeId) field.get(null));
+            }
+            ExtendedKeyUsage eku = new ExtendedKeyUsage(keyPurposeIdList.toArray(new KeyPurposeId[0]));
+            certificateBuilder.addExtension(Extension.extendedKeyUsage, true, eku);
+        }
+
+        if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
+            certificateBuilder.addExtension(Extension.basicConstraints, true,
+                    new BasicConstraints(request.getPathLenConstraint()));
+        } else if (request.isCA()) {
+            certificateBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+        }
     }
 
     public void revokeCertificate(RevokeCertificateDTO revokeCertificateDTO) throws Exception {

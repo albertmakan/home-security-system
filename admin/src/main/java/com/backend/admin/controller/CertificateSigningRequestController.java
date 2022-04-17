@@ -1,11 +1,11 @@
 package com.backend.admin.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.security.cert.CertificateException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -33,10 +33,10 @@ public class CertificateSigningRequestController {
     public ResponseEntity<CertificateSigningRequest> create(@RequestBody CertificateSigningRequest csr) {
         return new ResponseEntity<>(certificateSigningRequestService.create(csr), HttpStatus.OK);
     }
-    
+
     @PostMapping("/generate-certificate")
     public ResponseEntity<List<CertificateSigningRequest>> generateCertificate(
-            @RequestBody CertificateSigningRequest csr) throws CertificateException {
+            @RequestBody CertificateSigningRequest csr) throws Exception {
         return new ResponseEntity<>(certificateSigningRequestService.generateCertificate(csr), HttpStatus.OK);
     }
 

@@ -1,5 +1,7 @@
 package com.backend.admin.service;
 
+import java.lang.reflect.Field;
+
 import java.math.BigInteger;
 
 import java.security.InvalidKeyException;
@@ -16,6 +18,9 @@ import java.util.Date;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -24,7 +29,6 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-
 import org.springframework.stereotype.Service;
 
 import com.backend.admin.model.CertificateSigningRequest;
@@ -45,7 +49,8 @@ public class CertificateService {
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-    public X509Certificate generateCertificate(CertificateSigningRequest request) throws CertificateException {
+    public X509Certificate generateCertificate(CertificateSigningRequest request) throws CertificateException,
+            NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, CertIOException {
 
         // fixes the "no such provider: BC" exception
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -73,13 +78,15 @@ public class CertificateService {
         // generating x500 name based on CSR info
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
-        x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
+        x500NameBuilder.addRDN(BCStyle.CN, request.getCommonName());
         x500NameBuilder.addRDN(BCStyle.SURNAME, request.getLastName());
         x500NameBuilder.addRDN(BCStyle.GIVENNAME, request.getFirstName());
         x500NameBuilder.addRDN(BCStyle.O, request.getOrganization());
         x500NameBuilder.addRDN(BCStyle.OU, request.getOrganizationalUnit());
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
+        x500NameBuilder.addRDN(BCStyle.L, request.getCity());
+        x500NameBuilder.addRDN(BCStyle.ST, request.getState());
 
         // generate UUID for user ID (UID)
         String id = uuidService.getUUID();
@@ -100,72 +107,18 @@ public class CertificateService {
                                                                                                              // public
                                                                                                              // key
 
-        // TODO adding extensions based on csr
-        // similar logic to this (but cleaner):
-
-        // if(data.isCertificateAuthority() || data.isRootCert()){
-
-        // KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign
-        // | (data.isDigitalSignature() ? KeyUsage.digitalSignature :
-        // KeyUsage.keyCertSign )
-        // | (data.isNonRepudiation() ? KeyUsage.nonRepudiation : KeyUsage.keyCertSign )
-        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.keyCertSign )
-        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment : KeyUsage.keyCertSign
-        // ));
-
-        // try {
-        // certGen.addExtension(X509Extensions.BasicConstraints, true,
-        // new BasicConstraints(true));
-        // certGen.addExtension(Extension.keyUsage, true, usage);
-        // } catch (CertIOException e) {
-        // e.printStackTrace();
-        // }
-        // } else {
-        // if(data.isDigitalSignature()){
-        // KeyUsage usage = new KeyUsage(KeyUsage.digitalSignature
-        // | (data.isNonRepudiation() ? KeyUsage.nonRepudiation :
-        // KeyUsage.digitalSignature )
-        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.digitalSignature
-        // )
-        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
-        // KeyUsage.digitalSignature ));
-
-        // try {
-        // certGen.addExtension(Extension.keyUsage, true, usage);
-        // } catch (CertIOException e) {
-        // e.printStackTrace();
-        // }
-        // }else if(data.isNonRepudiation()){
-        // KeyUsage usage = new KeyUsage(KeyUsage.nonRepudiation
-        // | (data.isKeyAgreement() ? KeyUsage.keyAgreement : KeyUsage.nonRepudiation )
-        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
-        // KeyUsage.nonRepudiation ));
-
-        // try {
-        // certGen.addExtension(Extension.keyUsage, true, usage);
-        // } catch (CertIOException e) {
-        // e.printStackTrace();
-        // }
-        // }else if(data.isKeyAgreement()){
-        // KeyUsage usage = new KeyUsage(KeyUsage.keyAgreement
-        // | (data.isKeyEncipherment() ? KeyUsage.keyEncipherment :
-        // KeyUsage.keyAgreement ));
-
-        // try {
-        // certGen.addExtension(Extension.keyUsage, true, usage);
-        // } catch (CertIOException e) {
-        // e.printStackTrace();
-        // }
-        // }else if(data.isKeyEncipherment()){
-        // KeyUsage usage = new KeyUsage(KeyUsage.keyEncipherment);
-
-        // try {
-        // certGen.addExtension(Extension.keyUsage, true, usage);
-        // } catch (CertIOException e) {
-        // e.printStackTrace();
-        // }
-        // }
-        // }
+        // E X T E N S I O N S
+        if (request.getKeyUsageExtensions() != null) {
+            Class<KeyUsage> keyUsage = KeyUsage.class;
+            Field field;
+            int usage = 0;
+            for (String extension : request.getKeyUsageExtensions()) {
+                field = keyUsage.getField(extension);
+                usage |= field.getInt(null);
+            }
+            KeyUsage ku = new KeyUsage(usage);
+            certGen.addExtension(Extension.keyUsage, true, ku);
+        }
 
         X509CertificateHolder certHolder = certGen.build(contentSigner);
         JcaX509CertificateConverter certConverter = new JcaX509CertificateConverter();

@@ -1,6 +1,4 @@
 package com.backend.admin;
-
-import java.security.cert.CertificateException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -18,7 +16,7 @@ class AdminApplicationTests {
     private CertificateService cs;
 
     @Test
-    void contextLoads() throws CertificateException {
+    void contextLoads() throws Exception {
 
         //// Testing read cert from ks method
         // X509Certificate issuerCert = ksr.readCertificate("rootKeyStore.jks", "admin",
@@ -34,8 +32,7 @@ class AdminApplicationTests {
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);
         CertificateSigningRequest req = new CertificateSigningRequest("1", "commonName", "firstName", "lastName",
-                "emaillll", "", "", "RS", "organisation", "organisationUnit", c.getTime(), false, false, false, false,
-                false, false);
+                "emaillll", "", "", "RS", "organisation", "organisationUnit", c.getTime(), null);
         cs.generateCertificate(req);
 
     }

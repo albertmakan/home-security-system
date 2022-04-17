@@ -4,8 +4,14 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import GenerateCertificateModal from '../../modals/generate-certificate/GenerateCertificateModal';
 
 const CSR = ({ csr, onGenerate }) => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <Card as={Col} md="2" className="mb-2">
       <Card.Body>
@@ -36,10 +42,16 @@ const CSR = ({ csr, onGenerate }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="danger" onClick={() => onGenerate(csr)}>
+        <Button variant="danger" onClick={handleShow}>
           Generate certificate
         </Button>
       </Card.Body>
+      <GenerateCertificateModal
+        show={show}
+        onClose={handleClose}
+        onGenerate={onGenerate}
+        csr={csr}
+      />
     </Card>
   );
 };

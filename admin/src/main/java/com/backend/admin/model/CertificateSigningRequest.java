@@ -30,6 +30,6 @@ public class CertificateSigningRequest {
     private String organizationalUnit;
     private Date endDate;
 
-    private List<String> keyUsageExtensions;
+    private List<String> keyUsageExtension;
 
 }

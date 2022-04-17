@@ -108,12 +108,12 @@ public class CertificateService {
                                                                                                              // key
 
         // E X T E N S I O N S
-        if (request.getKeyUsageExtensions() != null) {
+        if (request.getKeyUsageExtension() != null) {
             Class<KeyUsage> keyUsage = KeyUsage.class;
             Field field;
             int usage = 0;
-            for (String extension : request.getKeyUsageExtensions()) {
-                field = keyUsage.getField(extension);
+            for (String variable : request.getKeyUsageExtension()) {
+                field = keyUsage.getField(variable);
                 usage |= field.getInt(null);
             }
             KeyUsage ku = new KeyUsage(usage);

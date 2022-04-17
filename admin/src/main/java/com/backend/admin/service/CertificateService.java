@@ -1,13 +1,13 @@
 package com.backend.admin.service;
 
 import java.math.BigInteger;
+
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.Security;
-import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -16,11 +16,6 @@ import java.util.Date;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.X509Extensions;
-import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -32,7 +27,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.admin.model.CertSigningRequestDummy;
+import com.backend.admin.model.CertificateSigningRequest;
 
 import lombok.AllArgsConstructor;
 
@@ -50,7 +45,7 @@ public class CertificateService {
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-    public X509Certificate generateCertificate(CertSigningRequestDummy request) throws CertificateException {
+    public X509Certificate generateCertificate(CertificateSigningRequest request) throws CertificateException {
 
         // fixes the "no such provider: BC" exception
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -81,8 +76,8 @@ public class CertificateService {
         x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
         x500NameBuilder.addRDN(BCStyle.SURNAME, request.getLastName());
         x500NameBuilder.addRDN(BCStyle.GIVENNAME, request.getFirstName());
-        x500NameBuilder.addRDN(BCStyle.O, request.getOrganisation());
-        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganisationUnit());
+        x500NameBuilder.addRDN(BCStyle.O, request.getOrganization());
+        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganizationalUnit());
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 
@@ -100,11 +95,10 @@ public class CertificateService {
         // setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
                 new JcaX509CertificateHolder(issuerCert).getSubject(), // vezbe: issuerData.getX500name()
-                new BigInteger(newSerial),
-                new Date(),
-                request.getEndDate(),
-                x500Name,
-                keyPair.getPublic()); // newly generated public key
+                new BigInteger(newSerial), new Date(), request.getEndDate(), x500Name, keyPair.getPublic()); // newly
+                                                                                                             // generated
+                                                                                                             // public
+                                                                                                             // key
 
         // TODO adding extensions based on csr
         // similar logic to this (but cleaner):
@@ -199,7 +193,7 @@ public class CertificateService {
         }
 
         // saving new certificate (with hierarchy chain) to KS
-        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain); 
+        keyStoreWriterService.write(newAlias, keyPair.getPrivate(), "rootKeyStore.jks", "admin", certificateChain);
 
         // TODO Do we need this saving logic or are we saving all to the same ks?
 

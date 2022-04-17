@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CertSigningRequestDummy {
+public class CertSigningRequest {
 
     private String firstName;
 

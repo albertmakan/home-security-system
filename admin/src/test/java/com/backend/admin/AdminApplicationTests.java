@@ -5,7 +5,7 @@ import java.security.cert.CertificateException;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.backend.admin.model.CertSigningRequestDummy;
+import com.backend.admin.model.CertSigningRequest;
 import com.backend.admin.service.CertificateService;
 
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class AdminApplicationTests {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);
-        CertSigningRequestDummy req = new CertSigningRequestDummy("firstName", "lastName", "email", "RS", "organisation", "organisationUnit", c.getTime(), false, false, false, false, false, false);
+        CertSigningRequest req = new CertSigningRequest("firstName", "lastName", "email", "RS", "organisation", "organisationUnit", c.getTime(), false, false, false, false, false, false);
         cs.generateCertificate(req);
 
 

@@ -1,16 +1,12 @@
 package com.backend.admin.service;
 
-import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Date;
-
 import com.backend.admin.model.CertificateInfo;
+import com.backend.admin.model.CertificateSigningRequest;
 import com.backend.admin.model.Revocation;
 import com.backend.admin.model.RevokeCertificateDTO;
 import com.backend.admin.model.enums.CertificateType;
 import com.backend.admin.repository.CertificateInfoRepository;
+import lombok.AllArgsConstructor;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -23,12 +19,13 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-
 import org.springframework.stereotype.Service;
 
-import com.backend.admin.model.CertSigningRequest;
-
-import lombok.AllArgsConstructor;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 
 @Service
 @AllArgsConstructor
@@ -41,7 +38,7 @@ public class CertificateService {
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-    public X509Certificate generateCertificate(CertSigningRequest request) throws CertificateException {
+    public X509Certificate generateCertificate(CertificateSigningRequest request) throws CertificateException {
         Provider provider = new BouncyCastleProvider();
         Security.addProvider(provider);
 
@@ -65,11 +62,11 @@ public class CertificateService {
         // generating x500 name based on CSR info
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BCStyle.INSTANCE);
 
-        x500NameBuilder.addRDN(BCStyle.CN, request.getFirstName() + ' ' + request.getLastName());
+        x500NameBuilder.addRDN(BCStyle.CN, request.getCommonName());
         x500NameBuilder.addRDN(BCStyle.SURNAME, request.getLastName());
         x500NameBuilder.addRDN(BCStyle.GIVENNAME, request.getFirstName());
-        x500NameBuilder.addRDN(BCStyle.O, request.getOrganisation());
-        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganisationUnit());
+        x500NameBuilder.addRDN(BCStyle.O, request.getOrganization());
+        x500NameBuilder.addRDN(BCStyle.OU, request.getOrganizationalUnit());
         x500NameBuilder.addRDN(BCStyle.C, request.getCountry());
         x500NameBuilder.addRDN(BCStyle.E, request.getEmail());
 

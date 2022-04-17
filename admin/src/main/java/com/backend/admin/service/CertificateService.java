@@ -3,7 +3,8 @@ package com.backend.admin.service;
 import com.backend.admin.model.CertificateInfo;
 import com.backend.admin.model.CertificateSigningRequest;
 import com.backend.admin.model.Revocation;
-import com.backend.admin.model.RevokeCertificateDTO;
+import com.backend.admin.dto.RevokeCertificateDTO;
+import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.model.enums.CertificateType;
 import com.backend.admin.repository.CertificateInfoRepository;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
@@ -123,8 +126,7 @@ public class CertificateService {
     }
 
     public void revokeCertificate(RevokeCertificateDTO revokeCertificateDTO) throws Exception {
-        CertificateInfo info = certificateInfoRepository.findBySerialNumber(revokeCertificateDTO.getSerialNumber())
-                .orElseThrow(() -> new Exception("Certificate not found."));
+        CertificateInfo info = findInfoBySerialNumber(revokeCertificateDTO.getSerialNumber());
 
         if (info.getRevocation() != null)
             throw new Exception("Certificate already revoked.");
@@ -136,10 +138,28 @@ public class CertificateService {
     }
 
     public X509Certificate findBySerialNumber(String serialNumber) throws Exception {
-        CertificateInfo info = certificateInfoRepository.findBySerialNumber(serialNumber)
-                .orElseThrow(() -> new Exception("Certificate not found."));
+        CertificateInfo info = findInfoBySerialNumber(serialNumber);
         return certificateKeyStoreService.readCertificate(info.getAlias());
     }
 
+    public CertificateStatus checkStatus(String serialNumber) throws Exception {
+        CertificateInfo info = findInfoBySerialNumber(serialNumber);
+        X509Certificate certificate = certificateKeyStoreService.readCertificate(info.getAlias());
 
+        try {
+            certificate.checkValidity();
+        } catch (CertificateExpiredException | CertificateNotYetValidException e) {
+            return CertificateStatus.EXPIRED; // NotYetValidException won't happen
+        }
+
+        if (info.getRevocation() != null)
+            return CertificateStatus.REVOKED;
+
+        return CertificateStatus.VALID;
+    }
+
+    private CertificateInfo findInfoBySerialNumber(String serialNumber) throws Exception {
+        return certificateInfoRepository.findBySerialNumber(serialNumber)
+                .orElseThrow(() -> new Exception("Certificate not found."));
+    }
 }

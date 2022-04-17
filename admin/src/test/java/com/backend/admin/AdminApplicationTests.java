@@ -5,10 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.backend.admin.model.CertificateSigningRequest;
-import com.backend.admin.model.RevokeCertificateDTO;
+import com.backend.admin.dto.RevokeCertificateDTO;
+import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
 
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +47,11 @@ class AdminApplicationTests {
     @Test
     public void revocationTest() throws Exception {
         cs.revokeCertificate(new RevokeCertificateDTO("4935827174799823196", new ObjectId(), "had to"));
+    }
+
+    @Test
+    public void checkStatusTest() throws Exception {
+        Assertions.assertEquals(CertificateStatus.REVOKED, cs.checkStatus("4935827174799823196"));
     }
 
 }

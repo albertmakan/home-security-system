@@ -14,8 +14,18 @@ import CSRService from '../../services/CSRService';
 import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const validationSchema = Yup.object({
-  commonName: Yup.string().max(100, 'Must be 100 characters or less').required('Required'),
-  organization: Yup.string().max(100, 'Must be 100 characters or less').required('Required'),
+  firstName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  lastName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  email: Yup.string().email('Invalid email address').required('Required'),
+  commonName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  organization: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  organizationalUnit: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  city: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  state: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  country: Yup.string()
+    .min(2, 'Must be exactly 2 characters long')
+    .max(2, 'Must be exactly 2 characters long')
+    .required('Required'),
 });
 
 const CreateCSR = () => {
@@ -61,6 +71,9 @@ const CreateCSR = () => {
               value={formik.values.firstName}
               onChange={formik.handleChange}
             />
+            {formik.touched.firstName && formik.errors.firstName && (
+              <small className="form-text text-danger">{formik.errors.firstName}</small>
+            )}
           </Form.Group>
           <Form.Group as={Col} md="4">
             <Form.Label>Last name:</Form.Label>
@@ -72,6 +85,9 @@ const CreateCSR = () => {
               value={formik.values.lastName}
               onChange={formik.handleChange}
             />
+            {formik.touched.lastName && formik.errors.lastName && (
+              <small className="form-text text-danger">{formik.errors.lastName}</small>
+            )}
           </Form.Group>
         </Row>
         <Row className="mb-3">
@@ -85,6 +101,9 @@ const CreateCSR = () => {
               value={formik.values.email}
               onChange={formik.handleChange}
             />
+            {formik.touched.email && formik.errors.email && (
+              <small className="form-text text-danger">{formik.errors.email}</small>
+            )}
           </Form.Group>
           <Form.Group as={Col} md="4">
             <Form.Label>Common name:</Form.Label>
@@ -142,6 +161,9 @@ const CreateCSR = () => {
               value={formik.values.city}
               onChange={formik.handleChange}
             />
+            {formik.touched.city && formik.errors.city && (
+              <small className="form-text text-danger">{formik.errors.city}</small>
+            )}
           </Form.Group>
           <Form.Group as={Col} md="2">
             <Form.Label>State/province:</Form.Label>
@@ -153,6 +175,9 @@ const CreateCSR = () => {
               value={formik.values.state}
               onChange={formik.handleChange}
             />
+            {formik.touched.state && formik.errors.state && (
+              <small className="form-text text-danger">{formik.errors.state}</small>
+            )}
           </Form.Group>
           <Form.Group as={Col} md="4">
             <Form.Label>Country/region:</Form.Label>

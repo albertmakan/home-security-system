@@ -1,6 +1,7 @@
 package com.backend.admin.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Id;
 
@@ -29,17 +30,9 @@ public class CertificateSigningRequest {
     private String organizationalUnit;
     private Date endDate;
 
-    // TODO idk if these are just some extensions?
-    // Check if there are others that need to be added
-
-    private boolean certificateAuthority; // we probably won't be using this one
-    private boolean rootCert; // we probably won't be using this one
-    private boolean digitalSignature;
-    private boolean nonRepudiation;
-    private boolean keyAgreement;
-    private boolean keyEncipherment;
-
-    // signingCertificate se podrazumeva kada je CA - koristiti kada se javni kljuc
-    // subjekta koristi za verifikaciju potpisa na sertifikatima
+    private List<String> keyUsage;
+    private List<String> extendedKeyUsage;
+    private boolean cA;
+    private Integer pathLenConstraint;
 
 }

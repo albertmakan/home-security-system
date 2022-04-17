@@ -1,6 +1,5 @@
 package com.backend.admin.service;
 
-import java.security.cert.CertificateException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,8 +25,7 @@ public class CertificateSigningRequestService {
         return certificateSigningServiceRepository.findAll();
     }
 
-    public List<CertificateSigningRequest> generateCertificate(CertificateSigningRequest csr)
-            throws CertificateException {
+    public List<CertificateSigningRequest> generateCertificate(CertificateSigningRequest csr) throws Exception {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.YEAR, 5);

@@ -3,6 +3,7 @@ package com.backend.admin.controller;
 import com.backend.admin.dto.CertificateDTO;
 import com.backend.admin.dto.RevokeCertificateDTO;
 import com.backend.admin.model.CertificateInfo;
+import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -48,5 +49,16 @@ public class CertificateController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/status/{serialNo}")
+    public ResponseEntity<CertificateStatus> checkStatus(@PathVariable String serialNo) {
+        CertificateStatus status;
+        try {
+            status = certificateService.checkStatus(serialNo);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }

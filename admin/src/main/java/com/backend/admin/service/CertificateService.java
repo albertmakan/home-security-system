@@ -160,7 +160,7 @@ public class CertificateService {
         if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
             certificateBuilder.addExtension(Extension.basicConstraints, true,
                     new BasicConstraints(request.getPathLenConstraint()));
-        } else if (request.isCA()) {
+        } else if (request.getCa() != null && request.getCa().booleanValue() == true) {
             certificateBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
         }
     }

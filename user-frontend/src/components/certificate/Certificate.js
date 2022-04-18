@@ -13,6 +13,12 @@ const Certificate = ({ certificate, onRevoke }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  let status;
+  if (new Date(certificate.expirationDate) < new Date())
+    status = <b style={{ color: 'red' }}>EXPIRED</b>;
+  else if (certificate.revoked) status = <b style={{ color: 'red' }}>REVOKED</b>;
+  else status = <b style={{ color: 'green' }}>VALID</b>;
+
   return (
     <Card as={Col} md="2" className="mb-2">
       <Card.Body>
@@ -23,6 +29,7 @@ const Certificate = ({ certificate, onRevoke }) => {
         />
       </Card.Body>
       <ListGroup className="list-group-flush" style={{ fontSize: '70%' }}>
+        <ListGroupItem style={{ textAlign: 'left' }}>{status}</ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
           <b>Issuer: </b> {certificate.issuer}
         </ListGroupItem>

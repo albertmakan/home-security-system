@@ -27,9 +27,9 @@ const Certificate = ({ certificate, onRevoke }) => {
           src="https://www.svgrepo.com/show/20737/certificate-diploma.svg"
           style={{ width: '60%' }}
         />
+        <Card.Text>{status}</Card.Text>
       </Card.Body>
       <ListGroup className="list-group-flush" style={{ fontSize: '70%' }}>
-        <ListGroupItem style={{ textAlign: 'left' }}>{status}</ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
           <b>Issuer: </b> {certificate.issuer}
         </ListGroupItem>

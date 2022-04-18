@@ -42,7 +42,7 @@ const CSR = ({ csr, onGenerate }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="danger" onClick={handleShow}>
+        <Button variant="success" onClick={handleShow}>
           Generate certificate
         </Button>
       </Card.Body>

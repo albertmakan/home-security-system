@@ -29,6 +29,7 @@ const GenerateCertificateModal = ({ show, onClose, onGenerate, csr }) => {
   const handleSelectedOptionChange = (e) => {
     setSelectedOption(e.target.value);
     setPathLenConstraint(0);
+    setCA(false);
   };
 
   return (

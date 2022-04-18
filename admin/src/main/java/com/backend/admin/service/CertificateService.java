@@ -92,8 +92,8 @@ public class CertificateService {
 
         // setting cert data
         X509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
-                new JcaX509CertificateHolder(issuerCert).getSubject(),
-                new BigInteger(newSerial), new Date(), request.getEndDate(), x500Name, keyPair.getPublic());
+                new JcaX509CertificateHolder(issuerCert).getSubject(), new BigInteger(newSerial), new Date(),
+                request.getEndDate(), x500Name, keyPair.getPublic());
 
         // E X T E N S I O N S
         addExtensions(request, certGen);
@@ -112,7 +112,7 @@ public class CertificateService {
         X509Certificate root = certificateKeyStoreService.readCertificate(rootAlias);
 
         // NOTICE -> this chain is only valid if we have one root and one intermediate!
-        X509Certificate[] certificateChain = {newCertificate, issuerCert, root};
+        X509Certificate[] certificateChain = { newCertificate, issuerCert, root };
 
         // Verify the issued cert signature against the issuer cert
         try {
@@ -124,8 +124,8 @@ public class CertificateService {
         // saving new certificate (with hierarchy chain) to KS
         certificateKeyStoreService.write(newAlias, certificateChain, keyPair.getPrivate());
 
-        certificateInfoRepository.save(new CertificateInfo(null, newSerial, newAlias, request.getEmail(),
-                CertificateType.END_ENTITY, null));
+        certificateInfoRepository.save(
+                new CertificateInfo(null, newSerial, newAlias, request.getEmail(), CertificateType.END_ENTITY, null));
 
         return newCertificate;
     }
@@ -133,7 +133,7 @@ public class CertificateService {
     private void addExtensions(CertificateSigningRequest request, X509v3CertificateBuilder certificateBuilder)
             throws NoSuchFieldException, IllegalAccessException, CertIOException {
 
-        if (request.getKeyUsage() != null) {
+        if (request.getKeyUsage() != null && request.getKeyUsage().size() > 0) {
             Class<KeyUsage> keyUsage = KeyUsage.class;
             Field field;
             int usage = 0;
@@ -145,7 +145,7 @@ public class CertificateService {
             certificateBuilder.addExtension(Extension.keyUsage, true, ku);
         }
 
-        if (request.getExtendedKeyUsage() != null) {
+        if (request.getExtendedKeyUsage() != null && request.getExtendedKeyUsage().size() > 0) {
             Class<KeyPurposeId> keyPurposeId = KeyPurposeId.class;
             Field field;
             List<KeyPurposeId> keyPurposeIdList = new ArrayList<>();
@@ -160,7 +160,7 @@ public class CertificateService {
         if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
             certificateBuilder.addExtension(Extension.basicConstraints, true,
                     new BasicConstraints(request.getPathLenConstraint()));
-        } else if (request.isCA()) {
+        } else if (request.getCa() != null && request.getCa().booleanValue() == true) {
             certificateBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
         }
     }
@@ -171,8 +171,8 @@ public class CertificateService {
         if (info.getRevocation() != null)
             throw new Exception("Certificate already revoked.");
 
-        info.setRevocation(new Revocation(revokeCertificateDTO.getSerialNumber(),
-                revokeCertificateDTO.getRevokerId(), new Date(), revokeCertificateDTO.getReason()));
+        info.setRevocation(new Revocation(revokeCertificateDTO.getSerialNumber(), revokeCertificateDTO.getRevokerId(),
+                new Date(), revokeCertificateDTO.getReason()));
 
         certificateInfoRepository.save(info);
     }
@@ -208,9 +208,8 @@ public class CertificateService {
         Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
         byte[] bytes = findBySerialNumber(serialNumber).getEncoded();
 
-        String certificate = "-----BEGIN CERTIFICATE-----" +
-                LINE_SEPARATOR + new String(encoder.encode(bytes)) + LINE_SEPARATOR
-                + "-----END CERTIFICATE-----";
+        String certificate = "-----BEGIN CERTIFICATE-----" + LINE_SEPARATOR + new String(encoder.encode(bytes))
+                + LINE_SEPARATOR + "-----END CERTIFICATE-----";
 
         try (FileOutputStream fos = new FileOutputStream("certificates/" + serialNumber + ".cer")) {
             fos.write(certificate.getBytes());

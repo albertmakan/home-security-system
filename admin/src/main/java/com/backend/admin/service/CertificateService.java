@@ -43,11 +43,12 @@ public class CertificateService {
     private final SignatureService signatureService;
     private final CertificateKeyStoreService certificateKeyStoreService;
     private final UUIDService uuidService;
+    private final EmailService emailService;
 
     private final String intermAlias = "adagradinterm";
     private final String rootAlias = "adagrad root";
 
-    public X509Certificate generateCertificate(CertificateSigningRequest request) throws Exception {
+    public void generateCertificate(CertificateSigningRequest request) throws Exception {
         Provider provider = new BouncyCastleProvider();
         Security.addProvider(provider);
 
@@ -127,7 +128,10 @@ public class CertificateService {
         certificateInfoRepository.save(
                 new CertificateInfo(null, newSerial, newAlias, request.getEmail(), CertificateType.END_ENTITY, null));
 
-        return newCertificate;
+        // sending certificate via email
+        loadCertificateToFile(newSerial);
+        emailService.sendMailWithAttachment(request.getEmail(), "Home-security-system certificate",
+                "Your certificate", "certificates/"+newSerial+".cer");
     }
 
     private void addExtensions(CertificateSigningRequest request, X509v3CertificateBuilder certificateBuilder)
@@ -160,7 +164,7 @@ public class CertificateService {
         if (request.getPathLenConstraint() != null && request.getPathLenConstraint() > 0) {
             certificateBuilder.addExtension(Extension.basicConstraints, true,
                     new BasicConstraints(request.getPathLenConstraint()));
-        } else if (request.getCa() != null && request.getCa().booleanValue() == true) {
+        } else if (request.getCa() != null && request.getCa()) {
             certificateBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
         }
     }

@@ -8,6 +8,7 @@ import com.backend.admin.dto.RevokeCertificateDTO;
 import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
 
+import com.backend.admin.service.EmailService;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ class AdminApplicationTests {
 
     @Autowired
     private CertificateService cs;
+    @Autowired
+    private EmailService emailService;
 
     @Test
     void contextLoads() throws Exception {
@@ -50,6 +53,13 @@ class AdminApplicationTests {
     @Test
     public void checkStatusTest() throws Exception {
         Assertions.assertEquals(CertificateStatus.REVOKED, cs.checkStatus("4935827174799823196"));
+    }
+
+    @Test
+    public void mailTest() throws Exception {
+        cs.loadCertificateToFile("6684749470397079359");
+        emailService.sendMailWithAttachment("makanalbert@gmail.com", "cer proba", "certificate",
+                "certificates/6684749470397079359.cer");
     }
 
 }

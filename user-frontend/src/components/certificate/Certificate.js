@@ -30,7 +30,7 @@ const Certificate = ({ certificate, onRevoke }) => {
           <b>Subject: </b> {certificate.subject}
         </ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
-          <b>Expiration date: </b> {format(new Date(certificate.expirationDate), 'dd.MM.yyyy')}
+          <b>Expiration date: </b> {format(new Date(certificate.expirationDate), 'dd.MM.yyyy.')}
         </ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
           <b>Type: </b> {certificate.type}

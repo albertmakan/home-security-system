@@ -41,12 +41,12 @@ public class CertificateController {
     }
 
     @PostMapping("/revoke")
-    public ResponseEntity<Void> revoke(@RequestBody RevokeCertificateDTO revokeCertificateDTO) {
+    public ResponseEntity<List<CertificateDTO>> revoke(@RequestBody RevokeCertificateDTO revokeCertificateDTO) {
         try {
             certificateService.revokeCertificate(revokeCertificateDTO);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(toDTO.convert(certificateService.getCertificateInfos()), HttpStatus.OK);
     }
 }

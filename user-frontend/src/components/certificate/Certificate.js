@@ -5,6 +5,7 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import { format } from 'date-fns';
+import RevokeCertificateModal from '../../modals/revoke-certificate/RevokeCertificateModal';
 
 const Certificate = ({ certificate, onRevoke }) => {
   const [show, setShow] = useState(false);
@@ -40,6 +41,12 @@ const Certificate = ({ certificate, onRevoke }) => {
           Revoke
         </Button>
       </Card.Body>
+      <RevokeCertificateModal
+        show={show}
+        onClose={handleClose}
+        onRevoke={onRevoke}
+        certificate={certificate}
+      />
     </Card>
   );
 };

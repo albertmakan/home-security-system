@@ -122,15 +122,16 @@ const GenerateCertificateModal = ({ show, onClose, onGenerate, csr }) => {
       <Modal.Footer>
         <Button
           variant="success"
-          onClick={() =>
+          onClick={() => {
             onGenerate({
               ...csr,
               keyUsage: keyUsage,
               extendedKeyUsage: extendedKeyUsage,
-              cA: cA,
+              ca: cA,
               pathLenConstraint: pathLenConstraint,
-            })
-          }
+            });
+            onClose();
+          }}
         >
           Generate
         </Button>

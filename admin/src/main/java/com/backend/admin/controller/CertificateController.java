@@ -1,10 +1,13 @@
 package com.backend.admin.controller;
 
 import com.backend.admin.dto.CertificateDTO;
+
 import com.backend.admin.dto.RevokeCertificateDTO;
 import com.backend.admin.model.CertificateInfo;
 import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
+import com.backend.admin.support.CertificateInfoToCertificateDTO;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,10 +22,11 @@ import java.util.List;
 @AllArgsConstructor
 public class CertificateController {
     private final CertificateService certificateService;
+    private final CertificateInfoToCertificateDTO toDTO;
 
     @GetMapping("/all")
-    public ResponseEntity<List<CertificateInfo>> getCertificateInfos() {
-        return new ResponseEntity<>(certificateService.getCertificateInfos(), HttpStatus.OK);
+    public ResponseEntity<List<CertificateDTO>> getCertificateInfos() {
+        return new ResponseEntity<>(toDTO.convert(certificateService.getCertificateInfos()), HttpStatus.OK);
     }
 
     @GetMapping("/{serialNo}")
@@ -33,22 +37,19 @@ public class CertificateController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        CertificateDTO certificateDTO = new CertificateDTO(
-                certificate.getIssuerX500Principal().getName(),
-                certificate.getSubjectX500Principal().getName(),
-                certificate.getNotAfter()
-        );
+        CertificateDTO certificateDTO = new CertificateDTO(certificate.getIssuerX500Principal().getName(),
+                certificate.getSubjectX500Principal().getName(), certificate.getNotAfter());
         return new ResponseEntity<>(certificateDTO, HttpStatus.OK);
     }
 
     @PostMapping("/revoke")
-    public ResponseEntity<Void> revoke(@RequestBody RevokeCertificateDTO revokeCertificateDTO) {
+    public ResponseEntity<List<CertificateDTO>> revoke(@RequestBody RevokeCertificateDTO revokeCertificateDTO) {
         try {
             certificateService.revokeCertificate(revokeCertificateDTO);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(toDTO.convert(certificateService.getCertificateInfos()), HttpStatus.OK);
     }
 
     @GetMapping("/status/{serialNo}")

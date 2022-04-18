@@ -32,7 +32,7 @@ public class CertificateSigningRequest {
 
     private List<String> keyUsage;
     private List<String> extendedKeyUsage;
-    private boolean cA;
+    private Boolean ca;
     private Integer pathLenConstraint;
 
 }

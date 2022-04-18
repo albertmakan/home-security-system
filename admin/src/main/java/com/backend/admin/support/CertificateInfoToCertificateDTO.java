@@ -23,7 +23,7 @@ public class CertificateInfoToCertificateDTO implements Converter<CertificateInf
         X509Certificate certificate = certificateKeyStoreService.readCertificate(source.getAlias());
         return new CertificateDTO(certificate.getIssuerDN().getName(), certificate.getSubjectDN().getName(),
                 certificate.getNotAfter(), source.getSerialNumber(), source.getAlias(), source.getSubjectEmail(),
-                source.getType());
+                source.getType(), source.getRevocation() == null ? false : true);
     }
 
     public List<CertificateDTO> convert(List<CertificateInfo> infoList) {

@@ -20,6 +20,7 @@ public class CertificateDTO {
     private String alias;
     private String subjectEmail;
     private CertificateType type;
+    private Boolean revoked;
 
     public CertificateDTO(String issuer, String subject, Date expirationDate) {
         this.issuer = issuer;

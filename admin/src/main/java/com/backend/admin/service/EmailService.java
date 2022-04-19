@@ -50,4 +50,20 @@ public class EmailService {
         }
     }
 
+    public void sendMailWithHTML(String to, String subject, String body)
+    {
+        MimeMessagePreparator preparator = mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            message.setTo(new InternetAddress(to));
+            message.setSubject(subject);
+            message.setText(body, true);
+        };
+        try {
+            javaMailSender.send(preparator);
+        }
+        catch (MailException ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+
 }

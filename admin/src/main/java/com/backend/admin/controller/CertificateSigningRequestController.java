@@ -1,17 +1,12 @@
 package com.backend.admin.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.admin.model.CertificateSigningRequest;
 import com.backend.admin.service.CertificateSigningRequestService;
@@ -38,6 +33,12 @@ public class CertificateSigningRequestController {
     public ResponseEntity<List<CertificateSigningRequest>> generateCertificate(
             @RequestBody CertificateSigningRequest csr) throws Exception {
         return new ResponseEntity<>(certificateSigningRequestService.generateCertificate(csr), HttpStatus.OK);
+    }
+
+    @PutMapping("/verify/{id}")
+    public ResponseEntity<Void> verifyCSR(@PathVariable String id) throws Exception {
+        certificateSigningRequestService.verify(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

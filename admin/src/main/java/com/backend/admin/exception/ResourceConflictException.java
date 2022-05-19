@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.informatika.spring.security.exception;
+package com.backend.admin.exception;
 
 // Custom izuzetak
 public class ResourceConflictException extends RuntimeException {

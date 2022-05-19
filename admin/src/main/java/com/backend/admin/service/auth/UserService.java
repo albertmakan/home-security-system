@@ -3,6 +3,7 @@ package com.backend.admin.service.auth;
 import java.util.List;
 
 import com.backend.admin.dto.auth.UserRequest;
+import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.model.auth.Role;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
@@ -13,7 +14,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -39,9 +43,18 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public User save(UserRequest userRequest) {
+	public User save(UserRequest userRequest) throws Exception {
 		User u = new User();
 		u.setUsername(userRequest.getUsername());
+
+        //checking password strength
+        String passRegex = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
+        Pattern pattern = Pattern.compile(passRegex);
+        Matcher matcher = pattern.matcher(userRequest.getPassword());
+
+        if (!matcher.matches()){
+            throw new BadRequestException("Password must contain atleast 8 chars, 1 uppercase char, 1 lowercae char, a number, and a special char");
+        }
 		
 		// pre nego sto postavimo lozinku u atribut hesiramo je kako bi se u bazi nalazila hesirana lozinka
 		// treba voditi racuna da se koristi isi password encoder bean koji je postavljen u AUthenticationManager-u kako bi koristili isti algoritam

@@ -1,4 +1,4 @@
-package com.backend.admin.repository;
+package com.backend.admin.repository.auth;
 
 import com.backend.admin.model.User;
 import org.bson.types.ObjectId;

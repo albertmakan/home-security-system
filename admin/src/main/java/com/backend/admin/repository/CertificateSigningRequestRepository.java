@@ -5,7 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.backend.admin.model.CertificateSigningRequest;
 
+import java.util.List;
+
 @Repository
 public interface CertificateSigningRequestRepository extends MongoRepository<CertificateSigningRequest, String> {
-
+    List<CertificateSigningRequest> getAllByVerifiedTrue();
 }

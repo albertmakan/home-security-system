@@ -35,4 +35,5 @@ public class CertificateSigningRequest {
     private Boolean ca;
     private Integer pathLenConstraint;
 
+    private Boolean verified;
 }

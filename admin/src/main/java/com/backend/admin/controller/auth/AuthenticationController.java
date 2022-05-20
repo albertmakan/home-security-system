@@ -6,7 +6,9 @@ import com.backend.admin.dto.auth.JwtAuthenticationRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.dto.auth.UserTokenState;
 import com.backend.admin.exception.ResourceConflictException;
+import com.backend.admin.model.auth.RevokedToken;
 import com.backend.admin.model.auth.User;
+import com.backend.admin.repository.auth.RevokedTokensRepository;
 import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
 
@@ -38,6 +40,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private RevokedTokensRepository revokedTokensRepository;
 
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
@@ -45,10 +50,13 @@ public class AuthenticationController {
     public ResponseEntity<UserTokenState> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
+        System.out.println("HERE////////--------------------");
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
         // AuthenticationException
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword()));
+
+        System.out.println("THERE////////--------------------");
 
         // Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security
         // kontekst
@@ -61,7 +69,8 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         // Kreiraj cookie
-        // String cookie = "__Secure-Fgp=" + fingerprint + "; SameSite=Strict; HttpOnly; Path=/; Secure";  // kasnije mozete probati da postavite i ostale atribute, ali tek nakon sto podesite https
+        // String cookie = "__Secure-Fgp=" + fingerprint + "; SameSite=Strict; HttpOnly; Path=/; Secure";  
+        // kasnije mozete probati da postavite i ostale atribute, ali tek nakon sto podesite https
         String cookie = "Fingerprint=" + fingerprint + "; HttpOnly; Path=/";
 
         HttpHeaders headers = new HttpHeaders();
@@ -85,6 +94,16 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
 
+
+    }
+
+    @PostMapping("/revokeJWT")
+    public void revokeJWT(String token){
+
+        //TODO: test jwt revoking
+        RevokedToken revoked = new RevokedToken();
+        revoked.setToken(token);
+        revokedTokensRepository.save(revoked);
 
     }
 

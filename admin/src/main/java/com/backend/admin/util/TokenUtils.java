@@ -14,12 +14,19 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
-import io.jsonwebtoken.*;
+import com.backend.admin.model.auth.RevokedToken;
+import com.backend.admin.model.auth.User;
+import com.backend.admin.repository.auth.RevokedTokensRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.backend.admin.model.auth.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 // Utility klasa za rad sa JSON Web Tokenima
 @Component
@@ -59,6 +66,8 @@ public class TokenUtils {
 
     private final SecureRandom secureRandom = new SecureRandom();
 
+    @Autowired
+    private RevokedTokensRepository revokedTokensRepository;
 
     // ============= Funkcije za generisanje JWT tokena =============
 
@@ -331,6 +340,13 @@ public class TokenUtils {
         User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
+
+        //Ovde provera da li je token na bleklisti (lista povucenih tokena)
+        RevokedToken optionalToken = revokedTokensRepository.findByToken(token);
+        if (optionalToken != null){
+            //found blacklisted token
+            return false; //TODO throw custom exception
+        }
 
         // Token je validan kada:
         boolean isUsernameValid = username != null // korisnicko ime nije null

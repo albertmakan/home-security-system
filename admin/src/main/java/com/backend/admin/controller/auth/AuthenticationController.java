@@ -12,6 +12,7 @@ import com.backend.admin.repository.auth.RevokedTokensRepository;
 import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,13 +53,11 @@ public class AuthenticationController {
     public ResponseEntity<UserTokenState> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
-        System.out.println("HERE////////--------------------");
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
         // AuthenticationException
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 authenticationRequest.getUsername(), authenticationRequest.getPassword()));
 
-        System.out.println("THERE////////--------------------");
 
         // Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security
         // kontekst
@@ -98,13 +99,20 @@ public class AuthenticationController {
     }
 
     @PostMapping("/revokeJWT")
-    public void revokeJWT(String token){
+    public ResponseEntity<Void> revokeJWT(@RequestBody String token){
 
-        //TODO: test jwt revoking
         RevokedToken revoked = new RevokedToken();
         revoked.setToken(token);
         revokedTokensRepository.save(revoked);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
+
+    @GetMapping("/whoami")
+    public ResponseEntity<User> whoami(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+
 
 }

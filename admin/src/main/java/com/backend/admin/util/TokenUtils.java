@@ -345,6 +345,7 @@ public class TokenUtils {
         RevokedToken optionalToken = revokedTokensRepository.findByToken(token);
         if (optionalToken != null){
             //found blacklisted token
+            System.out.println("REVOKED TOKEN!!!------------------------------");
             return false; //TODO throw custom exception
         }
 

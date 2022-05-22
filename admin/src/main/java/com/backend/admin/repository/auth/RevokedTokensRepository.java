@@ -1,8 +1,9 @@
 package com.backend.admin.repository.auth;
 
-import java.util.List;
+import java.util.Optional;
 
 import com.backend.admin.model.auth.RevokedToken;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RevokedTokensRepository extends MongoRepository<RevokedToken, ObjectId> {
 
-    RevokedToken findByToken(String token); //TODO change to List<> ?
+    Optional<RevokedToken> findByToken(String token);
 }
 

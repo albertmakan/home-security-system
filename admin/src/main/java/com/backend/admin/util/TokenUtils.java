@@ -342,8 +342,8 @@ public class TokenUtils {
         final Date created = getIssuedAtDateFromToken(token);
 
         //Ovde provera da li je token na bleklisti (lista povucenih tokena)
-        RevokedToken optionalToken = revokedTokensRepository.findByToken(token);
-        if (optionalToken != null){
+        Optional<RevokedToken> optionalToken = revokedTokensRepository.findByToken(token);
+        if (optionalToken.isPresent()){
             //found blacklisted token
             System.out.println("REVOKED TOKEN!!!------------------------------");
             return false; //TODO throw custom exception

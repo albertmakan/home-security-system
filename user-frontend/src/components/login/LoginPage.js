@@ -26,10 +26,14 @@ const LoginPage = () => {
             if (response.data) {
                 toastSuccessMessage("Login successful");
                 sessionStorage.setItem("token", response.data.accessToken)
+                console.log(response.data)
                 //history.push("/");
                 AuthService.whoAmI().then((resp)=>{
-                    console.log(resp.data);
+                    console.log(resp);
                 })
+
+                //history.push("/");
+
             }
 
         }).catch(err => toastErrorMessage("Incorrect username or password."));

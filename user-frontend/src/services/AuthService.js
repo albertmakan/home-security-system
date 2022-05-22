@@ -18,6 +18,13 @@ class AuthService {
             method: "GET",
         })
     }
+
+    revokeToken() {
+        return httpClient({
+            url: "auth/revokeJWT",
+            method: "POST",
+        })
+    }
 }
 
 export default new AuthService();

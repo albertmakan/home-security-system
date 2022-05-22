@@ -28,6 +28,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -158,7 +159,10 @@ public class AuthenticationController {
     }
 
     @GetMapping("/whoami")
-    public ResponseEntity<User> whoami(@AuthenticationPrincipal User user) {
+    public ResponseEntity<UserDetails> whoami(@AuthenticationPrincipal UserDetails user, @RequestHeader HttpHeaders headers) {
+        System.out.println(headers.getFirst(HttpHeaders.AUTHORIZATION));
+
+        // System.out.println(user.getUsername());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

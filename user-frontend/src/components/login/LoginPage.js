@@ -24,10 +24,12 @@ const LoginPage = () => {
     const onSubmit = (values) => {
         AuthService.login(values).then((response) => {
             if (response.data) {
-                console.log("Login successful");
-                console.log(response.data);
+                toastSuccessMessage("Login successful");
                 sessionStorage.setItem("token", response.data.accessToken)
                 //history.push("/");
+                AuthService.whoAmI().then((resp)=>{
+                    console.log(resp.data);
+                })
             }
 
         }).catch(err => toastErrorMessage("Incorrect username or password."));
@@ -47,7 +49,7 @@ const LoginPage = () => {
 
     return (
         <Container>
-            <h2 className="mt-5">Login Page</h2>
+            <h2 className="mt-5">Login Page Password1#</h2>
             <Form onSubmit={formik.handleSubmit}>
                 <Row className="mb-3 mt-5">
                     <Form.Group as={Col} md="4" className="offset-2">

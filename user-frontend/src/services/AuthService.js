@@ -11,6 +11,13 @@ class AuthService {
             data: { username: username, password: password },
         })
     }
+
+    whoAmI() {
+        return httpClient({
+            url: "auth/whoami",
+            method: "GET",
+        })
+    }
 }
 
 export default new AuthService();

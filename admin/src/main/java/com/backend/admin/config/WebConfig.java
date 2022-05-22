@@ -19,7 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Authorization")
                 .allowCredentials(true);
 
-        registry.addMapping("/**")
-        .allowedOrigins("http://localhost:3000");
+
     }
 }

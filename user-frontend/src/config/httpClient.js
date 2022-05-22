@@ -4,10 +4,11 @@ import config from '../config/config';
 // import errorHandler from "./errorHandler";
 
 const httpClient = axios.create({
-  baseURL: config.apiHost + config.apiUrlPrefix,
-  headers: {
-    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-  },
+    withCredentials: true,
+    baseURL: config.apiHost + config.apiUrlPrefix,
+    headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+    },
 });
 
 // httpClient.interceptors.response.use(

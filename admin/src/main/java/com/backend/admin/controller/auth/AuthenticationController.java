@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import com.backend.admin.dto.auth.JwtAuthenticationRequest;
 import com.backend.admin.dto.auth.UserRequest;
@@ -145,7 +146,7 @@ public class AuthenticationController {
 
     // remove later this method from auth controller
     @PostMapping("/register")
-    public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(userService.create(userRequest), HttpStatus.CREATED);
     }
 }

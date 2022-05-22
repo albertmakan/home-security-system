@@ -337,6 +337,7 @@ public class TokenUtils {
      * @return Informacija da li je token validan ili ne.
      */
     public Boolean validateToken(String token, UserDetails userDetails, String fingerprint) {
+
         User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
@@ -345,8 +346,8 @@ public class TokenUtils {
         Optional<RevokedToken> optionalToken = revokedTokensRepository.findByToken(token);
         if (optionalToken.isPresent()){
             //found blacklisted token
-            System.out.println("REVOKED TOKEN!!!------------------------------");
-            return false; //TODO throw custom exception
+            System.out.println("THIS TOKEN HAS BEEN REVOKED!!!------------------------------");
+            return false; //TODO throw custom exception?
         }
 
         // Token je validan kada:

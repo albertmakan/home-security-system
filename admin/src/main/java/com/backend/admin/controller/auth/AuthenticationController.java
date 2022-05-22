@@ -29,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -142,8 +143,10 @@ public class AuthenticationController {
     }
 
     @PostMapping("/revokeJWT")
-    public ResponseEntity<Void> revokeJWT(@RequestBody String token){
+    public ResponseEntity<Void> revokeJWT(@RequestHeader HttpHeaders headers){
 
+        String token = headers.getFirst(HttpHeaders.AUTHORIZATION).split(" ")[1];
+        System.out.println("Revoking token: " + token);
         RevokedToken revoked = new RevokedToken();
         revoked.setToken(token);
         revokedTokensRepository.save(revoked);

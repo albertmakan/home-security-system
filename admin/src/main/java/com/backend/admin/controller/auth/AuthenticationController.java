@@ -3,6 +3,7 @@ package com.backend.admin.controller.auth;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.backend.admin.dto.auth.JwtAuthenticationRequest;
@@ -56,8 +57,7 @@ public class AuthenticationController {
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
     @PostMapping("/login")
-    public ResponseEntity<UserTokenState> createAuthenticationToken(
-            @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
+    public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
 
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
         // AuthenticationException
@@ -127,34 +127,15 @@ public class AuthenticationController {
         return ResponseEntity.ok().headers(headers).body(new UserTokenState(jwt, expiresIn));
     }
 
-    // Endpoint za registraciju novog korisnika
-    @PostMapping("/signup")
-    public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest, UriComponentsBuilder ucBuilder) throws Exception {
-
-        Optional<User> optionalUser = this.userService.findByUsername(userRequest.getUsername());
-
-        if (optionalUser.isPresent()) {
-            throw new ResourceConflictException(userRequest.getId(), "Username already exists");
-        }
-
-        User user = this.userService.save(userRequest);
-
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-
-
-    }
-
     @PostMapping("/revokeJWT")
-    public ResponseEntity<Void> revokeJWT(@RequestHeader HttpHeaders headers){
-
-        String token = headers.getFirst(HttpHeaders.AUTHORIZATION).split(" ")[1];
+    public ResponseEntity<Void> revokeJWT(HttpServletRequest request){
+        String token = tokenUtils.getToken(request);
         System.out.println("Revoking token: " + token);
         RevokedToken revoked = new RevokedToken();
         revoked.setToken(token);
         revoked.setDate(new Date());
         revokedTokensRepository.save(revoked);
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
     @GetMapping("/whoami")
@@ -162,6 +143,9 @@ public class AuthenticationController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-
-
+    // remove later this method from auth controller
+    @PostMapping("/register")
+    public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest) {
+        return new ResponseEntity<>(userService.create(userRequest), HttpStatus.CREATED);
+    }
 }

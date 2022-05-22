@@ -1,0 +1,18 @@
+[{
+  "name": "ROLE_ADMIN",
+  "privileges": [
+    { "name": "READ_USERS" }
+  ]
+},
+{
+  "name": "ROLE_OWNER",
+  "privileges": [
+    { "name": "READ_USERS" }
+  ]
+},
+{
+  "name": "ROLE_TENANT",
+  "privileges": [
+    { "name": "READ_USERS" }
+  ]
+}]

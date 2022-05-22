@@ -8,6 +8,7 @@ import CreateCSR from './components/csr/CreateCSR';
 import CSRList from './components/csr/CSRList';
 import CertificateList from './components/certificate/CertificateList';
 import VerifyCSR from './components/csr/VerifyCSR';
+import LoginPage from './components/login/LoginPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/admin/csr" element={<CSRList />} />
         <Route path="/admin/certificates" element={<CertificateList />} />
         <Route path="/verify-csr/:id" element={<VerifyCSR />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
       <ToastContainer />
     </div>

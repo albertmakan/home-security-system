@@ -2,6 +2,7 @@ package com.backend.admin.service.auth;
 
 import java.util.Optional;
 
+import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
 
@@ -22,10 +23,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 	// Funkcija koja na osnovu username-a iz baze vraca objekat User-a
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) throws BadRequestException {
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isEmpty()) {
-			throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+			throw new BadRequestException(String.format("No user found with username '%s'.", username));
 		} else {
 			return optionalUser.get();
 		}

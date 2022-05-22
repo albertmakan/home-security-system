@@ -1,5 +1,7 @@
 package com.backend.admin.model.auth;
 
+import java.util.Date;
+
 import javax.persistence.Id;
 
 import org.bson.types.ObjectId;
@@ -17,6 +19,7 @@ public class RevokedToken {
     @Id
     private ObjectId id;
     private String token;
+    private Date date;
 
 
 }

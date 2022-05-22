@@ -1,5 +1,6 @@
 package com.backend.admin.controller.auth;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -7,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.backend.admin.dto.auth.JwtAuthenticationRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.dto.auth.UserTokenState;
+import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.BlockedUserException;
 import com.backend.admin.exception.ResourceConflictException;
 import com.backend.admin.model.auth.RevokedToken;
@@ -55,7 +57,7 @@ public class AuthenticationController {
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(
-            @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception {
+            @RequestBody JwtAuthenticationRequest authenticationRequest, HttpServletResponse response) {
 
         // Ukoliko kredencijali nisu ispravni, logovanje nece biti uspesno, desice se
         // AuthenticationException
@@ -65,7 +67,7 @@ public class AuthenticationController {
         //checking if user is blocked first
         if (optionalUser.isPresent()){
             if (optionalUser.get().isBlocked()){
-                throw new BlockedUserException("User is blocked!!! Can't login!");
+                throw new BlockedUserException("User is blocked! Can't login!");
             } 
         }
 
@@ -93,7 +95,7 @@ public class AuthenticationController {
                 userService.save(u);
 
             }
-            return null;
+            throw new BadRequestException("Authentication failed!");
 
         }
         
@@ -149,6 +151,7 @@ public class AuthenticationController {
         System.out.println("Revoking token: " + token);
         RevokedToken revoked = new RevokedToken();
         revoked.setToken(token);
+        revoked.setDate(new Date());
         revokedTokensRepository.save(revoked);
         return new ResponseEntity<>(HttpStatus.OK);
 

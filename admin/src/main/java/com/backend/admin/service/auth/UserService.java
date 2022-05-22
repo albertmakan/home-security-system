@@ -1,6 +1,9 @@
 package com.backend.admin.service.auth;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.exception.BadRequestException;
@@ -15,9 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 @Service
 public class UserService {
 
@@ -30,7 +30,7 @@ public class UserService {
 	@Autowired
 	private RoleService roleService;
 
-	public User findByUsername(String username) throws UsernameNotFoundException {
+	public Optional<User> findByUsername(String username) throws UsernameNotFoundException {
 		return userRepository.findByUsername(username);
 	}
 
@@ -41,6 +41,10 @@ public class UserService {
 	public List<User> findAll() throws AccessDeniedException {
 		return userRepository.findAll();
 	}
+
+    public User save(User user){
+        return userRepository.save(user);
+    }
 
 	public User save(UserRequest userRequest) throws Exception {
 		User u = new User();

@@ -61,6 +61,20 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private List<Role> roles;
 
+    @Column(name = "blocked")
+    private boolean blocked = false;
+
+    @Column(name = "loginAttempts")
+    private int loginAttempts = 0;
+
+    public int getLoginAttempts() {
+        return loginAttempts;
+    }
+
+    public void setLoginAttempts(int attempts) {
+        this.loginAttempts = attempts;
+    }
+
     public ObjectId getId() {
         return id;
     }
@@ -136,6 +150,14 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean b) {
+        this.blocked = b;
     }
 
     public Date getLastPasswordResetDate() {

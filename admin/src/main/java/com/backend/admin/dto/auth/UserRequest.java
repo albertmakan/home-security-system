@@ -2,6 +2,7 @@ package com.backend.admin.dto.auth;
 
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -19,7 +20,7 @@ public class UserRequest {
 	private String firstName;
 	@NotBlank
 	private String lastName;
-	@NotBlank
+	@Email
 	private String email;
 	@NotEmpty
 	private List<String> roles;

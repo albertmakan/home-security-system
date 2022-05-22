@@ -25,6 +25,13 @@ class CSRService {
       url: `${API_URL}/generate-certificate`,
     });
   }
+
+  verify(id) {
+    return axios({
+      method: 'PUT',
+      url: `${API_URL}/verify/${id}`,
+    });
+  }
 }
 
 export default new CSRService();

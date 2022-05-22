@@ -33,8 +33,7 @@ public class EmailService {
         quickService.submit(() -> javaMailSender.send(email));
     }
 
-    public void sendMailWithAttachment(String to, String subject, String body, String fileToAttach)
-    {
+    public void sendMailWithAttachment(String to, String subject, String body, String fileToAttach) {
         MimeMessagePreparator preparator = mimeMessage -> {
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, "UTF-8");
             message.setTo(new InternetAddress(to));
@@ -44,8 +43,21 @@ public class EmailService {
         };
         try {
             javaMailSender.send(preparator);
+        } catch (MailException ex) {
+            System.err.println(ex.getMessage());
         }
-        catch (MailException ex) {
+    }
+
+    public void sendMailWithHTML(String to, String subject, String body) {
+        MimeMessagePreparator preparator = mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, false, "UTF-8");
+            message.setTo(new InternetAddress(to));
+            message.setSubject(subject);
+            message.setText(body, true);
+        };
+        try {
+            javaMailSender.send(preparator);
+        } catch (MailException ex) {
             System.err.println(ex.getMessage());
         }
     }

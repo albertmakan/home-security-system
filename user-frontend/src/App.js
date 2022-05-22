@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import CreateCSR from './components/csr/CreateCSR';
 import CSRList from './components/csr/CSRList';
 import CertificateList from './components/certificate/CertificateList';
+import VerifyCSR from './components/csr/VerifyCSR';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="*" element={<CreateCSR />} />
         <Route path="/admin/csr" element={<CSRList />} />
         <Route path="/admin/certificates" element={<CertificateList />} />
+        <Route path="/verify-csr/:id" element={<VerifyCSR />} />
       </Routes>
       <ToastContainer />
     </div>

@@ -50,6 +50,7 @@ public class User implements UserDetails {
     private boolean blocked = false;
 
     private int loginAttempts = 0;
+    private Date lastLoginAttemptDate;
 
     @JsonIgnore
     @Override

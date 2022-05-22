@@ -1,5 +1,6 @@
 package com.backend.admin.controller;
 
+import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.service.auth.UserService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -21,10 +23,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> addUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(userService.create(userRequest), HttpStatus.CREATED);
     }
 
+    @PostMapping("/change-role")
+    public ResponseEntity<User> changeRole(@Valid @RequestBody ChangeRoleRequest changeRoleRequest) {
+        return new ResponseEntity<>(userService.changeRole(changeRoleRequest), HttpStatus.OK);
+    }
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('READ_USERS')")

@@ -4,9 +4,16 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import ChangeRoleModal from '../../modals/ChangeRoleModal';
 
-const User = ({ user }) => {
+const User = ({ user, onChangeRole }) => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   let roles = user.roles.map((role) => role.name);
+
   return (
     <Card as={Col} md="2" className="mb-2">
       <Card.Body>
@@ -28,8 +35,11 @@ const User = ({ user }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="danger">Remove</Button>
+        <Button variant="primary" onClick={handleShow}>
+          Change role
+        </Button>
       </Card.Body>
+      <ChangeRoleModal show={show} onClose={handleClose} onChangeRole={onChangeRole} user={user} />
     </Card>
   );
 };

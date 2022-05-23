@@ -7,6 +7,13 @@ class UserService {
       method: 'GET',
     });
   }
+  changeRole(changeRequest) {
+    return httpClient({
+      url: '/users/change-role',
+      method: 'POST',
+      data: changeRequest,
+    });
+  }
 }
 
 export default new UserService();

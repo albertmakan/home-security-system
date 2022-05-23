@@ -17,6 +17,22 @@ const UserList = () => {
       })
       .catch((err) => {});
   }, []);
+
+  const handleChangeRole = (changeRequest) => {
+    UserService.changeRole(changeRequest)
+      .then((response) => {
+        getUsers();
+      })
+      .catch((err) => {});
+  };
+
+  const getUsers = () => {
+    UserService.getAll()
+      .then((response) => {
+        setUsers(response);
+      })
+      .catch((err) => {});
+  };
   return (
     <div>
       {users.length === 0 ? (
@@ -24,7 +40,7 @@ const UserList = () => {
       ) : (
         <Row>
           {users.map((user, index) => (
-            <User key={index} user={user} />
+            <User key={index} user={user} onChangeRole={handleChangeRole} />
           ))}
         </Row>
       )}

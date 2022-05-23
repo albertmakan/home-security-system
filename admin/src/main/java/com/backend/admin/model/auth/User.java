@@ -1,6 +1,7 @@
 package com.backend.admin.model.auth;
 
 import java.sql.Timestamp;
+
 import java.util.*;
 
 import javax.persistence.Column;
@@ -22,11 +23,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 @Data
 @Document
 public class User implements UserDetails {
-    @Id
+    @Id @JsonSerialize(using= ToStringSerializer.class)
     private ObjectId id;
 
     private String username;

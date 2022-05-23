@@ -1,5 +1,9 @@
 package com.backend.admin.config;
 
+import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
+import com.backend.admin.security.auth.TokenAuthenticationFilter;
+import com.backend.admin.service.auth.UserService;
+import com.backend.admin.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
-import com.backend.admin.security.auth.TokenAuthenticationFilter;
-import com.backend.admin.service.auth.CustomUserDetailsService;
-import com.backend.admin.service.auth.UserService;
-import com.backend.admin.util.TokenUtils;
 
 
 @Configuration
@@ -111,7 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	// Definisanje konfiguracije koja utice na generalnu bezbednost aplikacije
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		// Autentifikacija ce biti ignorisana ispod navedenih putanja (kako bismo ubrzali pristup resursima)
 		// Zahtevi koji se mecuju za web.ignoring().antMatchers() nemaju pristup SecurityContext-u
 		

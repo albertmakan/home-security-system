@@ -10,3 +10,7 @@ class UserService {
 }
 
 export default new UserService();
+
+export const register = (regForm) => {
+  return Promise.resolve(httpClient.post(`/users/register`, regForm));
+};

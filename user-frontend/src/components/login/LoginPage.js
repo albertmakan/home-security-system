@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -13,6 +14,7 @@ import AuthService from '../../services/AuthService';
 
 import { toastSuccessMessage, toastErrorMessage } from '../../toast/toastMessages';
 
+
 const validationSchema = Yup.object({
     username: Yup.string().required('Required'),
     password: Yup.string().required('Required')
@@ -20,6 +22,7 @@ const validationSchema = Yup.object({
 
 const LoginPage = () => {
     useEffect(() => { }, []);
+    const navigate = useNavigate();
 
     const onSubmit = (values) => {
         AuthService.login(values).then((response) => {
@@ -27,16 +30,15 @@ const LoginPage = () => {
                 toastSuccessMessage("Login successful");
                 sessionStorage.setItem("token", response.data.accessToken)
                 console.log(response.data)
-                //history.push("/");
-                AuthService.whoAmI().then((resp)=>{
-                    console.log(resp);
-                })
-
-                //history.push("/");
+                navigate("/home");
 
             }
 
-        }).catch(err => toastErrorMessage("Incorrect username or password."));
+        }).catch(err => {
+            toastErrorMessage("Incorrect username or password.");
+            console.log(err)
+         }
+    );
     };
 
     const formik = useFormik({

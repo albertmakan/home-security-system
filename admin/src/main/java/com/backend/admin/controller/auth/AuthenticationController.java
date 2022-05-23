@@ -80,7 +80,6 @@ public class AuthenticationController {
         }
         
         catch (AuthenticationException ex){
-            System.out.println("auth failed");
 
             //failed login
             if (optionalUser.isPresent()){
@@ -104,12 +103,10 @@ public class AuthenticationController {
 
         // Ukoliko je autentifikacija uspesna, ubaci korisnika u trenutni security
         // kontekst
-        System.out.println(authentication.getName());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Kreiraj token za tog korisnika
         User user = (User) authentication.getPrincipal();
-        System.out.println("loggin in: " + user.getUsername());
         String fingerprint = tokenUtils.generateFingerprint();
         String jwt = tokenUtils.generateToken(user.getUsername(), fingerprint);
         int expiresIn = tokenUtils.getExpiredIn();
@@ -164,7 +161,6 @@ public class AuthenticationController {
     @GetMapping("/whoami")
     public ResponseEntity<UserDetails> whoami(@AuthenticationPrincipal UserDetails user) {
 
-        System.out.println(user);
         return new ResponseEntity<UserDetails>(user, HttpStatus.OK);
     }
 

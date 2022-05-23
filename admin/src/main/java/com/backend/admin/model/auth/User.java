@@ -30,7 +30,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 @Data
 @Document
 public class User implements UserDetails {
-    @Id @JsonSerialize(using= ToStringSerializer.class)
+    @Id
+    @JsonSerialize(using=ToStringSerializer.class)
     private ObjectId id;
 
     private String username;

@@ -11,7 +11,6 @@ import CSRList from './components/csr/CSRList';
 import CertificateList from './components/certificate/CertificateList';
 import VerifyCSR from './components/csr/VerifyCSR';
 import LoginPage from './components/login/LoginPage';
-import UserHome from './components/UserHome/UserHome';
 import Register from './components/registration/Register';
 import NavBar from './components/navbar/NavBar';
 import Home from './components/Home/Home';

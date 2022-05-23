@@ -1,66 +1,27 @@
 package com.backend.admin.dto.auth;
 
-// DTO koji preuzima podatke iz HTML forme za registraciju
+import lombok.Data;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import java.util.List;
+
+@Data
 public class UserRequest {
-
-	private Long id;
-
+	@NotBlank
 	private String username;
-
+	@Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}",
+	message = "Password must contain at least 8 chars, " +
+			"1 uppercase char, 1 lowercase char, a number, and a special char")
 	private String password;
-
-	private String firstname;
-
-	private String lastname;
-	
+	@NotBlank
+	private String firstName;
+	@NotBlank
+	private String lastName;
+	@Email
 	private String email;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getFirstname() {
-		return firstname;
-	}
-
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-	public String getLastname() {
-		return lastname;
-	}
-
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
+	@NotEmpty
+	private List<String> roles;
 }

@@ -28,6 +28,7 @@ public class UserController {
     }
 
     @PostMapping("/change-role")
+    @PreAuthorize("hasAuthority('CHANGE_ROLE')")
     public ResponseEntity<User> changeRole(@Valid @RequestBody ChangeRoleRequest changeRoleRequest) {
         return new ResponseEntity<>(userService.changeRole(changeRoleRequest), HttpStatus.OK);
     }

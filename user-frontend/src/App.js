@@ -10,6 +10,7 @@ import CertificateList from './components/certificate/CertificateList';
 import VerifyCSR from './components/csr/VerifyCSR';
 import LoginPage from './components/login/LoginPage';
 import UserHome from './components/UserHome/UserHome';
+import Register from './components/registration/Register';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<UserHome />} />
 
+        <Route path="/register" element={<Register />} />
       </Routes>
       <ToastContainer />
     </div>

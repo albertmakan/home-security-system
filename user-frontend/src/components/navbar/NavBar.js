@@ -49,6 +49,11 @@ const NavBar = () => {
                 Certificates
               </NavLink>
             )}
+            {user.ROLE === 'ROLE_ADMIN' && (
+              <NavLink className="nav-link" to="/admin/users">
+                Users
+              </NavLink>
+            )}
             {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
               <NavDropdown title="Account" id="basic-nav-dropdown">
                 <NavDropdown.Item as={Link} to="/login" onClick={handleRevokeToken}>

@@ -8,6 +8,9 @@ import Button from 'react-bootstrap/Button';
 import { NavLink, useNavigate } from 'react-router-dom';
 import tokenUtils from '../../utils/TokenUtils';
 
+import AuthService from '../../services/AuthService';
+import { toastSuccessMessage, toastErrorMessage } from '../../toast/toastMessages';
+
 const NavBar = () => {
   const [user, setUser] = useState({ ROLE: 'NONE' });
   const navigate = useNavigate();
@@ -15,6 +18,13 @@ const NavBar = () => {
   useEffect(() => {
     setUser(tokenUtils.getUser());
   }, []);
+
+  const handleRevokeToken = () => {
+    AuthService.revokeToken().then((response) => {
+      toastSuccessMessage('Token successfully revoked. Redirecting to login page...');
+      AuthService.logout();
+    });
+  };
 
   return (
     <Navbar bg="light" expand="lg">
@@ -28,8 +38,8 @@ const NavBar = () => {
                 Create CSR
               </NavLink>
             )}
-            {user.ROLE === 'ROLE_ADMIN' && (
-              <NavLink className="nav-link" to="/admin/revoke">
+            {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+              <NavLink className="nav-link" to="/login" onClick={handleRevokeToken}>
                 Revoke token
               </NavLink>
             )}
@@ -57,15 +67,7 @@ const NavBar = () => {
           </Button>
         )}
         {user.ROLE !== 'NONE' && (
-          <Button
-            variant="success"
-            type="submit"
-            className="mx-1"
-            onClick={() => {
-              sessionStorage.clear();
-              window.location.replace('/home');
-            }}
-          >
+          <Button variant="success" type="submit" className="mx-1" onClick={AuthService.logout}>
             Log out
           </Button>
         )}

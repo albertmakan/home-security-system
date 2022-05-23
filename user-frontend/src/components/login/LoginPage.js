@@ -53,9 +53,9 @@ const LoginPage = () => {
 
   return (
     <Container>
-      <h2 className="mt-5">Login Page Password1#</h2>
+      <h2 className="mt-4">Home Security System - Login Page</h2>
       <Form onSubmit={formik.handleSubmit}>
-        <Form.Group as={Col} md="4" className="offset-4 mt-3">
+        <Form.Group as={Col} md="4" className="offset-4 mt-4">
           <Form.Label>Username:</Form.Label>
           <Form.Control
             id="username"

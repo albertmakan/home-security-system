@@ -1,6 +1,7 @@
 package com.backend.admin.util;
 
 import java.nio.charset.StandardCharsets;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 
 import com.backend.admin.model.auth.RevokedToken;
+import com.backend.admin.model.auth.Role;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.RevokedTokensRepository;
 
@@ -75,10 +77,14 @@ public class TokenUtils {
      * Funkcija za generisanje JWT tokena.
      *
      * @param username Korisničko ime korisnika kojem se token izdaje
+     * @param authentication 
      * @return JWT token
      */
-    public String generateToken(String username, String fingerprint) {
+    public String generateToken(String username, String fingerprint, User user) {
         // moguce je postavljanje proizvoljnih podataka u telo JWT tokena pozivom funkcije .claim("key", value), npr. .claim("role", user.getRole())
+        String roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(","));
 
         // Kreiranje tokena sa fingerprint-om
         String fingerprintHash = generateFingerprintHash(fingerprint);
@@ -89,6 +95,7 @@ public class TokenUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .claim("userFingerprint", fingerprintHash)
+                .claim("ROLE", roles)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
                 .compact();
     }

@@ -12,6 +12,10 @@ class AuthService {
         })
     }
 
+    logout() {
+        sessionStorage.removeItem('token');
+    }
+
     whoAmI() {
         return httpClient({
             url: "auth/whoami",
@@ -26,6 +30,9 @@ class AuthService {
         return httpClient({
             url: "auth/revokeJWT",
             method: "POST",
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
         })
     }
 }

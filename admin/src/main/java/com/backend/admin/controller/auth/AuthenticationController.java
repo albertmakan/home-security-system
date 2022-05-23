@@ -54,12 +54,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
-        User user = userService.findByUsername(authenticationRequest.getUsername())
-                .orElseThrow(() -> new BadRequestException("Authentication failed!"));
+        User user = userService.findByUsername(authenticationRequest.getUsername()).orElse(null);
+        if (user == null)
+            return ResponseEntity.badRequest().body(new UserTokenState("Authentication failed!", 0));
 
         if (user.isBlocked()) {
             if (user.getLastLoginAttemptDate().after(new Date(new Date().getTime()-900000)))
-                throw new BlockedUserException("User is blocked! Can't login!");
+                return ResponseEntity.badRequest().body(new UserTokenState("User is blocked! Can't login!", 0));
             else user.setBlocked(false);
         }
 
@@ -76,7 +77,7 @@ public class AuthenticationController {
                 user.setBlocked(true);
             }
             userService.save(user);
-            throw new BadRequestException("Authentication failed!");
+            return ResponseEntity.badRequest().body(new UserTokenState("Authentication failed!", 0));
         }
         user.setLoginAttempts(0);
         userService.save(user);
@@ -112,7 +113,7 @@ public class AuthenticationController {
     @GetMapping("/whoami")
     public ResponseEntity<UserDetails> whoami(@AuthenticationPrincipal UserDetails user) {
 
-        return new ResponseEntity<UserDetails>(user, HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     // remove later this method from auth controller

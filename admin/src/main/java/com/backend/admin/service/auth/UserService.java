@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
 				"Your username: "+u.getUsername()+"\nYour password: "+generatedPassword
 		);
 
-		return userRepository.save(u);
+		return u;
 	}
 
 	public User changeRole(ChangeRoleRequest changeRoleRequest) {

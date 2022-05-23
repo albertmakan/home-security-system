@@ -6,8 +6,11 @@ const errorHandler = (errorResponse) => {
     return;
   }
   let message = errorResponse.data;
+  console.log(message);
   if (errorResponse.data.message) {
     message = errorResponse.data.message;
+  } else if (errorResponse.data.accessToken) {
+    message = errorResponse.data.accessToken;
   }
   switch (errorResponse.status) {
     case 400:

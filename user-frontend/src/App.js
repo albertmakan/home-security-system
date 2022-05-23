@@ -12,6 +12,7 @@ import CertificateList from './components/certificate/CertificateList';
 import VerifyCSR from './components/csr/VerifyCSR';
 import LoginPage from './components/login/LoginPage';
 import UserHome from './components/UserHome/UserHome';
+import Register from './components/registration/Register';
 import NavBar from './components/navbar/NavBar';
 import Home from './components/Home/Home';
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="*" element={<Home />} />
         {user.ROLE === 'NONE' && <Route path="/user/csr" element={<CreateCSR />} />}
         {user.ROLE === 'ROLE_ADMIN' && <Route path="/admin/csr" element={<CSRList />} />}
+        {user.ROLE === 'ROLE_ADMIN' && <Route path="/register" element={<Register />} />}
         {user.ROLE === 'ROLE_ADMIN' && (
           <Route path="/admin/certificates" element={<CertificateList />} />
         )}

@@ -4,16 +4,14 @@ import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.NotFoundException;
-import com.backend.admin.exception.ResourceConflictException;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
+import com.backend.admin.service.EmailService;
+import com.backend.admin.util.PasswordGenerator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +31,9 @@ public class UserService implements UserDetailsService {
 	@Autowired
 	private RoleService roleService;
 
+	@Autowired
+	private EmailService emailService;
+
 	public Optional<User> findByUsername(String username) {
 		return userRepository.findByUsername(username);
 	}
@@ -45,26 +46,33 @@ public class UserService implements UserDetailsService {
 		return userRepository.findAll();
 	}
 
-    public User save(User user){
+    public User save(User user) {
         return userRepository.save(user);
     }
 
 	public User create(UserRequest userRequest) {
-		if (findByUsername(userRequest.getUsername()).isPresent())
-			throw new ResourceConflictException(userRequest.getUsername(), "Username already exists");
+		String generatedUsername;
+		do {
+			generatedUsername = generateUsername(userRequest);
+		} while (findByUsername(generatedUsername).isPresent());
+		String generatedPassword = PasswordGenerator.generatePassword(8);
 
 		User u = new User();
-		u.setUsername(userRequest.getUsername());
-		u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+		u.setUsername(generatedUsername);
+		u.setPassword(passwordEncoder.encode(generatedPassword));
 		u.setFirstName(userRequest.getFirstName());
 		u.setLastName(userRequest.getLastName());
 		u.setEmail(userRequest.getEmail());
 		u.setEnabled(true);
-
 		u.setRoles(new ArrayList<>());
 
 		for (String roleName : userRequest.getRoles())
 			u.getRoles().addAll(roleService.findByName(roleName));
+
+		u = userRepository.save(u);
+		emailService.sendEmail(u.getEmail(), "Smart home registration",
+				"Your username: "+u.getUsername()+"\nYour password: "+generatedPassword
+		);
 
 		return userRepository.save(u);
 	}
@@ -86,8 +94,14 @@ public class UserService implements UserDetailsService {
 		if (optionalUser.isEmpty()) {
 			throw new BadRequestException(String.format("No user found with username '%s'.", username));
 		} else {
-			return (UserDetails) optionalUser.get();
+			return optionalUser.get();
 		}
+	}
+
+	private String generateUsername(UserRequest user) {
+		return user.getFirstName().replace(" ", "") + '.' +
+				user.getLastName().replace(" ", "") +
+				PasswordGenerator.generateNumberSequence(4);
 	}
 
 }

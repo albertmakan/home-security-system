@@ -13,7 +13,7 @@ const UserList = () => {
   useEffect(() => {
     UserService.getAll()
       .then((response) => {
-        setUsers(response.data);
+        setUsers(response);
       })
       .catch((err) => {});
   }, []);

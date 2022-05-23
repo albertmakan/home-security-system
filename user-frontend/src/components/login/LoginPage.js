@@ -26,10 +26,10 @@ const LoginPage = () => {
   const onSubmit = (values) => {
     AuthService.login(values)
       .then((response) => {
-        if (response.data) {
+        if (response) {
           toastSuccessMessage('Login successful');
-          sessionStorage.setItem('token', response.data.accessToken);
-          console.log(response.data);
+          sessionStorage.setItem('token', response.accessToken);
+          console.log(response);
           window.location.replace('/home');
         }
       })

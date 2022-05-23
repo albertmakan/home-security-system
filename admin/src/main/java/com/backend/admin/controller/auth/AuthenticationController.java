@@ -84,7 +84,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String fingerprint = tokenUtils.generateFingerprint();
-        String jwt = tokenUtils.generateToken(user.getUsername(), fingerprint);
+        String jwt = tokenUtils.generateToken(user.getUsername(), fingerprint, user);
         int expiresIn = tokenUtils.getExpiredIn();
 
         // Kreiraj cookie

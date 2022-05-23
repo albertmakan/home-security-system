@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
 import tokenUtils from '../../utils/TokenUtils';
 
 import AuthService from '../../services/AuthService';
@@ -38,12 +39,6 @@ const NavBar = () => {
                 Create CSR
               </NavLink>
             )}
-            {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
-              <NavLink className="nav-link" to="/login" onClick={handleRevokeToken}>
-                Revoke token
-              </NavLink>
-            )}
-
             {user.ROLE === 'ROLE_ADMIN' && (
               <NavLink className="nav-link" to="/admin/csr">
                 Requests
@@ -53,6 +48,13 @@ const NavBar = () => {
               <NavLink className="nav-link" to="/admin/certificates">
                 Certificates
               </NavLink>
+            )}
+            {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+              <NavDropdown title="Account" id="basic-nav-dropdown">
+                <NavDropdown.Item as={Link} to="/login" onClick={handleRevokeToken}>
+                  Revoke token
+                </NavDropdown.Item>
+              </NavDropdown>
             )}
           </Nav>
         </Navbar.Collapse>

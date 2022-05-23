@@ -29,7 +29,7 @@ const CertificateList = () => {
   return (
     <div>
       {certificates.length === 0 ? (
-        <h1>There are no any certificates!</h1>
+        <h1>There are currently no certificates!</h1>
       ) : (
         <Row>
           {certificates.map((certificate) => (

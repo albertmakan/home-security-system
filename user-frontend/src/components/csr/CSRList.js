@@ -29,7 +29,7 @@ const CSRList = () => {
   return (
     <div>
       {requests.length === 0 ? (
-        <h1>There are no any new requests!</h1>
+        <h1>There are currently no new requests!</h1>
       ) : (
         <Row>
           {requests.map((csr) => (

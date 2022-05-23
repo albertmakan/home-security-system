@@ -36,7 +36,7 @@ const UserList = () => {
   return (
     <div>
       {users.length === 0 ? (
-        <h1>There are no any users!</h1>
+        <h1>There are currently no users!</h1>
       ) : (
         <Row>
           {users.map((user, index) => (

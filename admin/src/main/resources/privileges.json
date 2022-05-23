@@ -1,18 +1,25 @@
 [{
+  "_id": { "$oid": "628a73d9257682ccfddf3bd7" },
   "name": "ROLE_ADMIN",
   "privileges": [
     { "name": "READ_USERS" },
     { "name": "CHANGE_ROLE" },
-    { "name": "REGISTER_USERS" }
+    { "name": "REGISTER_USERS" },
+    { "name": "READ_CSR" },
+    { "name": "GENERATE_CER" },
+    { "name": "READ_HOUSEHOLDS" },
+    { "name": "MANAGE_USERS_HOUSEHOLDS" }
   ]
 },
 {
+  "_id": { "$oid": "628a73d9257682ccfddf3bd8" },
   "name": "ROLE_OWNER",
   "privileges": [
     { "name": "REVOKE_TOKEN" }
   ]
 },
 {
+  "_id": { "$oid": "628a73d9257682ccfddf3bd9" },
   "name": "ROLE_TENANT",
   "privileges": [
     { "name": "REVOKE_TOKEN" }

@@ -14,6 +14,13 @@ class UserService {
       data: changeRequest,
     });
   }
+  manageHouseholds(request) {
+    return httpClient({
+      url: '/users/manage-households',
+      method: 'POST',
+      data: request,
+    });
+  }
 }
 
 export default new UserService();

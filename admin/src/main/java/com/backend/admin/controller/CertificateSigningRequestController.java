@@ -1,5 +1,6 @@
 package com.backend.admin.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class CertificateSigningRequestController {
     private final CertificateSigningRequestService certificateSigningRequestService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('READ_CSR')")
     public ResponseEntity<List<CertificateSigningRequest>> getAllCSR() {
         return new ResponseEntity<>(certificateSigningRequestService.getAll(), HttpStatus.OK);
     }
@@ -30,6 +32,7 @@ public class CertificateSigningRequestController {
     }
 
     @PostMapping("/generate-certificate")
+    @PreAuthorize("hasAuthority('GENERATE_CER')")
     public ResponseEntity<List<CertificateSigningRequest>> generateCertificate(
             @RequestBody CertificateSigningRequest csr) throws Exception {
         return new ResponseEntity<>(certificateSigningRequestService.generateCertificate(csr), HttpStatus.OK);

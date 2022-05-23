@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.backend.admin.model.Household;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -29,7 +30,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 @Data
 @Document
 public class User implements UserDetails {
-    @Id @JsonSerialize(using= ToStringSerializer.class)
+    @Id
+    @JsonSerialize(using=ToStringSerializer.class)
     private ObjectId id;
 
     private String username;
@@ -54,6 +56,9 @@ public class User implements UserDetails {
 
     private int loginAttempts = 0;
     private Date lastLoginAttemptDate;
+
+    @DBRef
+    private List<Household> households;
 
     @JsonIgnore
     @Override

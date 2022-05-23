@@ -5,12 +5,16 @@ import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import ChangeRoleModal from '../../modals/ChangeRoleModal';
+import ManageHouseholdsModal from '../../modals/ManageHouseholdsModal';
 
-const User = ({ user, onChangeRole }) => {
-  const [show, setShow] = useState(false);
+const User = ({ user, onChangeRole, onManageHouseholds }) => {
+  const [showR, setShowR] = useState(false);
+  const handleCloseR = () => setShowR(false);
+  const handleShowR = () => setShowR(true);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const [showH, setShowH] = useState(false);
+  const handleCloseH = () => setShowH(false);
+  const handleShowH = () => setShowH(true);
 
   let roles = user.roles.map((role) => role.name);
 
@@ -35,11 +39,25 @@ const User = ({ user, onChangeRole }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="primary" onClick={handleShow}>
+        <Button variant="primary" onClick={handleShowR}>
           Change role
         </Button>
+        <Button variant="primary" onClick={handleShowH}>
+          Manage households
+        </Button>
       </Card.Body>
-      <ChangeRoleModal show={show} onClose={handleClose} onChangeRole={onChangeRole} user={user} />
+      <ChangeRoleModal
+        show={showR}
+        onClose={handleCloseR}
+        onChangeRole={onChangeRole}
+        user={user}
+      />
+      <ManageHouseholdsModal
+        show={showH}
+        onClose={handleCloseH}
+        onManage={onManageHouseholds}
+        user={user}
+      />
     </Card>
   );
 };

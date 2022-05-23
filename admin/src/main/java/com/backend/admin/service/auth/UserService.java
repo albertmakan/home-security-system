@@ -1,5 +1,6 @@
 package com.backend.admin.service.auth;
 
+import com.backend.admin.dto.ManageUsersHouseholdsRequest;
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.exception.BadRequestException;
@@ -7,6 +8,7 @@ import com.backend.admin.exception.NotFoundException;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
 import com.backend.admin.service.EmailService;
+import com.backend.admin.service.HouseholdService;
 import com.backend.admin.util.PasswordGenerator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private RoleService roleService;
+
+	@Autowired
+	private HouseholdService householdService;
 
 	@Autowired
 	private EmailService emailService;
@@ -102,6 +107,17 @@ public class UserService implements UserDetailsService {
 		return user.getFirstName().replace(" ", "") + '.' +
 				user.getLastName().replace(" ", "") +
 				PasswordGenerator.generateNumberSequence(4);
+	}
+
+	public User manageHouseholds(ManageUsersHouseholdsRequest request) {
+		User user = userRepository.findById(request.getUserId())
+				.orElseThrow(() -> new NotFoundException("User not found"));
+		user.setHouseholds(new ArrayList<>());
+
+		for (ObjectId hid : request.getHouseholdIds())
+			householdService.findById(hid).ifPresent(h -> user.getHouseholds().add(h));
+
+		return userRepository.save(user);
 	}
 
 }

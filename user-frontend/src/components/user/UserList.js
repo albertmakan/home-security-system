@@ -4,34 +4,33 @@ import User from './User';
 import UserService from '../../services/UserService';
 
 import Row from 'react-bootstrap/Row';
-
-import { toastSuccessMessage } from '../../toast/toastMessages';
+import { toast } from 'react-toastify';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    UserService.getAll()
-      .then((response) => {
-        setUsers(response);
-      })
-      .catch((err) => {});
+    UserService.getAll().then((response) => {
+      setUsers(response);
+    });
   }, []);
 
   const handleChangeRole = (changeRequest) => {
-    UserService.changeRole(changeRequest)
-      .then((response) => {
-        getUsers();
-      })
-      .catch((err) => {});
+    UserService.changeRole(changeRequest).then((response) => {
+      getUsers();
+    });
+  };
+
+  const handleManageHouseholds = (request) => {
+    UserService.manageHouseholds(request).then((response) => {
+      toast.success('Successfully updated');
+    });
   };
 
   const getUsers = () => {
-    UserService.getAll()
-      .then((response) => {
-        setUsers(response);
-      })
-      .catch((err) => {});
+    UserService.getAll().then((response) => {
+      setUsers(response);
+    });
   };
   return (
     <div>
@@ -40,7 +39,12 @@ const UserList = () => {
       ) : (
         <Row>
           {users.map((user, index) => (
-            <User key={index} user={user} onChangeRole={handleChangeRole} />
+            <User
+              key={index}
+              user={user}
+              onChangeRole={handleChangeRole}
+              onManageHouseholds={handleManageHouseholds}
+            />
           ))}
         </Row>
       )}

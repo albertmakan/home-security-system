@@ -16,6 +16,9 @@ class AuthService {
         return httpClient({
             url: "auth/whoami",
             method: "GET",
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
         })
     }
 

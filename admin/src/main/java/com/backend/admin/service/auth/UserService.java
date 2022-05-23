@@ -2,6 +2,7 @@ package com.backend.admin.service.auth;
 
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
+import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.NotFoundException;
 import com.backend.admin.exception.ResourceConflictException;
 import com.backend.admin.model.auth.User;

@@ -10,10 +10,12 @@ import CertificateList from './components/certificate/CertificateList';
 import VerifyCSR from './components/csr/VerifyCSR';
 import LoginPage from './components/login/LoginPage';
 import UserHome from './components/UserHome/UserHome';
+import NavBar from './components/navbar/NavBar';
 
 function App() {
   return (
     <div className="App">
+      <NavBar />
       <Routes>
         <Route path="*" element={<CreateCSR />} />
         <Route path="/admin/csr" element={<CSRList />} />
@@ -21,7 +23,6 @@ function App() {
         <Route path="/verify-csr/:id" element={<VerifyCSR />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<UserHome />} />
-
       </Routes>
       <ToastContainer />
     </div>

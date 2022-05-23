@@ -90,6 +90,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+
+        <!-- esapi for xss -->
+        <!-- <dependency>
+            <groupId>org.owasp.esapi</groupId>
+            <artifactId>esapi</artifactId>
+            <version>2.4.0.0</version>
+        </dependency> -->
 	</dependencies>
 
 	<build>

@@ -30,7 +30,7 @@ const LoginPage = () => {
           toastSuccessMessage('Login successful');
           sessionStorage.setItem('token', response.data.accessToken);
           console.log(response.data);
-          navigate('/home');
+          window.location.replace('/home');
         }
       })
       .catch((err) => {

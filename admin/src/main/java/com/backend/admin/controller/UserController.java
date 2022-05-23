@@ -1,5 +1,6 @@
 package com.backend.admin.controller;
 
+import com.backend.admin.dto.ManageUsersHouseholdsRequest;
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.model.auth.User;
@@ -37,5 +38,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('READ_USERS')")
     public List<User> loadAll() {
         return userService.findAll();
+    }
+
+    @PostMapping("/manage-households")
+    @PreAuthorize("hasAuthority('MANAGE_USERS_HOUSEHOLDS')")
+    public ResponseEntity<User> manageHouseholds(@Valid @RequestBody ManageUsersHouseholdsRequest request) {
+        return new ResponseEntity<>(userService.manageHouseholds(request), HttpStatus.OK);
     }
 }

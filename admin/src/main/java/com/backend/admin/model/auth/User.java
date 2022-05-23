@@ -15,6 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.backend.admin.model.Household;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -54,6 +55,9 @@ public class User implements UserDetails {
 
     private int loginAttempts = 0;
     private Date lastLoginAttemptDate;
+
+    @DBRef
+    private List<Household> households;
 
     @JsonIgnore
     @Override

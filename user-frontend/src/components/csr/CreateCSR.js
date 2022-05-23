@@ -14,18 +14,40 @@ import CSRService from '../../services/CSRService';
 import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const validationSchema = Yup.object({
-  firstName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
-  lastName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  firstName: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+  lastName: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
   email: Yup.string().email('Invalid email address').required('Required'),
-  commonName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
-  organization: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
-  organizationalUnit: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
-  city: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
-  state: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
+  commonName: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+  organization: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+  organizationalUnit: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+  city: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+  state: Yup.string()
+    .max(20, 'Must be 20 characters or less')
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
   country: Yup.string()
     .min(2, 'Must be exactly 2 characters long')
     .max(2, 'Must be exactly 2 characters long')
-    .required('Required'),
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
 });
 
 const CreateCSR = () => {

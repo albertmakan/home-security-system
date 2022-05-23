@@ -1,20 +1,17 @@
-import axios from 'axios';
-import config from '../config/config';
-
-const API_URL = config.apiHost + config.apiUrlPrefix + '/certificates';
+import httpClient from '../config/httpClient';
 
 class CertificateService {
   getAll() {
-    return axios({
+    return httpClient({
       method: 'GET',
-      url: `${API_URL}/all`,
+      url: '/certificates/all',
     });
   }
   revoke(revocation) {
-    return axios({
+    return httpClient({
       method: 'POST',
       data: revocation,
-      url: `${API_URL}/revoke`,
+      url: '/certificates/revoke',
     });
   }
 }

@@ -39,7 +39,7 @@ const User = ({ user, onChangeRole, onManageHouseholds }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="primary" onClick={handleShowR}>
+        <Button variant="primary" onClick={handleShowR} className="mb-1">
           Change role
         </Button>
         <Button variant="primary" onClick={handleShowH}>

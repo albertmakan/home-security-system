@@ -12,7 +12,7 @@ const CertificateList = () => {
   useEffect(() => {
     CertificateService.getAll()
       .then((response) => {
-        setCertificates(response.data);
+        setCertificates(response);
       })
       .catch((err) => {});
   }, []);
@@ -20,7 +20,7 @@ const CertificateList = () => {
   const handleRevoke = (revocation) => {
     CertificateService.revoke(revocation)
       .then((response) => {
-        setCertificates(response.data);
+        setCertificates(response);
         toastSuccessMessage('Certificate revoked!');
       })
       .catch((err) => {});

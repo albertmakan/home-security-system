@@ -13,8 +13,10 @@ import AuthService from '../../services/AuthService';
 import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const validationSchema = Yup.object({
-  username: Yup.string().required('Required'),
-  password: Yup.string().required('Required'),
+  username: Yup.string().required('Required').matches('^[a-zA-Z0-9_.-]{0,25}$', 'Invalid input'),
+  password: Yup.string()
+    .required('Required')
+    .matches('^[a-zA-Z0-9!"`\'#%&,:;<>=@{}~$()*+/\\?[]^|]{0,50}$', 'Invalid input'),
 });
 
 const LoginPage = () => {

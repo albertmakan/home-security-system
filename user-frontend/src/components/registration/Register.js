@@ -17,11 +17,13 @@ const validationSchema = Yup.object({
   firstName: Yup.string()
     .min(2, 'Must be 2 characters at least')
     .max(30, 'Must be 30 characters or less')
-    .required('Required'),
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
   lastName: Yup.string()
     .min(2, 'Must be 2 characters at least')
     .max(30, 'Must be 30 characters or less')
-    .required('Required'),
+    .required('Required')
+    .matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
   roles: Yup.string().required('Required'),
 });
 

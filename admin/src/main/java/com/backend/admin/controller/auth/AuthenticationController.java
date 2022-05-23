@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -100,6 +101,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/revokeJWT")
+    @PreAuthorize("hasAuthority('REVOKE_TOKEN')")
     public ResponseEntity<Void> revokeJWT(HttpServletRequest request){
         String token = tokenUtils.getToken(request);
         System.out.println("Revoking token: " + token);

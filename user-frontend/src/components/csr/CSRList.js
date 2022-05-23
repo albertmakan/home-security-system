@@ -12,7 +12,7 @@ const CSRList = () => {
   useEffect(() => {
     CSRService.getAll()
       .then((response) => {
-        setRequests(response.data);
+        setRequests(response);
       })
       .catch((err) => {});
   }, []);
@@ -20,7 +20,7 @@ const CSRList = () => {
   const handleGenerate = (csr) => {
     CSRService.generateCertificate(csr)
       .then((response) => {
-        setRequests(response.data);
+        setRequests(response);
         toastSuccessMessage('Certificate generated!');
       })
       .catch((err) => {});

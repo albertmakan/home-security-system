@@ -1,35 +1,32 @@
-import axios from 'axios';
-import config from '../config/config';
-
-const API_URL = config.apiHost + config.apiUrlPrefix + '/csr';
+import httpClient from '../config/httpClient';
 
 class CSRService {
   getAll() {
-    return axios({
+    return httpClient({
       method: 'GET',
-      url: `${API_URL}/all`,
+      url: '/csr/all',
     });
   }
   create(csr) {
-    return axios({
+    return httpClient({
       method: 'POST',
       data: csr,
-      url: `${API_URL}`,
+      url: '/csr',
     });
   }
 
   generateCertificate(csr) {
-    return axios({
+    return httpClient({
       method: 'POST',
       data: csr,
-      url: `${API_URL}/generate-certificate`,
+      url: '/csr/generate-certificate',
     });
   }
 
   verify(id) {
-    return axios({
+    return httpClient({
       method: 'PUT',
-      url: `${API_URL}/verify/${id}`,
+      url: `/csr/verify/${id}`,
     });
   }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
 import com.backend.admin.security.auth.TokenAuthenticationFilter;
 import com.backend.admin.service.auth.CustomUserDetailsService;
+import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
 
 
@@ -35,7 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	// Servis koji se koristi za citanje podataka o korisnicima aplikacije
 	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	private UserService customUserDetailsService;
 
 	// Handler za vracanje 401 kada klijent sa neodogovarajucim korisnickim imenom i lozinkom pokusa da pristupi resursu
 	@Autowired
@@ -80,7 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
 			// svim korisnicima dopusti da pristupe sledecim putanjama:
-			.authorizeRequests().antMatchers("/api/auth/**").permitAll()		// /auth/**
+			.authorizeRequests().antMatchers("/api/**").permitAll()		// /auth/**
 								.antMatchers("/h2-console/**").permitAll()	// /h2-console/** ako se koristi H2 baza)
 								.antMatchers("/api/foo").permitAll()		// /api/foo
 								

@@ -8,6 +8,11 @@ import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -72,6 +77,16 @@ public class UserService {
 			user.getRoles().addAll(roleService.findByName(roleName));
 
 		return userRepository.save(user);
+	}
+
+    @Override
+	public UserDetails loadUserByUsername(String username) throws BadRequestException {
+		Optional<User> optionalUser = userRepository.findByUsername(username);
+		if (optionalUser.isEmpty()) {
+			throw new BadRequestException(String.format("No user found with username '%s'.", username));
+		} else {
+			return (UserDetails) optionalUser.get();
+		}
 	}
 
 }

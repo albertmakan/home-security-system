@@ -95,7 +95,7 @@ public class TokenUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(generateExpirationDate())
                 .claim("userFingerprint", fingerprintHash)
-                .claim("ROLES", roles)
+                .claim("ROLE", roles)
                 .signWith(SIGNATURE_ALGORITHM, SECRET)
                 .compact();
     }

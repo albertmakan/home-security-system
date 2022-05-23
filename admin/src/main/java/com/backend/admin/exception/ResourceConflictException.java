@@ -1,22 +1,17 @@
 package com.backend.admin.exception;
 
-// Custom izuzetak
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.CONFLICT)
+@Getter @Setter
 public class ResourceConflictException extends RuntimeException {
-	private static final long serialVersionUID = 1791564636123821405L;
+	private String resourceId;
 
-	private Long resourceId;
-
-	public ResourceConflictException(Long resourceId, String message) {
+	public ResourceConflictException(String resourceId, String message) {
 		super(message);
-		this.setResourceId(resourceId);
+		setResourceId(resourceId);
 	}
-
-	public Long getResourceId() {
-		return resourceId;
-	}
-
-	public void setResourceId(Long resourceId) {
-		this.resourceId = resourceId;
-	}
-
 }

@@ -20,6 +20,4 @@ public class RevokedToken {
     private ObjectId id;
     private String token;
     private Date date;
-
-
 }

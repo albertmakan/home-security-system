@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -22,17 +23,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Document
 public class Privilege implements GrantedAuthority {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @JsonIgnore
-    @ManyToMany(mappedBy = "privileges", fetch = FetchType.LAZY)
-    private Set<Role> roles;
 
     @JsonIgnore
     @Override

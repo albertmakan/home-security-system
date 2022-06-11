@@ -3,8 +3,6 @@ package com.backend.admin.controller.auth;
 import com.backend.admin.dto.auth.JwtAuthenticationRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.dto.auth.UserTokenState;
-import com.backend.admin.exception.BadRequestException;
-import com.backend.admin.exception.BlockedUserException;
 import com.backend.admin.model.auth.RevokedToken;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.RevokedTokensRepository;
@@ -23,20 +21,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Date;
 
-//Kontroler zaduzen za autentifikaciju korisnika
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {

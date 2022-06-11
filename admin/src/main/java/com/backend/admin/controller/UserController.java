@@ -1,6 +1,7 @@
 package com.backend.admin.controller;
 
 import com.backend.admin.dto.ManageUsersHouseholdsRequest;
+import com.backend.admin.dto.auth.ChangePasswordRequest;
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.model.auth.User;
@@ -24,6 +25,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('REGISTER_USERS')")
     public ResponseEntity<User> addUser(@Valid @RequestBody UserRequest userRequest) {
         return new ResponseEntity<>(userService.create(userRequest), HttpStatus.CREATED);
     }
@@ -44,5 +46,12 @@ public class UserController {
     @PreAuthorize("hasAuthority('MANAGE_USERS_HOUSEHOLDS')")
     public ResponseEntity<User> manageHouseholds(@Valid @RequestBody ManageUsersHouseholdsRequest request) {
         return new ResponseEntity<>(userService.manageHouseholds(request), HttpStatus.OK);
+    }
+
+    @PutMapping("/change-password")
+    @PreAuthorize("hasAuthority('CHANGE_PASSWORD')")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        boolean success = userService.changePassword(request);
+        return new ResponseEntity<>(success? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

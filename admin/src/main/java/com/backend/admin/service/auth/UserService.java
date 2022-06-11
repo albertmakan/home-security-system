@@ -1,6 +1,7 @@
 package com.backend.admin.service.auth;
 
 import com.backend.admin.dto.ManageUsersHouseholdsRequest;
+import com.backend.admin.dto.auth.ChangePasswordRequest;
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.exception.BadRequestException;
@@ -12,6 +13,10 @@ import com.backend.admin.service.HouseholdService;
 import com.backend.admin.util.PasswordGenerator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +28,8 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -74,7 +81,7 @@ public class UserService implements UserDetailsService {
 		for (String roleName : userRequest.getRoles())
 			u.getRoles().addAll(roleService.findByName(roleName));
 
-		u = userRepository.save(u);
+		u = save(u);
 		emailService.sendEmail(u.getEmail(), "Smart home registration",
 				"Your username: "+u.getUsername()+"\nYour password: "+generatedPassword
 		);
@@ -90,17 +97,33 @@ public class UserService implements UserDetailsService {
 		for (String roleName : changeRoleRequest.getRoles())
 			user.getRoles().addAll(roleService.findByName(roleName));
 
-		return userRepository.save(user);
+		return save(user);
 	}
 
     @Override
 	public UserDetails loadUserByUsername(String username) throws BadRequestException {
-		Optional<User> optionalUser = userRepository.findByUsername(username);
+		Optional<User> optionalUser = findByUsername(username);
 		if (optionalUser.isEmpty()) {
 			throw new BadRequestException(String.format("No user found with username '%s'.", username));
 		} else {
 			return optionalUser.get();
 		}
+	}
+
+	public boolean changePassword(ChangePasswordRequest changePasswordDTO) {
+		Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+		String username = currentUser.getName();
+
+		if (authenticationManager == null)
+			return false;
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(username, changePasswordDTO.getCurrentPassword()));
+
+		User user = (User) loadUserByUsername(username);
+
+		user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+		save(user);
+		return true;
 	}
 
 	private String generateUsername(UserRequest user) {
@@ -117,7 +140,7 @@ public class UserService implements UserDetailsService {
 		for (ObjectId hid : request.getHouseholdIds())
 			householdService.findById(hid).ifPresent(h -> user.getHouseholds().add(h));
 
-		return userRepository.save(user);
+		return save(user);
 	}
 
 }

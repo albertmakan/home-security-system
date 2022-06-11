@@ -11,6 +11,7 @@ import com.backend.admin.repository.auth.UserRepository;
 import com.backend.admin.service.EmailService;
 import com.backend.admin.service.HouseholdService;
 import com.backend.admin.util.PasswordGenerator;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,23 +29,25 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-	@Autowired
+	@Setter
 	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
+	@Setter
 	private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private RoleService roleService;
+	private final UserRepository userRepository;
 
-	@Autowired
-	private HouseholdService householdService;
+	private final RoleService roleService;
 
-	@Autowired
-	private EmailService emailService;
+	private final HouseholdService householdService;
+
+	private final EmailService emailService;
+
+	public UserService(UserRepository userRepository, RoleService roleService, HouseholdService householdService, EmailService emailService) {
+		this.userRepository = userRepository;
+		this.roleService = roleService;
+		this.householdService = householdService;
+		this.emailService = emailService;
+	}
 
 	public Optional<User> findByUsername(String username) {
 		return userRepository.findByUsername(username);

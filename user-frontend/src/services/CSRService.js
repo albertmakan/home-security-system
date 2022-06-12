@@ -2,32 +2,19 @@ import httpClient from '../config/httpClient';
 
 class CSRService {
   getAll() {
-    return httpClient({
-      method: 'GET',
-      url: '/csr/all',
-    });
+    return httpClient.get('/csr/all');
   }
+
   create(csr) {
-    return httpClient({
-      method: 'POST',
-      data: csr,
-      url: '/csr',
-    });
+    return httpClient.post('/csr', csr);
   }
 
   generateCertificate(csr) {
-    return httpClient({
-      method: 'POST',
-      data: csr,
-      url: '/csr/generate-certificate',
-    });
+    return httpClient.post('/csr/generate-certificate', csr);
   }
 
   verify(id) {
-    return httpClient({
-      method: 'PUT',
-      url: `/csr/verify/${id}`,
-    });
+    return httpClient.put(`/csr/verify/${id}`);
   }
 }
 

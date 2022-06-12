@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { register } from '../../services/UserService';
+import UserService from '../../services/UserService';
 import { toast } from 'react-toastify';
 
 const validationSchema = Yup.object({
@@ -38,7 +38,7 @@ const Register = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       values = { ...values, roles: [values.roles] };
-      register(values).then(() => {
+      UserService.register(values).then(() => {
         toast.success('Successful registration.');
         formik.resetForm();
       });

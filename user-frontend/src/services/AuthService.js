@@ -1,13 +1,8 @@
 import httpClient from '../config/httpClient';
 
 class AuthService {
-  login(values) {
-    var { username, password } = values;
-    return httpClient({
-      url: 'auth/login',
-      method: 'POST',
-      data: { username: username, password: password },
-    });
+  login({ username, password }) {
+    return httpClient.post('auth/login', { username, password });
   }
 
   logout() {
@@ -16,22 +11,14 @@ class AuthService {
   }
 
   whoAmI() {
-    return httpClient({
-      url: 'auth/whoami',
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
+    return httpClient.get('auth/whoami', {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
     });
   }
 
   revokeToken() {
-    return httpClient({
-      url: 'auth/revokeJWT',
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
+    return httpClient.post('auth/revokeJWT', {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem('token')}` },
     });
   }
 }

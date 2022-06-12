@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
-import { getAllHouseholds } from '../services/HouseholdService';
+import HouseholdService from '../services/HouseholdService';
 
 const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
   const [householdIds, setHouseholdIds] = useState([]);
@@ -23,7 +23,7 @@ const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
   };
 
   useEffect(() => {
-    getAllHouseholds().then((hl) => setHouseholds(hl));
+    HouseholdService.getAll().then((hl) => setHouseholds(hl));
     if (user.households) setHouseholdIds(user.households?.map((h) => h.id));
   }, [user]);
 

@@ -4,6 +4,7 @@ import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
 import com.backend.admin.security.auth.TokenAuthenticationFilter;
 import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +20,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+import javax.annotation.PostConstruct;
+
 
 @Configuration
+@AllArgsConstructor
 // Ukljucivanje podrske za anotacije "@Pre*" i "@Post*" koje ce aktivirati autorizacione provere za svaki pristup metodi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	// Servis koji se koristi za citanje podataka o korisnicima aplikacije
+	private UserService customUserDetailsService;
+	// Handler za vracanje 401 kada klijent sa neodogovarajucim korisnickim imenom i lozinkom pokusa da pristupi resursu
+	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+	// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo njene metode za rad sa JWT u TokenAuthenticationFilteru
+	private TokenUtils tokenUtils;
 
 	// Implementacija PasswordEncoder-a koriscenjem BCrypt hashing funkcije.
 	// BCrypt po defalt-u radi 10 rundi hesiranja prosledjene vrednosti.
@@ -32,13 +43,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
-	// Servis koji se koristi za citanje podataka o korisnicima aplikacije
-	@Autowired
-	private UserService customUserDetailsService;
-
-	// Handler za vracanje 401 kada klijent sa neodogovarajucim korisnickim imenom i lozinkom pokusa da pristupi resursu
-	@Autowired
-	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+	@PostConstruct
+	public void init() throws Exception {
+		customUserDetailsService.setPasswordEncoder(passwordEncoder());
+		customUserDetailsService.setAuthenticationManager(authenticationManagerBean());
+	}
 
 	// Registrujemo authentication manager koji ce da uradi autentifikaciju korisnika za nas
 	@Bean
@@ -61,10 +70,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			// da bi adekvatan hash koji dobije kao rezultat hash algoritma uporedio sa onim koji se nalazi u bazi (posto se u bazi ne cuva plain lozinka)
 			.passwordEncoder(passwordEncoder());
 	}
-
-	// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo njene metode za rad sa JWT u TokenAuthenticationFilteru
-	@Autowired
-	private TokenUtils tokenUtils;
 
 	// Definisemo prava pristupa za zahteve ka odredjenim URL-ovima/rutama
 	@Override

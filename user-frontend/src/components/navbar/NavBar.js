@@ -10,7 +10,7 @@ import { NavLink, Link, useNavigate } from 'react-router-dom';
 import tokenUtils from '../../utils/TokenUtils';
 
 import AuthService from '../../services/AuthService';
-import { toastSuccessMessage, toastErrorMessage } from '../../toast/toastMessages';
+import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const NavBar = () => {
   const [user, setUser] = useState({ ROLE: 'NONE' });
@@ -21,7 +21,7 @@ const NavBar = () => {
   }, []);
 
   const handleRevokeToken = () => {
-    AuthService.revokeToken().then((response) => {
+    AuthService.revokeToken().then(() => {
       toastSuccessMessage('Token successfully revoked. Redirecting to login page...');
       AuthService.logout();
     });
@@ -54,10 +54,15 @@ const NavBar = () => {
                 Users
               </NavLink>
             )}
-            {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+            {user.ROLE !== 'NONE' && (
               <NavDropdown title="Account" id="basic-nav-dropdown">
-                <NavDropdown.Item as={Link} to="/login" onClick={handleRevokeToken}>
-                  Revoke token
+                {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+                  <NavDropdown.Item as={Link} to="/login" onClick={handleRevokeToken}>
+                    Revoke token
+                  </NavDropdown.Item>
+                )}
+                <NavDropdown.Item as={Link} to="/change-password">
+                  Change password
                 </NavDropdown.Item>
               </NavDropdown>
             )}

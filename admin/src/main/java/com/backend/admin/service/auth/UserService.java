@@ -29,10 +29,6 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-	@Setter
-	private AuthenticationManager authenticationManager;
-	@Setter
-	private PasswordEncoder passwordEncoder;
 
 	private final UserRepository userRepository;
 
@@ -41,6 +37,11 @@ public class UserService implements UserDetailsService {
 	private final HouseholdService householdService;
 
 	private final EmailService emailService;
+
+	@Setter
+	private AuthenticationManager authenticationManager;
+	@Setter
+	private PasswordEncoder passwordEncoder;
 
 	public UserService(UserRepository userRepository, RoleService roleService, HouseholdService householdService, EmailService emailService) {
 		this.userRepository = userRepository;

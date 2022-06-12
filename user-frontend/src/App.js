@@ -17,6 +17,7 @@ import Home from './components/Home/Home';
 import UserList from './components/user/UserList';
 
 import tokenUtils from './utils/TokenUtils';
+import ChangePassword from './components/change-password/ChangePassword';
 
 function App() {
   const [user, setUser] = useState({ ROLE: 'NONE' });
@@ -38,6 +39,7 @@ function App() {
         )}
         {user.ROLE === 'NONE' && <Route path="/verify-csr/:id" element={<VerifyCSR />} />}
         {user.ROLE === 'NONE' && <Route path="/login" element={<LoginPage />} />}
+        {user.ROLE !== 'NONE' && <Route path="/change-password" element={<ChangePassword />} />}
         {user.ROLE === 'NONE' && <Route path="/home" element={<Home />} />}
         {user.ROLE === 'ROLE_ADMIN' && <Route path="/admin/users" element={<UserList />} />}
       </Routes>

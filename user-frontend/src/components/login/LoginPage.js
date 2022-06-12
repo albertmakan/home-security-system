@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -20,7 +20,6 @@ const validationSchema = Yup.object({
 });
 
 const LoginPage = () => {
-  useEffect(() => {}, []);
   const onSubmit = (values) => {
     AuthService.login(values).then((response) => {
       toastSuccessMessage('Login successful');

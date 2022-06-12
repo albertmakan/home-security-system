@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import ChangeRoleModal from '../../modals/ChangeRoleModal';
 import ManageHouseholdsModal from '../../modals/ManageHouseholdsModal';
 
-const User = ({ user, onChangeRole, onManageHouseholds }) => {
+const User = ({ user, onChangeRole, onManageHouseholds, onDelete }) => {
   const [showR, setShowR] = useState(false);
   const handleCloseR = () => setShowR(false);
   const handleShowR = () => setShowR(true);
@@ -15,6 +15,10 @@ const User = ({ user, onChangeRole, onManageHouseholds }) => {
   const [showH, setShowH] = useState(false);
   const handleCloseH = () => setShowH(false);
   const handleShowH = () => setShowH(true);
+
+  const handleDelete = () => {
+    if (window.confirm(`Do you want to delete user ${user.username}?`)) onDelete(user.id);
+  };
 
   let roles = user.roles.map((role) => role.name);
 
@@ -39,11 +43,14 @@ const User = ({ user, onChangeRole, onManageHouseholds }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="primary" onClick={handleShowR} className="mb-1">
+        <Button variant="primary" onClick={handleShowR} size="sm">
           Change role
         </Button>
-        <Button variant="primary" onClick={handleShowH}>
+        <Button variant="primary" onClick={handleShowH} size="sm">
           Manage households
+        </Button>
+        <Button variant="danger" onClick={handleDelete} size="sm">
+          Delete
         </Button>
       </Card.Body>
       <ChangeRoleModal

@@ -16,14 +16,21 @@ const UserList = () => {
   }, []);
 
   const handleChangeRole = (changeRequest) => {
-    UserService.changeRole(changeRequest).then((response) => {
+    UserService.changeRole(changeRequest).then(() => {
       getUsers();
     });
   };
 
   const handleManageHouseholds = (request) => {
-    UserService.manageHouseholds(request).then((response) => {
+    UserService.manageHouseholds(request).then(() => {
       toast.success('Successfully updated');
+    });
+  };
+
+  const handleDelete = (userId) => {
+    UserService.delete(userId).then(() => {
+      toast.success('Successfully deleted');
+      getUsers();
     });
   };
 
@@ -44,6 +51,7 @@ const UserList = () => {
               user={user}
               onChangeRole={handleChangeRole}
               onManageHouseholds={handleManageHouseholds}
+              onDelete={handleDelete}
             />
           ))}
         </Row>

@@ -6,6 +6,7 @@ import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.service.auth.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,5 +54,11 @@ public class UserController {
     public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         boolean success = userService.changePassword(request);
         return new ResponseEntity<>(success? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable ObjectId id) {
+        userService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

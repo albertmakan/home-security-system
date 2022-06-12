@@ -93,6 +93,10 @@ public class UserService implements UserDetailsService {
 		return u;
 	}
 
+	public void delete(ObjectId id) {
+		userRepository.deleteById(id);
+	}
+
 	public User changeRole(ChangeRoleRequest changeRoleRequest) {
 		User user = userRepository.findById(changeRoleRequest.getUserId())
 				.orElseThrow(() -> new NotFoundException("User not found"));

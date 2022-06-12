@@ -9,6 +9,10 @@ class UserService {
     return httpClient.get('/users/all');
   }
 
+  delete(userId) {
+    return httpClient.delete(`/users/${userId}`);
+  }
+
   changeRole(changeRequest) {
     return httpClient.post('/users/change-role', changeRequest);
   }

@@ -62,9 +62,9 @@ const UserList = () => {
         <h1>There are currently no users!</h1>
       ) : (
         <Row>
-          {users.map((user, index) => (
+          {users.map((user) => (
             <User
-              key={index}
+              key={user.id}
               user={user}
               onChangeRole={handleShowR}
               onManageHouseholds={handleShowH}

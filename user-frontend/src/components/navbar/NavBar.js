@@ -40,19 +40,20 @@ const NavBar = () => {
               </NavLink>
             )}
             {user.ROLE === 'ROLE_ADMIN' && (
-              <NavLink className="nav-link" to="/admin/csr">
-                Requests
-              </NavLink>
-            )}
-            {user.ROLE === 'ROLE_ADMIN' && (
-              <NavLink className="nav-link" to="/admin/certificates">
-                Certificates
-              </NavLink>
-            )}
-            {user.ROLE === 'ROLE_ADMIN' && (
-              <NavLink className="nav-link" to="/admin/users">
-                Users
-              </NavLink>
+              <>
+                <NavLink className="nav-link" to="/admin/csr">
+                  Requests
+                </NavLink>
+                <NavLink className="nav-link" to="/admin/certificates">
+                  Certificates
+                </NavLink>
+                <NavLink className="nav-link" to="/admin/users">
+                  Users
+                </NavLink>
+                <NavLink className="nav-link" to="/admin/households">
+                  Households
+                </NavLink>
+              </>
             )}
             {user.ROLE !== 'NONE' && (
               <NavDropdown title="Account" id="basic-nav-dropdown">

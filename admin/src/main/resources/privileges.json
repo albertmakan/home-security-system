@@ -8,20 +8,24 @@
     { "name": "READ_CSR" },
     { "name": "GENERATE_CER" },
     { "name": "READ_HOUSEHOLDS" },
-    { "name": "MANAGE_USERS_HOUSEHOLDS" }
+    { "name": "MANAGE_USERS_HOUSEHOLDS" },
+    { "name": "CHANGE_PASSWORD" },
+    { "name": "DELETE_USER" }
   ]
 },
 {
   "_id": { "$oid": "628a73d9257682ccfddf3bd8" },
   "name": "ROLE_OWNER",
   "privileges": [
-    { "name": "REVOKE_TOKEN" }
+    { "name": "REVOKE_TOKEN" },
+    { "name": "CHANGE_PASSWORD" }
   ]
 },
 {
   "_id": { "$oid": "628a73d9257682ccfddf3bd9" },
   "name": "ROLE_TENANT",
   "privileges": [
-    { "name": "REVOKE_TOKEN" }
+    { "name": "REVOKE_TOKEN" },
+    { "name": "CHANGE_PASSWORD" }
   ]
 }]

@@ -3,11 +3,10 @@ package com.backend.admin.service;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.admin.model.CertificateSigningRequest;
+import com.backend.admin.model.cert.CertificateSigningRequest;
 import com.backend.admin.repository.CertificateSigningRequestRepository;
 
 import lombok.AllArgsConstructor;

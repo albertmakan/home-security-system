@@ -2,17 +2,11 @@ import httpClient from '../config/httpClient';
 
 class CertificateService {
   getAll() {
-    return httpClient({
-      method: 'GET',
-      url: '/certificates/all',
-    });
+    return httpClient.get('/certificates/all');
   }
+
   revoke(revocation) {
-    return httpClient({
-      method: 'POST',
-      data: revocation,
-      url: '/certificates/revoke',
-    });
+    return httpClient.post('/certificates/revoke', revocation);
   }
 }
 

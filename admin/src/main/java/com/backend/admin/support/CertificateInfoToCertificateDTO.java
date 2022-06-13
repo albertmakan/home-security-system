@@ -8,7 +8,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import com.backend.admin.dto.CertificateDTO;
-import com.backend.admin.model.CertificateInfo;
+import com.backend.admin.model.cert.CertificateInfo;
 import com.backend.admin.service.CertificateKeyStoreService;
 
 import lombok.AllArgsConstructor;
@@ -21,9 +21,9 @@ public class CertificateInfoToCertificateDTO implements Converter<CertificateInf
     @Override
     public CertificateDTO convert(CertificateInfo source) {
         X509Certificate certificate = certificateKeyStoreService.readCertificate(source.getAlias());
-        return new CertificateDTO(certificate.getIssuerDN().getName(), certificate.getSubjectDN().getName(),
+        return new CertificateDTO(certificate.getIssuerX500Principal().getName(), certificate.getSubjectX500Principal().getName(),
                 certificate.getNotAfter(), source.getSerialNumber(), source.getAlias(), source.getSubjectEmail(),
-                source.getType(), source.getRevocation() == null ? false : true);
+                source.getType(), source.getRevocation() != null);
     }
 
     public List<CertificateDTO> convert(List<CertificateInfo> infoList) {

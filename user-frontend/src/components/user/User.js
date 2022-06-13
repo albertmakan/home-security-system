@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import ChangeRoleModal from '../../modals/ChangeRoleModal';
-import ManageHouseholdsModal from '../../modals/ManageHouseholdsModal';
 
-const User = ({ user, onChangeRole, onManageHouseholds }) => {
-  const [showR, setShowR] = useState(false);
-  const handleCloseR = () => setShowR(false);
-  const handleShowR = () => setShowR(true);
-
-  const [showH, setShowH] = useState(false);
-  const handleCloseH = () => setShowH(false);
-  const handleShowH = () => setShowH(true);
-
-  let roles = user.roles.map((role) => role.name);
+const User = ({ user, onChangeRole, onManageHouseholds, onDelete }) => {
+  const handleDelete = () => {
+    if (window.confirm(`Do you want to delete user ${user.username}?`)) onDelete(user.id);
+  };
 
   return (
     <Card as={Col} md="2" className="mb-2">
@@ -32,32 +24,23 @@ const User = ({ user, onChangeRole, onManageHouseholds }) => {
           <b>Last name: </b> {user.lastName}
         </ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
-          <b>Roles: </b> {roles.join(',')}
+          <b>Roles: </b> {user.roles.join(',')}
         </ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
           <b>Blocked: </b> {user.blocked.toString()}
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="primary" onClick={handleShowR} className="mb-1">
+        <Button variant="primary" onClick={() => onChangeRole(user)} size="sm">
           Change role
         </Button>
-        <Button variant="primary" onClick={handleShowH}>
+        <Button variant="primary" onClick={() => onManageHouseholds(user)} size="sm">
           Manage households
         </Button>
+        <Button variant="danger" onClick={handleDelete} size="sm">
+          Delete
+        </Button>
       </Card.Body>
-      <ChangeRoleModal
-        show={showR}
-        onClose={handleCloseR}
-        onChangeRole={onChangeRole}
-        user={user}
-      />
-      <ManageHouseholdsModal
-        show={showH}
-        onClose={handleCloseH}
-        onManage={onManageHouseholds}
-        user={user}
-      />
     </Card>
   );
 };

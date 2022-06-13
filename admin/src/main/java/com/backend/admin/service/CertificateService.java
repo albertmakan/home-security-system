@@ -1,9 +1,9 @@
 package com.backend.admin.service;
 
 import com.backend.admin.dto.RevokeCertificateDTO;
-import com.backend.admin.model.CertificateInfo;
-import com.backend.admin.model.CertificateSigningRequest;
-import com.backend.admin.model.Revocation;
+import com.backend.admin.model.cert.CertificateInfo;
+import com.backend.admin.model.cert.CertificateSigningRequest;
+import com.backend.admin.model.cert.Revocation;
 import com.backend.admin.model.enums.CertificateStatus;
 import com.backend.admin.model.enums.CertificateType;
 import com.backend.admin.repository.CertificateInfoRepository;

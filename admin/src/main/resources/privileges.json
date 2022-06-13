@@ -9,7 +9,8 @@
     { "name": "GENERATE_CER" },
     { "name": "READ_HOUSEHOLDS" },
     { "name": "MANAGE_USERS_HOUSEHOLDS" },
-    { "name": "CHANGE_PASSWORD" }
+    { "name": "CHANGE_PASSWORD" },
+    { "name": "DELETE_USER" }
   ]
 },
 {

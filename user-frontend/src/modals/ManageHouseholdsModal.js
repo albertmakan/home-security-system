@@ -6,29 +6,34 @@ import Container from 'react-bootstrap/Container';
 import HouseholdService from '../services/HouseholdService';
 
 const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
-  const [householdIds, setHouseholdIds] = useState([]);
+  const [userHouseholds, setUserHouseholds] = useState([]);
   const [households, setHouseholds] = useState([]);
 
   const handleChange = (e) => {
-    if (e.target.checked) {
-      if (!householdIds.includes(e.target.name)) {
-        householdIds.push(e.target.name);
-      }
-    } else {
-      let index = householdIds.indexOf(e.target.name);
-      if (index !== -1) {
-        householdIds.splice(index, 1);
-      }
-    }
+    let index = userHouseholds.findIndex((h) => h.id === e.target.name);
+    userHouseholds[index].checked = e.target.checked;
+  };
+  const handleAdd = (e) => {
+    if (!e.target.value) return;
+    if (userHouseholds.findIndex((h) => h.id === e.target.value) !== -1) return;
+    let toAdd = households.find((h) => h.id === e.target.value);
+    setUserHouseholds([...userHouseholds, { ...toAdd, checked: true }]);
+  };
+  const resetAndClose = () => {
+    setUserHouseholds(user.households?.map((h) => ({ ...h, checked: true })) ?? []);
+    onClose();
   };
 
   useEffect(() => {
     HouseholdService.getAll().then((hl) => setHouseholds(hl));
-    if (user.households) setHouseholdIds(user.households?.map((h) => h.id));
+  }, []);
+
+  useEffect(() => {
+    setUserHouseholds(user.households?.map((h) => ({ ...h, checked: true })) ?? []);
   }, [user]);
 
   return (
-    <Modal show={show} onHide={onClose} centered>
+    <Modal show={show} onHide={resetAndClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>Manage households for {user.username}</Modal.Title>
       </Modal.Header>
@@ -36,16 +41,26 @@ const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
         <Container>
           <Form>
             <Form.Group>
-              {households.map((h) => (
+              {userHouseholds.map((h) => (
                 <Form.Check
                   key={h.id}
                   label={h.name}
-                  className="mb-2"
                   name={h.id}
-                  defaultChecked={householdIds.includes(h.id)}
+                  defaultChecked
                   onChange={handleChange}
+                  className="mb-2"
                 />
               ))}
+              <Form.Control id="role" as="select" name="roles" onChange={handleAdd}>
+                <option key="" value="">
+                  Add household
+                </option>
+                {households.map((h) => (
+                  <option key={h.id} value={h.id}>
+                    {h.name}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
           </Form>
         </Container>
@@ -56,7 +71,7 @@ const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
           onClick={() => {
             onManage({
               userId: user.id,
-              householdIds,
+              householdIds: userHouseholds.filter((h) => h.checked).map((h) => h.id),
             });
             onClose();
           }}

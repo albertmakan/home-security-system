@@ -5,9 +5,26 @@ import UserService from '../../services/UserService';
 
 import Row from 'react-bootstrap/Row';
 import { toast } from 'react-toastify';
+import ChangeRoleModal from '../../modals/ChangeRoleModal';
+import ManageHouseholdsModal from '../../modals/ManageHouseholdsModal';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+  const [user, setUser] = useState({});
+
+  const [showR, setShowR] = useState(false);
+  const handleCloseR = () => setShowR(false);
+  const handleShowR = (u) => {
+    setUser(u);
+    setShowR(true);
+  };
+
+  const [showH, setShowH] = useState(false);
+  const handleCloseH = () => setShowH(false);
+  const handleShowH = (u) => {
+    setUser(u);
+    setShowH(true);
+  };
 
   useEffect(() => {
     UserService.getAll().then((response) => {
@@ -49,13 +66,25 @@ const UserList = () => {
             <User
               key={index}
               user={user}
-              onChangeRole={handleChangeRole}
-              onManageHouseholds={handleManageHouseholds}
+              onChangeRole={handleShowR}
+              onManageHouseholds={handleShowH}
               onDelete={handleDelete}
             />
           ))}
         </Row>
       )}
+      <ChangeRoleModal
+        show={showR}
+        onClose={handleCloseR}
+        onChangeRole={handleChangeRole}
+        user={user}
+      />
+      <ManageHouseholdsModal
+        show={showH}
+        onClose={handleCloseH}
+        onManage={handleManageHouseholds}
+        user={user}
+      />
     </div>
   );
 };

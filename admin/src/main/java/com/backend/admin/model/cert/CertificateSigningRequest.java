@@ -1,4 +1,4 @@
-package com.backend.admin.model;
+package com.backend.admin.model.cert;
 
 import java.util.Date;
 import java.util.List;

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.backend.admin.model.CertificateSigningRequest;
+import com.backend.admin.model.cert.CertificateSigningRequest;
 import com.backend.admin.service.CertificateSigningRequestService;
 
 import lombok.AllArgsConstructor;

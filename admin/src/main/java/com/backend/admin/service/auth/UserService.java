@@ -6,6 +6,7 @@ import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
 import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.NotFoundException;
+import com.backend.admin.model.Household;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.UserRepository;
 import com.backend.admin.service.EmailService;
@@ -23,9 +24,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -94,6 +94,9 @@ public class UserService implements UserDetailsService {
 	}
 
 	public void delete(ObjectId id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found"));
+		if (user.getHouseholds() != null)
+			user.getHouseholds().forEach(household -> householdService.removeUserFromHousehold(household.getId(), id));
 		userRepository.deleteById(id);
 	}
 
@@ -111,11 +114,8 @@ public class UserService implements UserDetailsService {
     @Override
 	public UserDetails loadUserByUsername(String username) throws BadRequestException {
 		Optional<User> optionalUser = findByUsername(username);
-		if (optionalUser.isEmpty()) {
-			throw new BadRequestException(String.format("No user found with username '%s'.", username));
-		} else {
-			return optionalUser.get();
-		}
+		return optionalUser.orElseThrow(() ->
+				new BadRequestException(String.format("No user found with username '%s'.", username)));
 	}
 
 	public boolean changePassword(ChangePasswordRequest changePasswordDTO) {
@@ -143,10 +143,23 @@ public class UserService implements UserDetailsService {
 	public User manageHouseholds(ManageUsersHouseholdsRequest request) {
 		User user = userRepository.findById(request.getUserId())
 				.orElseThrow(() -> new NotFoundException("User not found"));
-		user.setHouseholds(new ArrayList<>());
+		if (user.getHouseholds() == null) user.setHouseholds(new ArrayList<>());
 
-		for (ObjectId hid : request.getHouseholdIds())
-			householdService.findById(hid).ifPresent(h -> user.getHouseholds().add(h));
+		Set<ObjectId> oldSet = user.getHouseholds().stream().map(Household::getId).collect(Collectors.toSet());
+		Set<ObjectId> newSet = new HashSet<>(request.getHouseholdIds());
+		newSet.removeAll(oldSet); // to add
+		request.getHouseholdIds().forEach(oldSet::remove); // to delete
+
+		for (ObjectId hid : newSet)
+			householdService.findById(hid).ifPresent(h -> {
+				householdService.addUserToHousehold(hid, user);
+				user.getHouseholds().add(h);
+			});
+		for (ObjectId hid : oldSet)
+			householdService.findById(hid).ifPresent(_h -> {
+				householdService.removeUserFromHousehold(hid, user.getId());
+				user.getHouseholds().removeIf(h -> hid.equals(h.getId()));
+			});
 
 		return save(user);
 	}

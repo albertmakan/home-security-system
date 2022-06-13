@@ -1,21 +1,7 @@
 package com.backend.admin.model.auth;
 
-import java.sql.Timestamp;
-
-import java.util.*;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.backend.admin.model.Household;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -23,15 +9,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import javax.persistence.Id;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @Document
 public class User implements UserDetails {
     @Id
-    @JsonSerialize(using=ToStringSerializer.class)
     private ObjectId id;
 
     private String username;
@@ -57,7 +45,8 @@ public class User implements UserDetails {
     private int loginAttempts = 0;
     private Date lastLoginAttemptDate;
 
-    @DBRef
+    @DBRef(lazy = true)
+    @JsonIgnore
     private List<Household> households;
 
     @JsonIgnore

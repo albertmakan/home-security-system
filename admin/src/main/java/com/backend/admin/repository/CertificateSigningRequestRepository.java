@@ -3,7 +3,7 @@ package com.backend.admin.repository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.backend.admin.model.CertificateSigningRequest;
+import com.backend.admin.model.cert.CertificateSigningRequest;
 
 import java.util.List;
 

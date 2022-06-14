@@ -24,9 +24,9 @@ import com.backend.admin.util.TokenUtils;
 // u SecurityContext holder kako bi podaci o korisniku bili dostupni u ostalim delovima aplikacije gde su neophodni
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-	private TokenUtils tokenUtils;
+	private final TokenUtils tokenUtils;
 
-	private UserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
 	
 	protected final Log LOGGER = LogFactory.getLog(getClass());
 

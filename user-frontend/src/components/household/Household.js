@@ -4,8 +4,10 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import { useNavigate } from 'react-router-dom';
 
 const Household = ({ household }) => {
+  const navigate = useNavigate();
   return (
     <Card as={Col} md="2" className="mb-2">
       <Card.Body>
@@ -18,7 +20,11 @@ const Household = ({ household }) => {
         </ListGroupItem>
       </ListGroup>
       <Card.Body>
-        <Button variant="primary" onClick={() => alert('Not implemented')} size="sm">
+        <Button
+          variant="primary"
+          onClick={() => navigate(`/admin/household/${household.id}`)}
+          size="sm"
+        >
           Manage
         </Button>
       </Card.Body>

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class HouseholdService {
@@ -30,19 +29,19 @@ public class HouseholdService {
         return householdRepository.save(household);
     }
 
-    public Household addUserToHousehold(ObjectId householdId, User user) {
+    public void addUserToHousehold(ObjectId householdId, User user) {
         Household household = findById(householdId).orElseThrow(() -> new NotFoundException("Household not found"));
         if (household.getUsers() == null) household.setUsers(new ArrayList<>());
-        if (household.getUsers().stream().anyMatch(u -> user.getId().equals(u.getId()))) return household;
+        if (household.getUsers().stream().anyMatch(u -> user.getId().equals(u.getId()))) return;
         household.getUsers().add(user);
-        return save(household);
+        save(household);
     }
 
-    public Household removeUserFromHousehold(ObjectId householdId, ObjectId userId) {
+    public void removeUserFromHousehold(ObjectId householdId, ObjectId userId) {
         Household household = findById(householdId).orElseThrow(() -> new NotFoundException("Household not found"));
-        if (household.getUsers() == null) return household;
+        if (household.getUsers() == null) return;
         household.getUsers().removeIf(u -> userId.equals(u.getId()));
-        return save(household);
+        save(household);
     }
 
 

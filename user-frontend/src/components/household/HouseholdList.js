@@ -8,7 +8,7 @@ const HouseholdList = () => {
   const [households, setHouseholds] = useState([]);
 
   useEffect(() => {
-    HouseholdService.getAll(true).then((response) => {
+    HouseholdService.getAll().then((response) => {
       setHouseholds(response);
     });
   }, []);

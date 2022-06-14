@@ -77,7 +77,7 @@ public class TokenUtils {
      * Funkcija za generisanje JWT tokena.
      *
      * @param username Korisničko ime korisnika kojem se token izdaje
-     * @param authentication 
+     * @param fingerprint fingerprint
      * @return JWT token
      */
     public String generateToken(String username, String fingerprint, User user) {

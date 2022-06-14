@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,9 +24,9 @@ public class HouseholdController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('READ_HOUSEHOLDS')")
-    public ResponseEntity<List<HouseholdDTO>> loadAll() {
+    public ResponseEntity<List<HouseholdDTO>> loadAll(@RequestParam(required = false) boolean detailed) {
         return new ResponseEntity<>(
-                householdService.getAll().stream().map(HouseholdDTO::new).collect(Collectors.toList()),
+                householdService.getAll().stream().map((h) -> new HouseholdDTO(h, detailed)).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 }

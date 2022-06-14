@@ -40,9 +40,9 @@ public class UserController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('READ_USERS')")
-    public ResponseEntity<List<UserDTO>> loadAll() {
+    public ResponseEntity<List<UserDTO>> loadAll(@RequestParam(required = false) boolean detailed) {
         return new ResponseEntity<>(
-                userService.findAll().stream().map(u -> new UserDTO(u, true)).collect(Collectors.toList()),
+                userService.findAll().stream().map(u -> new UserDTO(u, detailed)).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 

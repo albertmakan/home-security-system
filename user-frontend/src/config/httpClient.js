@@ -1,11 +1,10 @@
 import axios from 'axios';
-import config from '../config/config';
 
 import errorHandler from './errorHandler';
 
 const httpClient = axios.create({
   withCredentials: true,
-  baseURL: config.apiHost + config.apiUrlPrefix,
+  baseURL: 'http://localhost:8080/api',
   headers: {
     Authorization: `Bearer ${sessionStorage.getItem('token')}`,
   },

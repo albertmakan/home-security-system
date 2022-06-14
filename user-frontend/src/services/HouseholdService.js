@@ -1,8 +1,8 @@
 import httpClient from '../config/httpClient';
 
 class HouseholdService {
-  getAll() {
-    return httpClient.get('/households/all');
+  getAll(detailed = false) {
+    return httpClient.get('/households/all', { params: { detailed } });
   }
 }
 

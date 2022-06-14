@@ -5,8 +5,8 @@ import UserService from '../../services/UserService';
 
 import Row from 'react-bootstrap/Row';
 import { toast } from 'react-toastify';
-import ChangeRoleModal from '../../modals/ChangeRoleModal';
-import ManageHouseholdsModal from '../../modals/ManageHouseholdsModal';
+import ChangeRoleModal from '../modals/ChangeRoleModal';
+import ManageHouseholdsModal from '../modals/ManageHouseholdsModal';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -27,9 +27,7 @@ const UserList = () => {
   };
 
   useEffect(() => {
-    UserService.getAll().then((response) => {
-      setUsers(response);
-    });
+    getUsers();
   }, []);
 
   const handleChangeRole = (changeRequest) => {
@@ -41,6 +39,7 @@ const UserList = () => {
   const handleManageHouseholds = (request) => {
     UserService.manageHouseholds(request).then(() => {
       toast.success('Successfully updated');
+      getUsers();
     });
   };
 
@@ -52,7 +51,7 @@ const UserList = () => {
   };
 
   const getUsers = () => {
-    UserService.getAll().then((response) => {
+    UserService.getAll(true).then((response) => {
       setUsers(response);
     });
   };

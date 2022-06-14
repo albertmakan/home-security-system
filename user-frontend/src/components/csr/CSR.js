@@ -4,7 +4,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import ListGroupItem from 'react-bootstrap/ListGroupItem';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
-import GenerateCertificateModal from '../../modals/generate-certificate/GenerateCertificateModal';
+import GenerateCertificateModal from '../modals/generate-certificate/GenerateCertificateModal';
 
 const CSR = ({ csr, onGenerate }) => {
   const [show, setShow] = useState(false);

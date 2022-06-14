@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Form from 'react-bootstrap/Form';
 
 const BasicConstraints = ({ cA, onCAChange, pathLenConstraint, onPathLenConstraint }) => {
-  const [selectedOption, setSelectedOption] = useState('0');
-
   return (
     <Form.Group style={{ fontSize: '75%' }}>
       <Form.Check

@@ -5,8 +5,8 @@ class UserService {
     return httpClient.post(`/users/register`, regForm);
   }
 
-  getAll() {
-    return httpClient.get('/users/all');
+  getAll(detailed = false) {
+    return httpClient.get('/users/all', { params: { detailed } });
   }
 
   delete(userId) {

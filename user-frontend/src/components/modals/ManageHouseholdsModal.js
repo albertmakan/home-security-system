@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
-import HouseholdService from '../services/HouseholdService';
+import HouseholdService from '../../services/HouseholdService';
 
 const ManageHouseholdsModal = ({ show, onClose, onManage, user }) => {
   const [userHouseholds, setUserHouseholds] = useState([]);

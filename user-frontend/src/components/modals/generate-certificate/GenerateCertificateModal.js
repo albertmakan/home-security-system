@@ -13,8 +13,8 @@ import ExtendedKeyUsage from './ExtendedKeyUsage';
 
 const GenerateCertificateModal = ({ show, onClose, onGenerate, csr }) => {
   const [selectedOption, setSelectedOption] = useState('0');
-  const [keyUsage, setKeyUsage] = useState([]);
-  const [extendedKeyUsage, setExtendedKeyUsage] = useState([]);
+  const [keyUsage] = useState([]);
+  const [extendedKeyUsage] = useState([]);
   const [cA, setCA] = useState(false);
   const [pathLenConstraint, setPathLenConstraint] = useState(0);
 

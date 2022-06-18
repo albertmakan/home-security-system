@@ -6,8 +6,10 @@ import com.backend.admin.dto.auth.UserTokenState;
 import com.backend.admin.model.auth.RevokedToken;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.auth.RevokedTokensRepository;
+import com.backend.admin.service.CustomLogger;
 import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
 public class AuthenticationController {
 
     @Autowired
@@ -42,6 +45,9 @@ public class AuthenticationController {
     
     @Autowired
     private RevokedTokensRepository revokedTokensRepository;
+
+    @Autowired
+    private CustomLogger logger;
 
     @PostMapping("/login")
     public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest) {
@@ -64,7 +70,7 @@ public class AuthenticationController {
             user.setLoginAttempts(user.getLoginAttempts() + 1);
             user.setLastLoginAttemptDate(new Date());
             if (user.getLoginAttempts() >= 3) {
-                System.err.println("Blocking user: " + user.getUsername());
+                log.warn(logger.warn("Blocking user: " + user.getUsername()));
                 user.setBlocked(true);
             }
             userService.save(user);
@@ -87,6 +93,7 @@ public class AuthenticationController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Set-Cookie", cookie);
 
+        log.info(logger.info("User login: "+user.getUsername()));
         return ResponseEntity.ok().headers(headers).body(new UserTokenState(jwt, expiresIn));
     }
 
@@ -104,7 +111,6 @@ public class AuthenticationController {
 
     @GetMapping("/whoami")
     public ResponseEntity<UserDetails> whoami(@AuthenticationPrincipal UserDetails user) {
-
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

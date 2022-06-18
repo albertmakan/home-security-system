@@ -1,6 +1,10 @@
 package com.backend.admin.controller;
 
 import com.backend.admin.dto.HouseholdDTO;
+import com.backend.admin.dto.HouseholdRequest;
+import com.backend.admin.dto.UserDTO;
+import com.backend.admin.dto.auth.UserRequest;
+import com.backend.admin.model.Household;
 import com.backend.admin.service.HouseholdService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,5 +39,11 @@ public class HouseholdController {
         return householdService.findById(id)
                 .map(value -> new ResponseEntity<>(new HouseholdDTO(value, true), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAuthority('CREATE_HOUSEHOLD')")
+    public ResponseEntity<HouseholdDTO> addUser(@Valid @RequestBody HouseholdRequest householdRequest) {
+        return new ResponseEntity<>(new HouseholdDTO(householdService.create(householdRequest)), HttpStatus.CREATED);
     }
 }

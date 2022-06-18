@@ -1,5 +1,7 @@
 package com.backend.admin.service;
 
+import com.backend.admin.dto.HouseholdRequest;
+import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.NotFoundException;
 import com.backend.admin.model.Household;
 import com.backend.admin.model.auth.User;
@@ -44,5 +46,11 @@ public class HouseholdService {
         save(household);
     }
 
-
+    public Household create(HouseholdRequest request) {
+        if (householdRepository.findByName(request.getName()).isPresent())
+            throw new BadRequestException("Household name must be unique");
+        Household household = new Household();
+        household.setName(request.getName());
+        return save(household);
+    }
 }

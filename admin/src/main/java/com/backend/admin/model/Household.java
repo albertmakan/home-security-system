@@ -22,6 +22,8 @@ public class Household {
 
     private String name;
 
+    private List<Device> devices;
+
     @DBRef(lazy = true)
     @JsonIgnore
     private List<User> users;

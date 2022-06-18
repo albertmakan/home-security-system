@@ -6,7 +6,11 @@ class HouseholdService {
   }
 
   getById(id) {
-    return httpClient.get(`households/${id}`);
+    return httpClient.get(`/households/${id}`);
+  }
+
+  create(household) {
+    return httpClient.post('/households/create', household);
   }
 }
 

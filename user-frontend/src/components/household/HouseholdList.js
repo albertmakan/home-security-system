@@ -3,9 +3,20 @@ import React, { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Household from './Household';
 import HouseholdService from '../../services/HouseholdService';
+import Button from 'react-bootstrap/Button';
+import NewHouseholdModal from '../modals/NewHouseholdModal';
+import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const HouseholdList = () => {
   const [households, setHouseholds] = useState([]);
+  const [showH, setShowH] = useState(false);
+
+  const handleCreate = (household) => {
+    HouseholdService.create(household).then((h) => {
+      toastSuccessMessage('Household created');
+      setHouseholds([...households, h]);
+    });
+  };
 
   useEffect(() => {
     HouseholdService.getAll().then((response) => {
@@ -15,6 +26,9 @@ const HouseholdList = () => {
 
   return (
     <div>
+      <Button variant="primary" onClick={() => setShowH(true)}>
+        New household
+      </Button>
       {households.length === 0 ? (
         <h1>There are currently no households!</h1>
       ) : (
@@ -24,6 +38,7 @@ const HouseholdList = () => {
           ))}
         </Row>
       )}
+      <NewHouseholdModal show={showH} onClose={() => setShowH(false)} onCreate={handleCreate} />
     </div>
   );
 };

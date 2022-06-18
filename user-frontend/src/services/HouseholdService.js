@@ -12,6 +12,10 @@ class HouseholdService {
   create(household) {
     return httpClient.post('/households/create', household);
   }
+
+  addDevice(deviceForm) {
+    return httpClient.post('/households/device', deviceForm);
+  }
 }
 
 export default new HouseholdService();

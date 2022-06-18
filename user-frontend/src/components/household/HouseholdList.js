@@ -9,7 +9,7 @@ import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const HouseholdList = () => {
   const [households, setHouseholds] = useState([]);
-  const [showH, setShowH] = useState(false);
+  const [show, setShow] = useState(false);
 
   const handleCreate = (household) => {
     HouseholdService.create(household).then((h) => {
@@ -26,7 +26,7 @@ const HouseholdList = () => {
 
   return (
     <div>
-      <Button variant="primary" onClick={() => setShowH(true)}>
+      <Button variant="primary" onClick={() => setShow(true)}>
         New household
       </Button>
       {households.length === 0 ? (
@@ -38,7 +38,7 @@ const HouseholdList = () => {
           ))}
         </Row>
       )}
-      <NewHouseholdModal show={showH} onClose={() => setShowH(false)} onCreate={handleCreate} />
+      <NewHouseholdModal show={show} onClose={() => setShow(false)} onCreate={handleCreate} />
     </div>
   );
 };

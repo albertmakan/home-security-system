@@ -1,10 +1,8 @@
 package com.backend.admin.controller;
 
+import com.backend.admin.dto.DeviceRequest;
 import com.backend.admin.dto.HouseholdDTO;
 import com.backend.admin.dto.HouseholdRequest;
-import com.backend.admin.dto.UserDTO;
-import com.backend.admin.dto.auth.UserRequest;
-import com.backend.admin.model.Household;
 import com.backend.admin.service.HouseholdService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,13 @@ public class HouseholdController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('CREATE_HOUSEHOLD')")
-    public ResponseEntity<HouseholdDTO> addUser(@Valid @RequestBody HouseholdRequest householdRequest) {
+    public ResponseEntity<HouseholdDTO> addHousehold(@Valid @RequestBody HouseholdRequest householdRequest) {
         return new ResponseEntity<>(new HouseholdDTO(householdService.create(householdRequest)), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/device")
+    @PreAuthorize("hasAuthority('CREATE_HOUSEHOLD')")
+    public ResponseEntity<HouseholdDTO> addDevice(@Valid @RequestBody DeviceRequest deviceRequest) {
+        return new ResponseEntity<>(new HouseholdDTO(householdService.addDevice(deviceRequest),true), HttpStatus.CREATED);
     }
 }

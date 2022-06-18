@@ -16,6 +16,7 @@ const NewHouseholdModal = ({ show, onClose, onCreate }) => {
         <Container>
           <Form>
             <Form.Group>
+              <Form.Label>Household name</Form.Label>
               <Form.Control
                 id="name"
                 name="name"

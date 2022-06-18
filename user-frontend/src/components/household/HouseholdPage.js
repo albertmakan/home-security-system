@@ -2,10 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import HouseholdService from '../../services/HouseholdService';
 import Table from 'react-bootstrap/Table';
+import NewDeviceModal from '../modals/NewDeviceModal';
+import Button from 'react-bootstrap/Button';
+import { toastSuccessMessage } from '../../toast/toastMessages';
 
 const HouseholdPage = () => {
   const { householdId } = useParams();
   const [household, setHousehold] = useState({ id: householdId });
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     HouseholdService.getById(householdId).then((h) => {
@@ -14,10 +18,17 @@ const HouseholdPage = () => {
     });
   }, [householdId]);
 
+  const handleAddDevice = (deviceForm) => {
+    HouseholdService.addDevice(deviceForm).then((h) => {
+      toastSuccessMessage('Device created');
+      setHousehold(h);
+    });
+  };
+
   return (
     <>
       <h1>{household.name}</h1>
-
+      <h3>Users</h3>
       <Table>
         <thead>
           <tr>
@@ -26,14 +37,44 @@ const HouseholdPage = () => {
           </tr>
         </thead>
         <tbody>
-          {household.users?.map((u) => (
-            <tr>
+          {household.users?.map((u, i) => (
+            <tr key={i}>
               <td>{u.username}</td>
               <td>{u.roles}</td>
             </tr>
           ))}
         </tbody>
       </Table>
+      <h3>Devices</h3>
+      <Table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Path</th>
+            <th>Period</th>
+            <th>Filter</th>
+          </tr>
+        </thead>
+        <tbody>
+          {household.devices?.map((d, i) => (
+            <tr key={i}>
+              <td>{d.name}</td>
+              <td>{d.path}</td>
+              <td>{d.period}</td>
+              <td>{d.filter}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Button variant="primary" onClick={() => setShow(true)}>
+        Add device
+      </Button>
+      <NewDeviceModal
+        show={show}
+        onClose={() => setShow(false)}
+        onCreate={handleAddDevice}
+        household={household}
+      />
     </>
   );
 };

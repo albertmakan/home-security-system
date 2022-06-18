@@ -1,8 +1,10 @@
 package com.backend.admin.service;
 
+import com.backend.admin.dto.DeviceRequest;
 import com.backend.admin.dto.HouseholdRequest;
 import com.backend.admin.exception.BadRequestException;
 import com.backend.admin.exception.NotFoundException;
+import com.backend.admin.model.Device;
 import com.backend.admin.model.Household;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.HouseholdRepository;
@@ -51,6 +53,19 @@ public class HouseholdService {
             throw new BadRequestException("Household name must be unique");
         Household household = new Household();
         household.setName(request.getName());
+        return save(household);
+    }
+
+    public Household addDevice(DeviceRequest request) {
+        Household household = findById(request.getHouseholdId()).orElseThrow(() -> new NotFoundException("Household not found"));
+        if (household.getDevices() == null) household.setDevices(new ArrayList<>());
+        Device device = new Device();
+        device.setName(request.getName());
+        device.setFilter(request.getFilter());
+        device.setPath(request.getPath());
+        device.setPeriod(request.getPeriod());
+        device.setId(new ObjectId());
+        household.getDevices().add(device);
         return save(household);
     }
 }

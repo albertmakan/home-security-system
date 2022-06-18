@@ -70,7 +70,7 @@ const ChangePassword = () => {
           <Form.Control
             id="newPassword"
             name="newPassword"
-            type="newPassword"
+            type="password"
             value={formik.values.newPassword}
             onChange={formik.handleChange}
           />
@@ -83,7 +83,7 @@ const ChangePassword = () => {
           <Form.Control
             id="passwordConfirm"
             name="passwordConfirm"
-            type="passwordConfirm"
+            type="password"
             value={formik.values.passwordConfirm}
             onChange={formik.handleChange}
           />

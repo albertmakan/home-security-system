@@ -25,6 +25,14 @@ const HouseholdPage = () => {
     });
   };
 
+  const handleRemoveDevice = (device) => {
+    if (!window.confirm(`Do you want to delete device '${device.name}?'`)) return;
+    HouseholdService.removeDevice(householdId, device.id).then((h) => {
+      toastSuccessMessage('Device deleted');
+      setHousehold(h);
+    });
+  };
+
   return (
     <>
       <h1>{household.name}</h1>
@@ -37,8 +45,8 @@ const HouseholdPage = () => {
           </tr>
         </thead>
         <tbody>
-          {household.users?.map((u, i) => (
-            <tr key={i}>
+          {household.users?.map((u) => (
+            <tr key={u.id}>
               <td>{u.username}</td>
               <td>{u.roles}</td>
             </tr>
@@ -56,12 +64,17 @@ const HouseholdPage = () => {
           </tr>
         </thead>
         <tbody>
-          {household.devices?.map((d, i) => (
-            <tr key={i}>
+          {household.devices?.map((d) => (
+            <tr key={d.id}>
               <td>{d.name}</td>
               <td>{d.path}</td>
-              <td>{d.period}</td>
+              <td>{d.period} ms</td>
               <td>{d.filter}</td>
+              <td>
+                <Button variant="danger" size="sm" onClick={() => handleRemoveDevice(d)}>
+                  x
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -73,7 +86,7 @@ const HouseholdPage = () => {
         show={show}
         onClose={() => setShow(false)}
         onCreate={handleAddDevice}
-        household={household}
+        householdId={householdId}
       />
     </>
   );

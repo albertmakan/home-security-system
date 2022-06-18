@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
-const NewDeviceModal = ({ show, onClose, onCreate, household }) => {
+const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
   const validationSchema = Yup.object({
     // TODO validate, regex,...
     name: Yup.string().required('Required'),
@@ -25,7 +25,7 @@ const NewDeviceModal = ({ show, onClose, onCreate, household }) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       formik.resetForm();
-      onCreate({ ...values, householdId: household.id });
+      onCreate({ ...values, householdId });
       onClose();
     },
   });

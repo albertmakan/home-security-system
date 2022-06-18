@@ -50,4 +50,10 @@ public class HouseholdController {
     public ResponseEntity<HouseholdDTO> addDevice(@Valid @RequestBody DeviceRequest deviceRequest) {
         return new ResponseEntity<>(new HouseholdDTO(householdService.addDevice(deviceRequest),true), HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/device/{houseId}/{deviceId}")
+    @PreAuthorize("hasAuthority('CREATE_HOUSEHOLD')")
+    public ResponseEntity<HouseholdDTO> removeDevice(@PathVariable ObjectId houseId, @PathVariable ObjectId deviceId) {
+        return new ResponseEntity<>(new HouseholdDTO(householdService.removeDevice(houseId, deviceId),true), HttpStatus.OK);
+    }
 }

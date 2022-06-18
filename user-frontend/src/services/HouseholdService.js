@@ -16,6 +16,10 @@ class HouseholdService {
   addDevice(deviceForm) {
     return httpClient.post('/households/device', deviceForm);
   }
+
+  removeDevice(householdId, deviceId) {
+    return httpClient.delete(`/households/device/${householdId}/${deviceId}`);
+  }
 }
 
 export default new HouseholdService();

@@ -68,4 +68,12 @@ public class HouseholdService {
         household.getDevices().add(device);
         return save(household);
     }
+
+    public Household removeDevice(ObjectId houseId, ObjectId deviceId) {
+        Household household = findById(houseId).orElseThrow(() -> new NotFoundException("Household not found"));
+        if (household.getDevices() == null) household.setDevices(new ArrayList<>());
+        if (!household.getDevices().removeIf(device -> deviceId.equals(device.getId())))
+            throw new NotFoundException("Device not found");
+        return save(household);
+    }
 }

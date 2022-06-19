@@ -1,0 +1,8 @@
+import com.backend.myhouse.model.Device;
+
+rule "Check device"
+    when
+        Device()
+    then
+        System.out.println("NEW DEVICE DETECTED");
+end

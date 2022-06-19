@@ -1,6 +1,6 @@
 package com.backend.admin.controller;
 
-import com.backend.admin.model.Logs;
+import com.backend.admin.model.Log;
 import com.backend.admin.service.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class LogsController {
     private CustomLogger logger;
 
     @GetMapping("/all")
-    public ResponseEntity<List<Logs>> loadAll() {
+    public ResponseEntity<List<Log>> loadAll() {
         return new ResponseEntity<>(logger.findAll(),HttpStatus.OK);
     }
 }

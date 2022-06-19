@@ -12,10 +12,7 @@ const HouseholdPage = () => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    HouseholdService.getById(householdId).then((h) => {
-      setHousehold(h);
-      if (!h) window.location.replace('/notfound');
-    });
+    HouseholdService.getById(householdId).then((h) => setHousehold(h));
   }, [householdId]);
 
   const handleAddDevice = (deviceForm) => {

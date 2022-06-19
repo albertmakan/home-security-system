@@ -7,8 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,13 +21,10 @@ import com.backend.admin.util.TokenUtils;
 // Filter proverava da li JWT token postoji u Authorization header-u u zahtevu koji stize od klijenta
 // Ukoliko token postoji, proverava se da li je validan. Ukoliko je sve u redu, postavlja se autentifikacija
 // u SecurityContext holder kako bi podaci o korisniku bili dostupni u ostalim delovima aplikacije gde su neophodni
+@Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-
-	private TokenUtils tokenUtils;
-
-	private UserDetailsService userDetailsService;
-	
-	protected final Log LOGGER = LogFactory.getLog(getClass());
+	private final TokenUtils tokenUtils;
+	private final UserDetailsService userDetailsService;
 
 	public TokenAuthenticationFilter(TokenUtils tokenHelper, UserDetailsService userDetailsService) {
 		this.tokenUtils = tokenHelper;
@@ -38,7 +34,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-
 
 		String username;
 		
@@ -70,7 +65,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 			}
 			
 		} catch (ExpiredJwtException ex) {
-			LOGGER.debug("Token expired!");
+			log.debug("Token expired!");
 		} 
 		
 		// prosledi request dalje u sledeci filter

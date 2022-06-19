@@ -1,5 +1,6 @@
 package com.backend.admin.dto;
 
+import com.backend.admin.model.Device;
 import com.backend.admin.model.Household;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -15,10 +16,12 @@ public class HouseholdDTO {
     private ObjectId id;
     private String name;
     private List<UserDTO> users;
+    private List<Device> devices;
 
     public HouseholdDTO(Household household) {
         id = household.getId();
         name = household.getName();
+        devices = household.getDevices();
     }
 
     public HouseholdDTO(Household household, boolean withUsers) {

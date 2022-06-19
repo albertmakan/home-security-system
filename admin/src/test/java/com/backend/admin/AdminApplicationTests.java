@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.backend.admin.model.cert.CertificateSigningRequest;
 import com.backend.admin.dto.RevokeCertificateDTO;
-import com.backend.admin.model.enums.CertificateStatus;
+import com.backend.admin.model.cert.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
 
 import com.backend.admin.service.EmailService;

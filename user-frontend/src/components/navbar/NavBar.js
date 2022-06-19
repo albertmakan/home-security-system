@@ -53,6 +53,9 @@ const NavBar = () => {
                 <NavLink className="nav-link" to="/admin/households">
                   Households
                 </NavLink>
+                <NavLink className="nav-link" to="/admin/logs">
+                  Logs
+                </NavLink>
               </>
             )}
             {user.ROLE !== 'NONE' && (

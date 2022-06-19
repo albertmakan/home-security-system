@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-import com.backend.admin.model.enums.CertificateType;
+import com.backend.admin.model.cert.enums.CertificateType;
 
 @Data
 @AllArgsConstructor

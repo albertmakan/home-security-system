@@ -19,6 +19,8 @@ import UserList from './components/user/UserList';
 import tokenUtils from './utils/TokenUtils';
 import ChangePassword from './components/change-password/ChangePassword';
 import HouseholdList from './components/household/HouseholdList';
+import HouseholdPage from './components/household/HouseholdPage';
+import LogsPage from './components/logs/LogsPage';
 
 function App() {
   const [user, setUser] = useState({ ROLE: 'NONE' });
@@ -46,6 +48,10 @@ function App() {
         {user.ROLE === 'ROLE_ADMIN' && (
           <Route path="/admin/households" element={<HouseholdList />} />
         )}
+        {user.ROLE === 'ROLE_ADMIN' && (
+          <Route path="/admin/household/:householdId" element={<HouseholdPage />} />
+        )}
+        {user.ROLE === 'ROLE_ADMIN' && <Route path="/admin/logs" element={<LogsPage />} />}
       </Routes>
       <ToastContainer />
     </div>

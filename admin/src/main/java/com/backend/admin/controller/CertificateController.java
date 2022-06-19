@@ -2,7 +2,7 @@ package com.backend.admin.controller;
 
 import com.backend.admin.dto.CertificateDTO;
 import com.backend.admin.dto.RevokeCertificateDTO;
-import com.backend.admin.model.enums.CertificateStatus;
+import com.backend.admin.model.cert.enums.CertificateStatus;
 import com.backend.admin.service.CertificateService;
 import com.backend.admin.support.CertificateInfoToCertificateDTO;
 import lombok.AllArgsConstructor;

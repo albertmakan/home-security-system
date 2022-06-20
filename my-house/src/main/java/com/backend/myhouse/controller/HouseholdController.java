@@ -2,7 +2,6 @@ package com.backend.myhouse.controller;
 
 import com.backend.myhouse.model.Household;
 import com.backend.myhouse.services.CustomLogger;
-import com.backend.myhouse.services.DeviceService;
 import com.backend.myhouse.services.HouseholdService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,11 @@ public class HouseholdController {
     @Autowired
     private HouseholdService householdService;
     @Autowired
-    private DeviceService deviceService;
-    @Autowired
     private CustomLogger logger;
 
-    @GetMapping("/aaaa/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('READ_HOUSEHOLDS')")
     public ResponseEntity<Household> getById(@PathVariable ObjectId id) {
-        deviceService.test();
         return householdService.findById(id)
                 .map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

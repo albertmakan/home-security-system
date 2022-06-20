@@ -26,11 +26,6 @@ public class DeviceService {
 
     private Map<ObjectId, ScheduledFuture<?>> tasks;
 
-    public void test() {
-        kieSession.insert(new Device());
-        kieSession.fireAllRules();
-    }
-
     @PostConstruct
     public void startThreads() {
         tasks = new HashMap<>();

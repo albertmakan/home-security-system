@@ -27,6 +27,9 @@ const User = ({ user, onChangeRole, onManageHouseholds, onDelete }) => {
           <b>Roles: </b> {user.roles.join(',')}
         </ListGroupItem>
         <ListGroupItem style={{ textAlign: 'left' }}>
+          <b>Email address: </b> {user.email}
+        </ListGroupItem>
+        <ListGroupItem style={{ textAlign: 'left' }}>
           <b>Blocked: </b> {user.blocked.toString()}
         </ListGroupItem>
       </ListGroup>

@@ -31,6 +31,7 @@ const UserList = () => {
         getUsers();
     }, []);
 
+
     const handleChangeRole = (changeRequest) => {
         UserService.changeRole(changeRequest).then(() => {
             getUsers();
@@ -56,9 +57,15 @@ const UserList = () => {
             setUsers(response);
         });
     };
+
+    const onSearch = (searchKeyWord, selectedFilterValue) => {
+        console.log(searchKeyWord, selectedFilterValue)
+
+
+    }
     return (
         <>
-            <SearchFilterBar searchText="Search users..." filterText="Filter by role" filterValues={["ROLE_ADMIN", "ROLE_OWNER", "ROLE_TENANT"]}></SearchFilterBar>
+            <SearchFilterBar searchText="Search users..." filterText="Filter by role" filterValues={["ROLE_ADMIN", "ROLE_OWNER", "ROLE_TENANT"]} onSearch={onSearch}></SearchFilterBar>
             <div>
                 {users.length === 0 ? (
                     <h1>There are currently no users!</h1>

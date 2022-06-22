@@ -59,8 +59,12 @@ const UserList = () => {
     };
 
     const onSearch = (searchKeyWord, selectedFilterValue) => {
-        console.log(searchKeyWord, selectedFilterValue)
-
+        console.log(searchKeyWord, selectedFilterValue);
+        if (selectedFilterValue === "NO_VALUE") selectedFilterValue = null;
+        UserService.searchFilter(true, searchKeyWord, selectedFilterValue).then((response) => {
+            console.log(response);
+            setUsers(response);
+        });
 
     }
     return (

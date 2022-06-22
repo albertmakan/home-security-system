@@ -9,6 +9,10 @@ class UserService {
     return httpClient.get('/users/all', { params: { detailed } });
   }
 
+  searchFilter(detailed = false, keyword, role) {
+    return httpClient.get('/users/search-filter', { params: { detailed, keyword, role } });
+  }
+
   delete(userId) {
     return httpClient.delete(`/users/${userId}`);
   }

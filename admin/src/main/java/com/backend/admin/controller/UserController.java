@@ -49,11 +49,9 @@ public class UserController {
 
     @GetMapping("/search-filter")
     @PreAuthorize("hasAuthority('READ_USERS')")
-    public ResponseEntity<List<UserDTO>> loadAllWithSearchAndFilter(@RequestParam(required = false) boolean detailed, String keyword, Role role) {
-
-        //TODO
+    public ResponseEntity<List<UserDTO>> loadAllWithSearchAndFilter(@RequestParam(required = false) boolean detailed, String keyword, String role) {
         return new ResponseEntity<>(
-                userService.findAll().stream().map(u -> new UserDTO(u, detailed)).collect(Collectors.toList()),
+                userService.findAllWithKeywordAndRole(keyword, role).stream().map(u -> new UserDTO(u, detailed)).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 

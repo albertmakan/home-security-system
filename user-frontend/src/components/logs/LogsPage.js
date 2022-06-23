@@ -30,7 +30,8 @@ const LogsPage = () => {
             <Table>
                 <thead>
                     <tr>
-                        <th>Timestamp</th>
+                        <th>Date</th>
+                        <th>Time</th>
                         <th>Level</th>
                         <th>Message</th>
                     </tr>
@@ -38,7 +39,8 @@ const LogsPage = () => {
                 <tbody>
                     {logs.map((l, i) => (
                         <tr key={i}>
-                            <td>{moment(l.id.date).format("DD-MM-YYYY HH:mm")}</td>
+                            <td>{moment(l.id.date).format("DD.MM.YYYY.")}</td>
+                            <td>{moment(l.id.date).format("HH:mm")}</td>
                             <td>{l.level}</td>
                             <td>{l.message}</td>
                         </tr>

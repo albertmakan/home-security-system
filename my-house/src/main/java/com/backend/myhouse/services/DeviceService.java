@@ -25,6 +25,9 @@ public class DeviceService {
     private HouseholdService householdService;
 
     private Map<ObjectId, ScheduledFuture<?>> tasks;
+    
+    @Autowired
+    private MessageService messageService;
 
     @PostConstruct
     public void startThreads() {
@@ -32,7 +35,7 @@ public class DeviceService {
         for (Household h : householdService.getAll()) {
             if (h.getDevices() == null) continue;
             for (Device d : h.getDevices()) {
-                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(d, this), d.getPeriod()));
+                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(d, this, messageService), d.getPeriod()));
             }
         }
         System.out.println("TASKS STARTED");
@@ -49,6 +52,6 @@ public class DeviceService {
         if (household.getDevices() == null) household.setDevices(new ArrayList<>());
         Device device = household.getDevices().stream().filter(d -> deviceId.equals(d.getId())).findAny()
                 .orElseThrow(() -> new NotFoundException("Device not found"));
-        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(device, this), device.getPeriod()));
+        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(device, this, messageService), device.getPeriod()));
     }
 }

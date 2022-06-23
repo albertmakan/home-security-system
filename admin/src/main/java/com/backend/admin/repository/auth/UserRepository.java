@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends MongoRepository<User, ObjectId> {
     Optional<User> findByUsername(String name);
 
-    @Query("{ 'username' : { $regex : ?0, $options : 'i' }}, ") //TODO ROLES , 'roles.id.oid' : ?1 
+    @Query("{ 'username' : { $regex : ?0, $options : 'i' }}, ") //TODO ROLES , 'roles.id.oid' : ?1 <--- ne moze ovako, mora lookup da se radi
     List<User> findByUsernameRegexAndRole(String keyword);
 
 

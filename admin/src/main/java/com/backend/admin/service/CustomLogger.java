@@ -38,7 +38,6 @@ public class CustomLogger {
 
     public List<Log> loadAllWithSearchAndFilter(String keyword, Boolean regexChosen, String level, Date date) {
 
-        System.out.println(keyword + regexChosen + level + date);
         List<Log> logs = logsRepository.findAll();
 
         if (!level.equals("NO_VALUE")) {

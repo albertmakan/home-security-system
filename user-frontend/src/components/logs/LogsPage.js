@@ -38,7 +38,7 @@ const LogsPage = () => {
                 <tbody>
                     {logs.map((l, i) => (
                         <tr key={i}>
-                            <td>{new Date(l.id.date).toISOString()}</td>
+                            <td>{moment(l.id.date).format("DD-MM-YYYY HH:mm")}</td>
                             <td>{l.level}</td>
                             <td>{l.message}</td>
                         </tr>

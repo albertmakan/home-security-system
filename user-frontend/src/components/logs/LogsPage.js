@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import LogsService from '../../services/LogsService';
 import Table from 'react-bootstrap/Table';
 import SearchFilterBar from '../search-filter-bar/SearchFilterBar'
+import moment from "moment";
+
+
 const LogsPage = () => {
     const [logs, setLogs] = useState([]);
 
@@ -11,8 +14,14 @@ const LogsPage = () => {
         });
     }, []);
 
-    const onSearch = (searchInput, filterValue, regexSelected, chosenDate) => {
-        console.log(searchInput, filterValue, regexSelected, chosenDate)
+    const onSearch = (searchInput, level, regexSelected, chosenDate) => {
+        console.log(searchInput, level, regexSelected, chosenDate);
+        regexSelected = regexSelected === "on" ? true : false;
+    
+        LogsService.searchFilter(searchInput, regexSelected, level, chosenDate).then((response) => {
+            setLogs(response);
+        });
+
     }
 
     return (

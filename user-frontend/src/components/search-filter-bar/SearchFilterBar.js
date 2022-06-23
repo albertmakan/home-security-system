@@ -34,7 +34,7 @@ const SearchFilterBar = ({ searchText, filterText, filterValues, onSearch, regex
                     <input type='date' ref={dateEl}></input>
                 </div>
             )}
-            <button className="p-2 m-2" onClick={() => onSearch(searchInputEl.current.value, filterSelectEl.current.value, regexCheckEl.current.value, dateEl.current.value)}>Search</button>
+            <button className="p-2 m-2" onClick={() => onSearch(searchInputEl.current.value, filterSelectEl.current.value, regexCheckEl.current.checked, dateEl.current.value)}>Search</button>
         </div>
     );
 

@@ -2,10 +2,16 @@ import React, { useState, useEffect } from 'react';
 import MessageService from '../../services/MessageService';
 
 import Table from 'react-bootstrap/Table';
+import FormControl from 'react-bootstrap/FormControl';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 import { format } from 'date-fns';
 
 import { BiSortAlt2 } from 'react-icons/bi';
+
+import { toastErrorMessage } from '../../toast/toastMessages';
 
 const Messages = () => {
   const [householdMessages, setHouseholdMessages] = useState([
@@ -16,10 +22,12 @@ const Messages = () => {
     },
   ]);
 
+  const [date, setDate] = useState({ start: '', end: '' });
+  const [filter, setFilter] = useState('');
   const [sortOrder, setSortOrder] = useState(-1);
 
   useEffect(() => {
-    MessageService.getAll().then((response) => {
+    MessageService.getAll('', { start: '', end: '' }).then((response) => {
       setHouseholdMessages(response);
     });
   }, []);
@@ -38,8 +46,50 @@ const Messages = () => {
     });
   };
 
+  const generateReport = () => {
+    if ((!date.start && !date.end) || date.start > date.end) {
+      toastErrorMessage('Invalid date values');
+    } else {
+      MessageService.getAll('', date).then((response) => {
+        setHouseholdMessages(response);
+      });
+    }
+  };
+
+  const filterMessages = () => {
+    if (filter) {
+      MessageService.getAll(filter, { start: '', end: '' }).then((response) => {
+        setHouseholdMessages(response);
+      });
+    }
+  };
+
   return (
     <div>
+      <Row className="mt-2">
+        <Col md={6} className="offset-3">
+          <FormControl
+            type="text"
+            onChange={(e) => setFilter(e.target.value)}
+            value={filter}
+            placeholder="Filter messages"
+          />
+        </Col>
+        <Col md={1}>
+          <Button onClick={filterMessages}>Filter</Button>
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col md={3} className="offset-3">
+          <FormControl type="date" onChange={(e) => setDate({ ...date, start: e.target.value })} />
+        </Col>
+        <Col md={3}>
+          <FormControl type="date" onChange={(e) => setDate({ ...date, end: e.target.value })} />
+        </Col>
+        <Col md={1}>
+          <Button onClick={generateReport}>Generate</Button>
+        </Col>
+      </Row>
       {householdMessages.length === 0 ? (
         <h1>There are currently no households for this user!</h1>
       ) : (

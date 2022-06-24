@@ -19,7 +19,8 @@
   "name": "ROLE_OWNER",
   "privileges": [
     { "name": "REVOKE_TOKEN" },
-    { "name": "CHANGE_PASSWORD" }
+    { "name": "CHANGE_PASSWORD" },
+    { "name": "READ_MESSAGES"}
   ]
 },
 {
@@ -27,6 +28,7 @@
   "name": "ROLE_TENANT",
   "privileges": [
     { "name": "REVOKE_TOKEN" },
-    { "name": "CHANGE_PASSWORD" }
+    { "name": "CHANGE_PASSWORD" },
+    { "name": "READ_MESSAGES"}
   ]
 }]

@@ -14,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.security.InvalidAlgorithmParameterException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +52,8 @@ public class HouseholdController {
 
     @PostMapping("/device")
     @PreAuthorize("hasAuthority('CREATE_HOUSEHOLD')")
-    public ResponseEntity<HouseholdDTO> addDevice(@Valid @RequestBody DeviceRequest deviceRequest) {
+    public ResponseEntity<HouseholdDTO> addDevice(@Valid @RequestBody DeviceRequest deviceRequest)
+            throws InvalidAlgorithmParameterException {
         return new ResponseEntity<>(new HouseholdDTO(householdService.addDevice(deviceRequest),true), HttpStatus.CREATED);
     }
 

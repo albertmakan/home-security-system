@@ -8,10 +8,15 @@ import com.backend.admin.model.Device;
 import com.backend.admin.model.Household;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.HouseholdRepository;
+import com.backend.admin.util.Base64Utility;
+import com.backend.admin.util.ECCKeyGenerator;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,15 +40,18 @@ public class HouseholdService {
 
     public void addUserToHousehold(ObjectId householdId, User user) {
         Household household = findById(householdId).orElseThrow(() -> new NotFoundException("Household not found"));
-        if (household.getUsers() == null) household.setUsers(new ArrayList<>());
-        if (household.getUsers().stream().anyMatch(u -> user.getId().equals(u.getId()))) return;
+        if (household.getUsers() == null)
+            household.setUsers(new ArrayList<>());
+        if (household.getUsers().stream().anyMatch(u -> user.getId().equals(u.getId())))
+            return;
         household.getUsers().add(user);
         save(household);
     }
 
     public void removeUserFromHousehold(ObjectId householdId, ObjectId userId) {
         Household household = findById(householdId).orElseThrow(() -> new NotFoundException("Household not found"));
-        if (household.getUsers() == null) return;
+        if (household.getUsers() == null)
+            return;
         household.getUsers().removeIf(u -> userId.equals(u.getId()));
         save(household);
     }
@@ -56,22 +64,35 @@ public class HouseholdService {
         return save(household);
     }
 
-    public Household addDevice(DeviceRequest request) {
-        Household household = findById(request.getHouseholdId()).orElseThrow(() -> new NotFoundException("Household not found"));
-        if (household.getDevices() == null) household.setDevices(new ArrayList<>());
+    public Household addDevice(DeviceRequest request) throws InvalidAlgorithmParameterException {
+        Household household = findById(request.getHouseholdId())
+                .orElseThrow(() -> new NotFoundException("Household not found"));
+        if (household.getDevices() == null)
+            household.setDevices(new ArrayList<>());
         Device device = new Device();
         device.setName(request.getName());
         device.setFilter(request.getFilter());
         device.setPath(request.getPath());
         device.setPeriod(request.getPeriod());
         device.setId(new ObjectId());
+
+        ECCKeyGenerator keygen = new ECCKeyGenerator();
+        KeyPair kp = keygen.generateKeys();
+        String pubk = Base64Utility.encode(kp.getPublic().getEncoded());
+        String privk = Base64Utility.encode(kp.getPrivate().getEncoded());
+        System.out.println("PUBLIC KEY: " + pubk);
+        System.out.println("PRIVATE KEY: " + privk);
+
+        device.setPublicKey(pubk);
+
         household.getDevices().add(device);
         return save(household);
     }
 
     public Household removeDevice(ObjectId houseId, ObjectId deviceId) {
         Household household = findById(houseId).orElseThrow(() -> new NotFoundException("Household not found"));
-        if (household.getDevices() == null) household.setDevices(new ArrayList<>());
+        if (household.getDevices() == null)
+            household.setDevices(new ArrayList<>());
         if (!household.getDevices().removeIf(device -> deviceId.equals(device.getId())))
             throw new NotFoundException("Device not found");
         return save(household);

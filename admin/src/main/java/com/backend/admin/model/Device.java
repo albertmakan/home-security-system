@@ -9,10 +9,12 @@ import javax.persistence.Id;
 
 @Data
 public class Device {
-    @Id @JsonSerialize(using = ToStringSerializer.class)
+    @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private String name;
     private String path;
     private Integer period;
     private String filter;
+    private String publicKey;
 }

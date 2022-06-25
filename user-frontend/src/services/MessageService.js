@@ -2,7 +2,9 @@ import httpClient from '../config/httpClientMyHouse';
 
 class MessageService {
   getAll(filter, date) {
-    return httpClient.get(`/messages/all?filter=${filter}&start=${date.start}&end=${date.end}`);
+    return httpClient.get(`/messages/all`, {
+      params: { filter, start: date.start, end: date.end },
+    });
   }
 }
 

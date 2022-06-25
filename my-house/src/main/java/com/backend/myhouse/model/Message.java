@@ -22,11 +22,12 @@ public class Message {
     private ObjectId id;
     private Date timestamp;
     private String message;
-    private Device device;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private ObjectId deviceId;
 
     public Message(String message, Device device, Date timestamp) {
         this.message = message;
-        this.device = device;
+        this.deviceId = device.getId();
         this.timestamp = timestamp;
     }
 

@@ -22,27 +22,25 @@ const Messages = () => {
     },
   ]);
 
-  const [date, setDate] = useState({ start: '', end: '' });
+  const [date, setDate] = useState({
+    start: format(new Date(), 'yyyy-MM-dd'),
+    end: format(new Date(new Date().valueOf() + 86400000), 'yyyy-MM-dd'),
+  }); // default: todays messages
   const [filter, setFilter] = useState('');
   const [sortOrder, setSortOrder] = useState(-1);
 
   useEffect(() => {
-    MessageService.getAll('', { start: '', end: '' }).then((response) => {
+    MessageService.getAll('', date).then((response) => {
       setHouseholdMessages(response);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sortFunction = (col, household) => {
     setSortOrder(sortOrder * -1);
     household.messages.sort((a, b) => {
-      if (col === 'name' || col === 'path') {
-        if (a.device[col] === b.device[col]) return 0;
-
-        return a.device[col] < b.device[col] ? sortOrder * 1 : sortOrder * -1;
-      } else {
-        if (a[col] === b[col]) return 0;
-        return a[col] < b[col] ? sortOrder * 1 : sortOrder * -1;
-      }
+      if (a[col] === b[col]) return 0;
+      return a[col] < b[col] ? sortOrder * 1 : sortOrder * -1;
     });
   };
 
@@ -50,7 +48,7 @@ const Messages = () => {
     if ((!date.start && !date.end) || date.start > date.end) {
       toastErrorMessage('Invalid date values');
     } else {
-      MessageService.getAll('', date).then((response) => {
+      MessageService.getAll(filter, date).then((response) => {
         setHouseholdMessages(response);
       });
     }
@@ -58,7 +56,7 @@ const Messages = () => {
 
   const filterMessages = () => {
     if (filter) {
-      MessageService.getAll(filter, { start: '', end: '' }).then((response) => {
+      MessageService.getAll(filter, date).then((response) => {
         setHouseholdMessages(response);
       });
     }
@@ -81,10 +79,18 @@ const Messages = () => {
       </Row>
       <Row className="mt-2">
         <Col md={3} className="offset-3">
-          <FormControl type="date" onChange={(e) => setDate({ ...date, start: e.target.value })} />
+          <FormControl
+            type="date"
+            defaultValue={date.start}
+            onChange={(e) => setDate({ ...date, start: e.target.value })}
+          />
         </Col>
         <Col md={3}>
-          <FormControl type="date" onChange={(e) => setDate({ ...date, end: e.target.value })} />
+          <FormControl
+            type="date"
+            defaultValue={date.end}
+            onChange={(e) => setDate({ ...date, end: e.target.value })}
+          />
         </Col>
         <Col md={1}>
           <Button onClick={generateReport}>Generate</Button>
@@ -103,7 +109,7 @@ const Messages = () => {
                     <th>
                       Timestamp
                       <a
-                        href=""
+                        href="/"
                         onClick={(e) => {
                           e.preventDefault();
                           sortFunction('timestamp', household);
@@ -115,7 +121,7 @@ const Messages = () => {
                     <th>
                       Message
                       <a
-                        href=""
+                        href="/"
                         onClick={(e) => {
                           e.preventDefault();
                           sortFunction('message', household);
@@ -127,22 +133,10 @@ const Messages = () => {
                     <th>
                       Device name
                       <a
-                        href=""
+                        href="/"
                         onClick={(e) => {
                           e.preventDefault();
-                          sortFunction('name', household);
-                        }}
-                      >
-                        <BiSortAlt2 />
-                      </a>
-                    </th>
-                    <th>
-                      Device path
-                      <a
-                        href=""
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sortFunction('path', household);
+                          sortFunction('deviceId', household);
                         }}
                       >
                         <BiSortAlt2 />
@@ -155,8 +149,7 @@ const Messages = () => {
                     <tr key={i}>
                       <td>{format(new Date(message.timestamp), 'dd.MM.yyyy. HH:mm:ss')}</td>
                       <td>{message.message}</td>
-                      <td>{message.device.name}</td>
-                      <td>{message.device.path}</td>
+                      <td>{household.deviceNames[message.deviceId]}</td>
                     </tr>
                   ))}
                 </tbody>

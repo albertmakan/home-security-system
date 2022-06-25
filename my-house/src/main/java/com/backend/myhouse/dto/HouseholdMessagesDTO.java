@@ -1,6 +1,7 @@
 package com.backend.myhouse.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 
@@ -21,5 +22,6 @@ public class HouseholdMessagesDTO {
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId householdId;
     private String householdName;
+    private Map<String, String> deviceNames;
     private List<Message> messages;
 }

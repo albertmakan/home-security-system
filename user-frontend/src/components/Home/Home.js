@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import NotificationService from '../../services/NotificationService';
 
 const Home = () => {
+  useEffect(() => {
+    NotificationService.connect();
+  }, []);
+
   return (
     <div>
       <img

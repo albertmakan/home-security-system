@@ -11,7 +11,8 @@
     { "name": "MANAGE_USERS_HOUSEHOLDS" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "DELETE_USER" },
-    { "name": "CREATE_HOUSEHOLD" }
+    { "name": "CREATE_HOUSEHOLD" },
+    { "name": "RECEIVE_NOTIFICATION_LOGS" }
   ]
 },
 {

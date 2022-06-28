@@ -8,6 +8,7 @@ import com.backend.admin.model.cert.enums.CertificateStatus;
 import com.backend.admin.model.cert.enums.CertificateType;
 import com.backend.admin.repository.CertificateInfoRepository;
 import lombok.AllArgsConstructor;
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -45,7 +46,7 @@ public class CertificateService {
     private final UUIDService uuidService;
     private final EmailService emailService;
 
-    private final String intermAlias = "adagradinterm";
+    private final String intermAlias = "adagrad interm";
     private final String rootAlias = "adagrad root";
 
     public void generateCertificate(CertificateSigningRequest request) throws Exception {
@@ -167,6 +168,9 @@ public class CertificateService {
         } else if (request.getCa() != null && request.getCa()) {
             certificateBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
         }
+
+        GeneralNames names = new GeneralNames(new GeneralName(GeneralName.dNSName, "localhost"));
+        certificateBuilder.addExtension(Extension.subjectAlternativeName, true, names);
     }
 
     public void revokeCertificate(RevokeCertificateDTO revokeCertificateDTO) throws Exception {
@@ -211,7 +215,7 @@ public class CertificateService {
         String LINE_SEPARATOR = System.getProperty("line.separator");
         Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
         byte[] bytes = findBySerialNumber(serialNumber).getEncoded();
-
+//        byte[] bytes = certificateKeyStoreService.readCertificate("adagrad root").getEncoded();
         String certificate = "-----BEGIN CERTIFICATE-----" + LINE_SEPARATOR + new String(encoder.encode(bytes))
                 + LINE_SEPARATOR + "-----END CERTIFICATE-----";
 

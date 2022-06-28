@@ -4,7 +4,7 @@ import errorHandler from './errorHandler';
 
 const httpClient = axios.create({
   withCredentials: true,
-  baseURL: 'http://localhost:8080/api',
+  baseURL: 'https://localhost:8080/api',
   headers: {
     Authorization: `Bearer ${sessionStorage.getItem('token')}`,
   },

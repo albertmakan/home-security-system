@@ -8,3 +8,12 @@ agenda-group "logs"
         System.out.println("NEW ERROR LOG DETECTED: " + $log.getMessage());
         //TODO: notification?
 end
+
+rule "Too many failed logins"
+agenda-group "logs"
+    when
+        $log : Log(message.contains("Too many failed login attempts. Blocking user: "))
+    then
+        System.out.println("THREE OR MORE FAILED LOGINS DETECTED: " + $log.getMessage());
+        //TODO: notification?
+end

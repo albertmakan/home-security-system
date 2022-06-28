@@ -1,4 +1,5 @@
 import httpClient from '../config/httpClient';
+import { disconnect } from './NotificationService';
 
 class AuthService {
   login({ username, password }) {
@@ -7,7 +8,10 @@ class AuthService {
 
   logout() {
     sessionStorage.clear();
-    window.location.replace('/login');
+    disconnect();
+    setTimeout(() => {
+      window.location.replace('/login');
+    }, 500);
   }
 
   whoAmI() {

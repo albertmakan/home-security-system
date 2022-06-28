@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connectAlarm, connectLogs } from '../../services/NotificationService';
+import TokenUtils from '../../utils/TokenUtils';
 
 const Home = () => {
+  useEffect(() => {
+    if (sessionStorage.getItem('justLoggedIn')) {
+      sessionStorage.removeItem('justLoggedIn');
+      if (TokenUtils.getUser().ROLE === 'ROLE_ADMIN') connectLogs();
+      else connectAlarm();
+    }
+  }, []);
+
   return (
     <div>
       <img

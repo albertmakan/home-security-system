@@ -5,6 +5,7 @@ import com.backend.admin.model.Log;
 import com.backend.admin.repository.LogsRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,6 +17,8 @@ import java.util.List;
 public class CustomLogger {
     @Autowired
     private LogsRepository logsRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public String info(String message) {
         logsRepository.save(new Log("INFO", message));
@@ -23,12 +26,16 @@ public class CustomLogger {
     }
 
     public String warn(String message) {
-        logsRepository.save(new Log("WARN", message));
+        Log l = new Log("WARN", message);
+        logsRepository.save(l);
+        notify(l);
         return message;
     }
 
     public String error(String message) {
-        logsRepository.save(new Log("ERROR", message));
+        Log l = new Log("ERROR", message);
+        logsRepository.save(l);
+        notify(l);
         return message;
     }
 
@@ -55,5 +62,9 @@ public class CustomLogger {
 
     private Date toDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public void notify(Log log) {
+        messagingTemplate.convertAndSend("/topic/warn-logs", log);
     }
 }

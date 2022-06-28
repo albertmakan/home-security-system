@@ -3,9 +3,11 @@ package com.backend.myhouse.services;
 import com.backend.myhouse.exception.NotFoundException;
 import com.backend.myhouse.model.Device;
 import com.backend.myhouse.model.Household;
+import com.backend.myhouse.model.auth.User;
 import org.bson.types.ObjectId;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,8 @@ public class DeviceService {
     
     @Autowired
     private MessageService messageService;
+    @Autowired
+    public SimpMessagingTemplate messagingTemplate;
 
     @PostConstruct
     public void startThreads() {
@@ -35,7 +39,7 @@ public class DeviceService {
         for (Household h : householdService.getAll()) {
             if (h.getDevices() == null) continue;
             for (Device d : h.getDevices()) {
-                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(d, this, messageService), d.getPeriod()));
+                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(d, h, this, messageService), d.getPeriod()));
             }
         }
         System.out.println("TASKS STARTED");
@@ -52,6 +56,15 @@ public class DeviceService {
         if (household.getDevices() == null) household.setDevices(new ArrayList<>());
         Device device = household.getDevices().stream().filter(d -> deviceId.equals(d.getId())).findAny()
                 .orElseThrow(() -> new NotFoundException("Device not found"));
-        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(device, this, messageService), device.getPeriod()));
+        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(device, household, this, messageService), device.getPeriod()));
+    }
+
+    public void notifyUsers(Household household, String message) {
+        if (household.getUsers() != null) {
+            for (User user : household.getUsers()) {
+                messagingTemplate.convertAndSendToUser(user.getUsername(), "/queue/alarms", message);
+            }
+        }
+
     }
 }

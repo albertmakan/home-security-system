@@ -1,7 +1,7 @@
-package com.backend.admin.config;
+package com.backend.myhouse.config;
 
-import com.backend.admin.security.auth.TokenBasedAuthentication;
-import com.backend.admin.util.TokenUtils;
+import com.backend.myhouse.security.auth.TokenBasedAuthentication;
+import com.backend.myhouse.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

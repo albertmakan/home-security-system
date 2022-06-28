@@ -1,9 +1,14 @@
 import React, { useEffect } from 'react';
-import NotificationService from '../../services/NotificationService';
+import { connectAlarm, connectLogs } from '../../services/NotificationService';
+import TokenUtils from '../../utils/TokenUtils';
 
 const Home = () => {
   useEffect(() => {
-    NotificationService.connect();
+    if (sessionStorage.getItem('justLoggedIn')) {
+      sessionStorage.removeItem('justLoggedIn');
+      if (TokenUtils.getUser().ROLE === 'ROLE_ADMIN') connectLogs();
+      else connectAlarm();
+    }
   }, []);
 
   return (

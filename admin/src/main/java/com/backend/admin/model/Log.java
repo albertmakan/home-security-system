@@ -1,9 +1,12 @@
 package com.backend.admin.model;
 
-import lombok.Data;
-import org.bson.types.ObjectId;
+import java.util.Date;
 
 import javax.persistence.Id;
+
+import org.bson.types.ObjectId;
+
+import lombok.Data;
 
 @Data
 public class Log {

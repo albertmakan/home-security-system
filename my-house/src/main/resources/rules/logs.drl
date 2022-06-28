@@ -8,3 +8,12 @@ agenda-group "logs"
         System.out.println("NEW ERROR LOG DETECTED: " + $log.getMessage());
         //TODO: notification?
 end
+
+rule "4xx error log"
+agenda-group "logs"
+    when
+        $log : Log(level.equals("WARN"), !message.contains("Too many failed login attempts. Blocking user: "))
+    then
+        System.out.println("WARNING LOG: " + $log.getMessage());
+        //TODO: notification?
+end

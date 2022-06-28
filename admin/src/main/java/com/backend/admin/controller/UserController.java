@@ -5,6 +5,7 @@ import com.backend.admin.dto.UserDTO;
 import com.backend.admin.dto.auth.ChangePasswordRequest;
 import com.backend.admin.dto.auth.ChangeRoleRequest;
 import com.backend.admin.dto.auth.UserRequest;
+import com.backend.admin.model.auth.Role;
 import com.backend.admin.service.auth.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,14 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> loadAll(@RequestParam(required = false) boolean detailed) {
         return new ResponseEntity<>(
                 userService.findAll().stream().map(u -> new UserDTO(u, detailed)).collect(Collectors.toList()),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/search-filter")
+    @PreAuthorize("hasAuthority('READ_USERS')")
+    public ResponseEntity<List<UserDTO>> loadAllWithSearchAndFilter(@RequestParam(required = false) boolean detailed, String keyword, String role) {
+        return new ResponseEntity<>(
+                userService.findAllWithKeywordAndRole(keyword, role).stream().map(u -> new UserDTO(u, detailed)).collect(Collectors.toList()),
                 HttpStatus.OK);
     }
 

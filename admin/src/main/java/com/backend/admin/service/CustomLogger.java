@@ -23,16 +23,22 @@ public class CustomLogger {
     public String warn(String message) {
         Log l = new Log("WARN", message);
         logsRepository.save(l);
-        messagingTemplate.convertAndSend("/topic/warn-logs", l);
+        notify(l);
         return message;
     }
 
     public String error(String message) {
-        logsRepository.save(new Log("ERROR", message));
+        Log l = new Log("ERROR", message);
+        logsRepository.save(l);
+        notify(l);
         return message;
     }
 
     public List<Log> findAll() {
         return logsRepository.findAll();
+    }
+
+    public void notify(Log log) {
+        messagingTemplate.convertAndSend("/topic/warn-logs", log);
     }
 }

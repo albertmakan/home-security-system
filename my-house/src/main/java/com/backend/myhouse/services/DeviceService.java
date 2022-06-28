@@ -1,6 +1,5 @@
 package com.backend.myhouse.services;
 
-import com.backend.myhouse.exception.NotFoundException;
 import com.backend.myhouse.model.Device;
 import com.backend.myhouse.model.Household;
 import com.backend.myhouse.model.auth.User;
@@ -15,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
 
 @Service
@@ -50,13 +50,23 @@ public class DeviceService {
             System.out.println("TASK CANCELLED");
     }
 
-    // call from admin app when device is added
     public void addTask(ObjectId houseId, ObjectId deviceId) {
-        Household household = householdService.findById(houseId).orElseThrow(() -> new NotFoundException("Household not found"));
+        Optional<Household> optionalHousehold = householdService.findById(houseId);
+        if (!optionalHousehold.isPresent()) {
+            System.out.println("Household not found "+houseId);
+            return;
+        }
+        Household household = optionalHousehold.get();
         if (household.getDevices() == null) household.setDevices(new ArrayList<>());
-        Device device = household.getDevices().stream().filter(d -> deviceId.equals(d.getId())).findAny()
-                .orElseThrow(() -> new NotFoundException("Device not found"));
-        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(device, household, this, messageService), device.getPeriod()));
+        Optional<Device> optionalDevice = household.getDevices().stream().filter(d -> deviceId.equals(d.getId())).findAny();
+        if (!optionalDevice.isPresent()) {
+            System.out.println("Device not found "+deviceId);
+            return;
+        }
+        Device device = optionalDevice.get();
+        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(
+                new MessageReaderRunnable(device, household, this, messageService), device.getPeriod())
+        );
     }
 
     public void notifyUsers(Household household, String message) {

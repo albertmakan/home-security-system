@@ -8,7 +8,7 @@ export const connectLogs = () => {
   console.log('Initialize WebSocket connection');
   let token = sessionStorage.getItem('token');
   if (!token) return;
-  stompClient = Stomp.over(new SockJS('http://localhost:8080/api/websocket'));
+  stompClient = Stomp.over(new SockJS('https://localhost:8080/api/websocket'));
   stompClient.connect(
     {
       Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export const connectAlarm = () => {
   console.log('Initialize WebSocket connection');
   let token = sessionStorage.getItem('token');
   if (!token) return;
-  stompClient = Stomp.over(new SockJS('http://localhost:8081/api/websocket'));
+  stompClient = Stomp.over(new SockJS('https://localhost:8081/api/websocket'));
   stompClient.connect(
     {
       Authorization: `Bearer ${token}`,

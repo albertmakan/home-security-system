@@ -26,7 +26,7 @@ public class CustomLogger {
 
     @Qualifier("rulesSession")
     private final KieSession rulesSession;
-    
+
     private LogsRepository logsRepository;
 
     public String info(String message) {
@@ -38,14 +38,13 @@ public class CustomLogger {
         return message;
     }
 
-    
     public String warn(String message) {
         Log log = new Log("WARN", message);
         rulesSession.getAgenda().getAgendaGroup("logs").setFocus();
         rulesSession.insert(log);
         rulesSession.fireAllRules();
         logsRepository.save(log);
-        return message; 
+        return message;
 
     }
 
@@ -63,9 +62,17 @@ public class CustomLogger {
     }
 
     public List<Log> loadAllWithSearchAndFilter(String keyword, String level, Date date) {
-        LocalDate ld = date == null ? LocalDate.now() : toLocalDate(date);
-        ObjectId idMin = new ObjectId(toDate(ld));
-        ObjectId idMax = new ObjectId(toDate(ld.plusDays(1)));
+
+        ObjectId idMin, idMax;
+
+        if (date == null) {
+            idMin = new ObjectId(new Date(0));
+            idMax = new ObjectId(toDate(LocalDate.now().plusDays(1)));
+        } else {
+            LocalDate ld = toLocalDate(date);
+            idMin = new ObjectId(toDate(ld));
+            idMax = new ObjectId(toDate(ld.plusDays(1)));
+        }
 
         try {
             return level.equals("NO_VALUE") ? logsRepository.getForDayByFilter(idMin, idMax, keyword)

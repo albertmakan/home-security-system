@@ -3,6 +3,7 @@ package com.backend.admin.controller;
 import com.backend.admin.model.Log;
 import com.backend.admin.service.CustomLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -21,5 +23,11 @@ public class LogsController {
     @GetMapping("/all")
     public ResponseEntity<List<Log>> loadAll() {
         return new ResponseEntity<>(logger.findAll(),HttpStatus.OK);
+    }
+
+    @GetMapping("/search-filter")
+    public ResponseEntity<List<Log>> loadAllWithSearchAndFilter(String keyword, Boolean regexChosen, String level,
+                                                                @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        return new ResponseEntity<>(logger.loadAllWithSearchAndFilter(keyword, level, date),HttpStatus.OK);
     }
 }

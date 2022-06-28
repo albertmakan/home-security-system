@@ -1,0 +1,10 @@
+import com.backend.myhouse.model.Log;
+
+rule "Error log"
+agenda-group "logs"
+    when
+        $log : Log(level.equals("ERROR"))
+    then
+        System.out.println("NEW ERROR LOG DETECTED: " + $log.getMessage());
+        //TODO: notification?
+end

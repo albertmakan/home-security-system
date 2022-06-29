@@ -6,6 +6,7 @@ import com.backend.myhouse.model.Household;
 import org.bson.types.ObjectId;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.ScheduledFuture;
 @Service
 public class DeviceService {
     @Autowired
+    @Qualifier("rulesSession")
     private KieSession kieSession;
     @Autowired
     private ThreadPoolTaskScheduler taskScheduler;

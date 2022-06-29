@@ -1,11 +1,15 @@
 import com.backend.admin.model.request.AppRequest;
+import java.util.List
 
-rule "req"
+
+global List<String> maliciousIPAddresses;
+
+
+rule "Malicious IP address in request"
 agenda-group "requests"
     when
-        $req : AppRequest()
+        $req : AppRequest(ipAddress memberOf maliciousIPAddresses)
     then
-        // System.out.println("//////////////////////////////////////////////// REQ");
-        //TODO: notification?
+        System.out.println("MALICIOUS IP ADDRESS DETECTED!");
 end
 

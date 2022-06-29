@@ -99,4 +99,29 @@ public class HouseholdService {
             throw new NotFoundException("Device not found");
         return save(household);
     }
+
+    public List<Household> getByUser(User user) {
+        List<Household> list = new ArrayList<Household>();
+        for (Household h : getAll()){
+            for (User u : h.getUsers()){
+                if (u.getUsername().equals(user.getUsername())){
+                    list.add(h);
+                }
+            }
+
+        }
+        return list;
+    }
+
+    public Optional<Household> findByIdAndUser(ObjectId id, User user) {
+        Optional<Household> optional = findById(id);
+        if (optional.isPresent()){
+            for (User u : optional.get().getUsers()){
+                if (u.getUsername().equals(user.getUsername())){
+                    return optional;
+                }
+            }
+        }
+        return Optional.empty();
+    }
 }

@@ -1,12 +1,21 @@
 import httpClient from '../config/httpClient';
+import tokenUtils from '../utils/TokenUtils';
 
 class HouseholdService {
   getAll(detailed = false) {
     return httpClient.get('/households/all', { params: { detailed } });
   }
 
+  getAllByUser(detailed = false) {
+    return httpClient.get(`/households/byUser`);
+  }
+
   getById(id) {
     return httpClient.get(`/households/${id}`);
+  }
+
+  getByIdAndUser(id) {
+    return httpClient.get(`/households/byUser/${id}`);
   }
 
   create(household) {

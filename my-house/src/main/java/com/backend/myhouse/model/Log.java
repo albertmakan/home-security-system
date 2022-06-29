@@ -1,5 +1,7 @@
 package com.backend.myhouse.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,7 +11,7 @@ import javax.persistence.Id;
 @Data
 @Document
 public class Log {
-    @Id
+    @Id @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private String level;
     private String message;

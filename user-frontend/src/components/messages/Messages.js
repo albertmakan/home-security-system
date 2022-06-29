@@ -170,6 +170,7 @@ const Messages = () => {
                         <BiSortAlt2 />
                       </a>
                     </th>
+                    <th>Alarm</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -192,6 +193,7 @@ const Messages = () => {
                         )}
                       </td>
                       <td>{household.deviceNames[message.deviceId]}</td>
+                      <td>{message.alarm}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -32,10 +32,11 @@ public class Message {
     @Transient
     private DeviceType deviceType;
 
-    public Message(String message, Device device, Date timestamp) {
+    public Message(String message, Device device, Date timestamp, Map<String, Object> data) {
         this.message = message;
         this.deviceId = device.getId();
         this.deviceType = device.getType();
         this.timestamp = timestamp;
+        this.data = data;
     }
 }

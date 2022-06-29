@@ -1,6 +1,8 @@
 package com.backend.myhouse.model.rules;
 
 import com.backend.myhouse.model.DeviceType;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,7 +13,7 @@ import java.util.List;
 @Data
 @Document
 public class AlarmRule {
-    @Id
+    @Id @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
     private DeviceType deviceType;
     private List<Condition> conditions;

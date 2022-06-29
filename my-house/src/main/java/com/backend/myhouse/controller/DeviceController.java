@@ -1,6 +1,7 @@
 package com.backend.myhouse.controller;
 
 import com.backend.myhouse.dto.mq.NewDevice;
+import com.backend.myhouse.services.AlarmRuleService;
 import com.backend.myhouse.services.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeviceController {
     @Autowired
     private DeviceService deviceService;
+    @Autowired
+    private AlarmRuleService alarmRuleService;
 
     @KafkaListener(
             topics = { "NEW_DEVICE" },
@@ -17,7 +20,9 @@ public class DeviceController {
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void publishListener(NewDevice newDevice) {
-        System.out.println("GOT NEW DEVICE!!!!!!!!!!!!!!!!!!!! "+newDevice.getDeviceId());
-        deviceService.addTask(newDevice.getHouseId(), newDevice.getDeviceId());
+        if (newDevice.getIsNewAlarmRule())
+            alarmRuleService.createKieSession();
+        else
+            deviceService.addTask(newDevice.getHouseId(), newDevice.getDeviceId());
     }
 }

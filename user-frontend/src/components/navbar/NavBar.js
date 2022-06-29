@@ -64,9 +64,14 @@ const NavBar = () => {
               </>
             )}
             {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
-              <NavLink className="nav-link" to="/user/messages">
-                Messages
-              </NavLink>
+              <>
+                <NavLink className="nav-link" to="/user/messages">
+                  Messages
+                </NavLink>
+                <NavLink className="nav-link" to="/user/households">
+                  My households
+                </NavLink>
+              </>
             )}
             {user.ROLE !== 'NONE' && (
               <NavDropdown title="Account" id="basic-nav-dropdown">

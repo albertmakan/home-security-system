@@ -102,7 +102,7 @@ class MyHouseApplicationTests {
 
 	private String applyRuleTemplate(AlarmRule rule) {
 		List<TemplateModel> data = new ArrayList<>();
-		data.add(new TemplateModel(rule.conditionsString(), rule.deviceTypeOrIdString(), rule.getAlarmText()));
+		data.add(new TemplateModel(rule.conditionsString(), rule.getDeviceType().toString(), rule.getAlarmText()));
 
 		ObjectDataCompiler converter = new ObjectDataCompiler();
 

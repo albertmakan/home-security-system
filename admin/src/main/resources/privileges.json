@@ -25,7 +25,8 @@
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
-    { "name": "RECEIVE_NOTIFICATION_LOGS"}
+    { "name": "RECEIVE_NOTIFICATION_ALARMS"},
+    { "name": "READ_MY_HOUSEHOLDS"}
   ]
 },
 {
@@ -35,6 +36,7 @@
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
-    { "name": "RECEIVE_NOTIFICATION_LOGS"}
+    { "name": "RECEIVE_NOTIFICATION_ALARMS"},
+    { "name": "READ_MY_HOUSEHOLDS"}
   ]
 }]

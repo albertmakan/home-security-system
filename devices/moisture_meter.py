@@ -32,9 +32,8 @@ if not os.path.exists(path):
 
 key = RSA.importKey(b64decode(private_key_str))
 
-message = {"value": "closed", "stateTime": 0, "day": True}
+message = {"value": 0, "stateTime": 0, "day": True}
 
-states = ["open", "closed"]
 
 while True:
     day = 0

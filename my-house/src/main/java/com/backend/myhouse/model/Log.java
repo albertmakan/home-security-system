@@ -2,10 +2,12 @@ package com.backend.myhouse.model;
 
 import lombok.Data;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 
 @Data
+@Document
 public class Log {
     @Id
     private ObjectId id;

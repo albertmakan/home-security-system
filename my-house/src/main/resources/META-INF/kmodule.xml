@@ -3,4 +3,8 @@
     <kbase name="rules" packages="rules">
         <ksession name="ksession-rules"/>
     </kbase>
+
+    <kbase name="alarms" packages="alarms">
+        <ksession name="ksession-alarms"/>
+    </kbase>
 </kmodule>

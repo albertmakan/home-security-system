@@ -2,16 +2,11 @@ package com.backend.myhouse.services;
 
 import com.backend.myhouse.model.Device;
 import com.backend.myhouse.model.Household;
-import com.backend.myhouse.model.Message;
-
-import com.backend.myhouse.model.auth.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Date;
 
 public class MessageReaderRunnable implements Runnable {
     private final DeviceService deviceService;

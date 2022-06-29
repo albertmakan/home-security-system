@@ -12,7 +12,7 @@ def rsa_keys():
     return private_key, public_key
 
 
-def sign(rsa_private_key, message):
+def sign(private_key, message):
     digest = SHA256.new()
     digest.update(message.encode('utf-8'))
 

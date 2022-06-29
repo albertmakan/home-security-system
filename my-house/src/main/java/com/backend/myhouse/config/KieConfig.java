@@ -6,7 +6,10 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.AllArgsConstructor;
+
 @Configuration
+@AllArgsConstructor
 public class KieConfig {
 
     @Bean
@@ -20,4 +23,10 @@ public class KieConfig {
         return kieContainer().newKieSession("rulesSession");
     }
 
+    @Bean(name = "cepSession")
+    public KieSession eventsSession() {
+        KieSession kieSession = this.kieContainer().newKieSession("cepSession");
+        return kieSession;
+    }
 }
+

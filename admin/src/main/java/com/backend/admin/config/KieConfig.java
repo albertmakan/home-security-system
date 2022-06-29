@@ -23,4 +23,11 @@ public class KieConfig {
         return kieContainer().newKieSession("rulesSession");
     }
 
+    @Bean(name = "cepSession")
+    public KieSession eventsSession() {
+        KieSession kieSession = this.kieContainer().newKieSession("cepSession");
+        return kieSession;
+    }
 }
+
+

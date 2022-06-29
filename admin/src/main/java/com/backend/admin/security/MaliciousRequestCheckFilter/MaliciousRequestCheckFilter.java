@@ -25,15 +25,23 @@ public class MaliciousRequestCheckFilter extends OncePerRequestFilter {
     @Setter
     private KieSession rulesSession;
 
+    @Setter
+    private KieSession eventsSession;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("REQUEST RECEIVED ------ " + request.getRequestURI());
+        // log.info("REQUEST RECEIVED ------ " + request.getRequestURI());
         
         AppRequest appRequest = new AppRequest(request.getRemoteAddr(), request.getRequestURI());
+
         rulesSession.getAgenda().getAgendaGroup("requests").setFocus();
         rulesSession.insert(appRequest);
         rulesSession.fireAllRules();
+
+        eventsSession.getAgenda().getAgendaGroup("requests").setFocus();
+        eventsSession.insert(appRequest);
+        eventsSession.fireAllRules();
 
         filterChain.doFilter(request, response);
         

@@ -60,6 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		customUserDetailsService.setPasswordEncoder(passwordEncoder());
 		customUserDetailsService.setAuthenticationManager(authenticationManagerBean());
         maliciousRequestCheckFilter.setRulesSession(kieConfig.rulesSession());
+        maliciousRequestCheckFilter.setEventsSession(kieConfig.eventsSession());
 
 	}
 

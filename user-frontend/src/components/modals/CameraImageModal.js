@@ -1,8 +1,5 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/Container';
 import Image from 'react-bootstrap/Image';
 
 const CameraImageModal = ({ show, onClose, image }) => {

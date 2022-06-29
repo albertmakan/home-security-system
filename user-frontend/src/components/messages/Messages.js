@@ -125,7 +125,7 @@ const Messages = () => {
         </Col>
       </Row>
       {householdMessages.length === 0 ? (
-        <h1>There are currently no households for this user!</h1>
+        <h1>There are currently no messages for this user!</h1>
       ) : (
         <div>
           {householdMessages.map((household, i) => (

@@ -23,6 +23,8 @@ import HouseholdPage from './components/household/HouseholdPage';
 import LogsPage from './components/logs/LogsPage';
 
 import Messages from './components/messages/Messages';
+import UsersHouseholdPage from './components/users-households/UsersHouseholdPage';
+import UsersHouseholdList from './components/users-households/UsersHouseholdList';
 import AlarmRulePage from './components/alarm-rules/AlarmRulesPage';
 
 function App() {
@@ -60,6 +62,12 @@ function App() {
         )}
         {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
           <Route path="/user/messages" element={<Messages />} />
+        )}
+        {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+          <Route path="/my-houses" element={<UsersHouseholdList />} />
+        )}
+        {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
+          <Route path="/my-houses/:householdId" element={<UsersHouseholdPage />} />
         )}
       </Routes>
       <ToastContainer />

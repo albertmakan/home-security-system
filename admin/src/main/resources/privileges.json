@@ -8,6 +8,7 @@
     { "name": "READ_CSR" },
     { "name": "GENERATE_CER" },
     { "name": "READ_HOUSEHOLDS" },
+    { "name": "READ_OWN_HOUSEHOLDS" },
     { "name": "MANAGE_USERS_HOUSEHOLDS" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "DELETE_USER" },
@@ -25,6 +26,8 @@
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
+    { "name": "READ_OWN_HOUSEHOLDS" },
+    { "name": "RECEIVE_NOTIFICATION_LOGS"}
     { "name": "RECEIVE_NOTIFICATION_ALARMS"},
     { "name": "READ_MY_HOUSEHOLDS"}
   ]
@@ -36,6 +39,8 @@
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
+    { "name": "READ_OWN_HOUSEHOLDS" },
+    { "name": "RECEIVE_NOTIFICATION_LOGS"}
     { "name": "RECEIVE_NOTIFICATION_ALARMS"},
     { "name": "READ_MY_HOUSEHOLDS"}
   ]

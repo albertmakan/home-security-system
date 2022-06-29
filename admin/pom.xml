@@ -15,7 +15,9 @@
 	<name>admin</name>
 	<description>Home security system admin application.</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>1.8</java.version>
+        <kie.version>7.17.0.Final</kie.version>
+
 	</properties>
 	<dependencies>
 		<dependency>
@@ -27,12 +29,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -109,6 +111,16 @@
 			<artifactId>spring-kafka</artifactId>
 		</dependency>
 
+        <dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>${kie.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-spring</artifactId>
+			<version>${kie.version}</version>
+		</dependency>
 		<!-- esapi for xss -->
         <!-- <dependency>
             <groupId>org.owasp.esapi</groupId>

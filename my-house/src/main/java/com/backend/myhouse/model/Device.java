@@ -17,5 +17,6 @@ public class Device {
     private String path;
     private Integer period;
     private String filter;
+    private String publicKey;
     private DeviceType type;
 }

@@ -19,4 +19,6 @@ public class DeviceRequest {
     private Integer period;
     @NotBlank
     private String filter;
+    @NotBlank
+    private String publicKey;
 }

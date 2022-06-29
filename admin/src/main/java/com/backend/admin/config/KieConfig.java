@@ -1,4 +1,4 @@
-package com.backend.myhouse.config;
+package com.backend.admin.config;
 
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -29,4 +29,5 @@ public class KieConfig {
         return kieSession;
     }
 }
+
 

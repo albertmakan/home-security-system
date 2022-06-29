@@ -1,0 +1,15 @@
+import com.backend.myhouse.model.request.AppRequest;
+import java.util.List
+
+
+global List<String> maliciousIPAddresses;
+
+
+rule "Malicious IP address in request"
+agenda-group "requests"
+    when
+        $req : AppRequest(ipAddress memberOf maliciousIPAddresses)
+    then
+        System.out.println("MALICIOUS IP ADDRESS DETECTED!");
+end
+

@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { BiSortAlt2 } from 'react-icons/bi';
 
 import { toastErrorMessage } from '../../toast/toastMessages';
+import CameraImageModal from '../modals/CameraImageModal';
 
 const Messages = () => {
   const [householdMessages, setHouseholdMessages] = useState([
@@ -29,9 +30,22 @@ const Messages = () => {
   const [filter, setFilter] = useState('');
   const [sortOrder, setSortOrder] = useState(-1);
 
+  const [show, setShow] = useState(false);
+  const [currentImage, setCurrentImage] = useState({ frame: '', text: 'test', day: false });
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   useEffect(() => {
     MessageService.getAll('', date).then((response) => {
-      setHouseholdMessages(response);
+      let data = response.map((household) => ({
+        ...household,
+        messages: household.messages.map((message) => ({
+          ...message,
+          message: JSON.parse(message.message),
+        })),
+      }));
+      setHouseholdMessages(data);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -49,7 +63,14 @@ const Messages = () => {
       toastErrorMessage('Invalid date values');
     } else {
       MessageService.getAll(filter, date).then((response) => {
-        setHouseholdMessages(response);
+        let data = response.map((household) => ({
+          ...household,
+          messages: household.messages.map((message) => ({
+            ...message,
+            message: JSON.parse(message.message),
+          })),
+        }));
+        setHouseholdMessages(data);
       });
     }
   };
@@ -57,7 +78,14 @@ const Messages = () => {
   const filterMessages = () => {
     if (filter) {
       MessageService.getAll(filter, date).then((response) => {
-        setHouseholdMessages(response);
+        let data = response.map((household) => ({
+          ...household,
+          messages: household.messages.map((message) => ({
+            ...message,
+            message: JSON.parse(message.message),
+          })),
+        }));
+        setHouseholdMessages(data);
       });
     }
   };
@@ -148,7 +176,21 @@ const Messages = () => {
                   {household.messages.map((message, i) => (
                     <tr key={i}>
                       <td>{format(new Date(message.timestamp), 'dd.MM.yyyy. HH:mm:ss')}</td>
-                      <td>{message.message}</td>
+                      <td>
+                        {message.message.frame ? (
+                          <Button
+                            variant="link"
+                            onClick={() => {
+                              setCurrentImage(message.message);
+                              handleShow();
+                            }}
+                          >
+                            {message.message.text}, {message.message ? 'day' : 'night'}
+                          </Button>
+                        ) : (
+                          JSON.stringify(message.message)
+                        )}
+                      </td>
                       <td>{household.deviceNames[message.deviceId]}</td>
                     </tr>
                   ))}
@@ -158,6 +200,7 @@ const Messages = () => {
           ))}
         </div>
       )}
+      <CameraImageModal show={show} onClose={handleClose} image={currentImage} />
     </div>
   );
 };

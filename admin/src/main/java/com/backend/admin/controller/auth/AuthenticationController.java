@@ -70,7 +70,7 @@ public class AuthenticationController {
             user.setLoginAttempts(user.getLoginAttempts() + 1);
             user.setLastLoginAttemptDate(new Date());
             if (user.getLoginAttempts() >= 3) {
-                log.warn(logger.warn("Blocking user: " + user.getUsername()));
+                log.warn(logger.warn("Too many failed login attempts. Blocking user: " + user.getUsername()));
                 user.setBlocked(true);
             }
             userService.save(user);

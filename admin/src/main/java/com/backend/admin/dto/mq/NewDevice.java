@@ -11,4 +11,5 @@ import org.bson.types.ObjectId;
 public class NewDevice {
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId houseId, deviceId;
+    private Boolean isNewAlarmRule;
 }

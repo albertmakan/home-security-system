@@ -1,0 +1,23 @@
+template header
+
+conditions
+deviceType
+alarmText
+
+package com.backend.myhouse;
+import com.backend.myhouse.model.Message;
+import com.backend.myhouse.model.Device;
+import com.backend.myhouse.model.DeviceType;
+
+template "alarm"
+
+rule "alarm_@{row.rowNumber}"
+no-loop
+when
+    $msg: Message(deviceType == DeviceType.@{deviceType}, @{conditions})
+then
+    $msg.setAlarm("@{alarmText}");
+    System.out.println("TEMPLATE SUCCESS");
+end
+
+end template

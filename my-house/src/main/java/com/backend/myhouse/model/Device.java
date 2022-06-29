@@ -18,4 +18,5 @@ public class Device {
     private Integer period;
     private String filter;
     private String publicKey;
+    private DeviceType type;
 }

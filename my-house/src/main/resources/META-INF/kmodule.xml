@@ -7,4 +7,8 @@
     <kbase name="cep" eventProcessingMode="stream" packages="cep">
         <ksession name="cepSession"/>
     </kbase>
+
+    <kbase name="alarms" packages="alarms">
+        <ksession name="ksession-alarms"/>
+    </kbase>
 </kmodule>

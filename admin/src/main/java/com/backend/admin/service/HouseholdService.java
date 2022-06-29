@@ -86,7 +86,7 @@ public class HouseholdService {
 
         System.out.println("HH " + household.getId() + " " + request.getHouseholdId());
         System.out.println("DEV " + device.getId());
-        kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId()));
+        kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId(), true));
 
         return household;
     }

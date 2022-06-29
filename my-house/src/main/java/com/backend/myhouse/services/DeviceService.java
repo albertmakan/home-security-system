@@ -38,6 +38,8 @@ public class DeviceService {
     public SimpMessagingTemplate messagingTemplate;
     @Autowired
     private CustomLogger logger;
+    @Autowired
+    private AlarmRuleService alarmRuleService;
 
     @PostConstruct
     public void startThreads() {
@@ -48,7 +50,7 @@ public class DeviceService {
             for (Device d : h.getDevices()) {
                 tasks.put(d.getId(),
                         taskScheduler.scheduleAtFixedRate(
-                                new MessageReaderRunnable(d, h, this, messageService, signatureService, logger),
+                                new MessageReaderRunnable(d, h, this, messageService, signatureService, logger, alarmRuleService),
                                 d.getPeriod()));
             }
         }
@@ -79,7 +81,7 @@ public class DeviceService {
         Device device = optionalDevice.get();
         tasks.put(device.getId(),
                 taskScheduler.scheduleAtFixedRate(
-                        new MessageReaderRunnable(device, household, this, messageService, signatureService, logger),
+                        new MessageReaderRunnable(device, household, this, messageService, signatureService, logger, alarmRuleService),
                         device.getPeriod()));
 
     }

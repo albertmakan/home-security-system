@@ -55,6 +55,7 @@ const HouseholdPage = () => {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Type</th>
             <th>Path</th>
             <th>Period</th>
             <th>Filter</th>
@@ -64,6 +65,7 @@ const HouseholdPage = () => {
           {household.devices?.map((d) => (
             <tr key={d.id}>
               <td>{d.name}</td>
+              <td>{d.type}</td>
               <td>{d.path}</td>
               <td>{d.period} ms</td>
               <td>{d.filter}</td>

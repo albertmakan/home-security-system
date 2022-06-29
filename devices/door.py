@@ -2,11 +2,14 @@ import os
 from time import sleep
 from keygen import sign
 from Cryptodome.PublicKey import RSA
-from base64 import b64decode, b64encode
+from base64 import b64decode
+
+import random
+import json
 
 
 folder_path = "../my-house/target/classes/devices"
-device_path = "/house5/camera1"
+device_path = "/house5/door1"
 period = 2  # in seconds
 private_key_str = "\
 MIICXAIBAAKBgQCvoRpDUw84yGIRHRhGV9TkFSBEBZBCeyyGCtTi70Vbmcan7r8l\
@@ -29,7 +32,21 @@ if not os.path.exists(path):
 
 key = RSA.importKey(b64decode(private_key_str))
 
-for i in range(2):
+message = {"state": "closed", "stateTime": 0, "day": True}
+
+states = ["open", "closed"]
+
+while True:
+    day = 0
+    new_state = random.choice(states)
+    message["stateTime"] = message["stateTime"] + 1 if new_state == message["state"] else 0
+    message["state"] = new_state
+    message["day"] = True if day <= 720 else False
+
+    day = day + 1 if day <= 1440 else 0
+
+    message_str = json.dumps(message)
     with open(folder_path+device_path, 'w') as f:
-        f.write("Message " + sign(key, "Message"))
+        f.write(message_str + " " + sign(key, message_str))
+        print(message_str + " " + sign(key, message_str))
     sleep(period)

@@ -51,14 +51,17 @@ public class MessageReaderRunnable implements Runnable {
     private void processMessage(String message) {
 
         try {
-            String[] signedMessage = message.split(" ");
+            String[] signedMessage = message.split("}");
             String msg = signedMessage[0];
             String signature = signedMessage[1];
+
+            msg = msg + "}";
+            signature = signature.trim();
 
             // TODO insert into drools and DB
             if (msg.matches(device.getFilter())) {
                 if (signatureService.verify(msg, signature, device.getPublicKey())) {
-//                messageService.save(new Message(message, this.device, new Date()));
+                    messageService.save(new Message(msg, this.device, new Date()));
                     System.out.print("VERIFIED: ");
                     deviceService.notifyUsers(household, message);
                 }

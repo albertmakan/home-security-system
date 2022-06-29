@@ -1,6 +1,7 @@
 package com.backend.admin.service;
 
 import com.backend.admin.dto.DeviceRequest;
+
 import com.backend.admin.dto.HouseholdRequest;
 import com.backend.admin.dto.mq.NewDevice;
 import com.backend.admin.exception.BadRequestException;
@@ -9,8 +10,6 @@ import com.backend.admin.model.Device;
 import com.backend.admin.model.Household;
 import com.backend.admin.model.auth.User;
 import com.backend.admin.repository.HouseholdRepository;
-import com.backend.admin.util.Base64Utility;
-import com.backend.admin.util.ECCKeyGenerator;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyPair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,17 +79,9 @@ public class HouseholdService {
         device.setPath(request.getPath());
         device.setPeriod(request.getPeriod());
         device.setId(new ObjectId());
+        device.setPublicKey(request.getPublicKey());
 
-        kafkaTemplate.send("NEW_DEVICE", new NewDevice(household.getId(), device.getId()));
-
-//        ECCKeyGenerator keygen = new ECCKeyGenerator();
-//        KeyPair kp = keygen.generateKeys();
-//        String pubk = Base64Utility.encode(kp.getPublic().getEncoded());
-//        String privk = Base64Utility.encode(kp.getPrivate().getEncoded());
-//        System.out.println("PUBLIC KEY: " + pubk);
-//        System.out.println("PRIVATE KEY: " + privk);
-//
-//        device.setPublicKey(pubk);
+        kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId()));
 
         household.getDevices().add(device);
         return save(household);

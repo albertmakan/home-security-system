@@ -20,8 +20,10 @@ public class MessageReaderRunnable implements Runnable {
     private File file;
 
     private final MessageService messageService;
+    private final SignatureService signatureService;
 
-    public MessageReaderRunnable(Device device, Household household, DeviceService deviceService, MessageService messageService) {
+    public MessageReaderRunnable(Device device, Household household, DeviceService deviceService,
+            MessageService messageService, SignatureService signatureService) {
         this.deviceService = deviceService;
         System.out.println("STARTING THREAD: " + device.getName());
         this.device = device;
@@ -32,6 +34,7 @@ public class MessageReaderRunnable implements Runnable {
             e.printStackTrace();
         }
         this.messageService = messageService;
+        this.signatureService = signatureService;
     }
 
     @Override
@@ -46,14 +49,23 @@ public class MessageReaderRunnable implements Runnable {
     }
 
     private void processMessage(String message) {
-        if (message == null)
+
+        try {
+            String[] signedMessage = message.split(" ");
+            String msg = signedMessage[0];
+            String signature = signedMessage[1];
+
+            // TODO insert into drools and DB
+            if (msg.matches(device.getFilter())) {
+                if (signatureService.verify(msg, signature, device.getPublicKey())) {
+//                messageService.save(new Message(message, this.device, new Date()));
+                    System.out.print("VERIFIED: ");
+                    deviceService.notifyUsers(household, message);
+                }
+            }
+            System.out.println(msg);
+        } catch (Exception e) {
             return;
-        // TODO insert into drools and DB
-        if (message.matches(device.getFilter())) {
-            System.out.print("MATCH: ");
-//            messageService.save(new Message(message, this.device, new Date()));
-            deviceService.notifyUsers(household, message);
         }
-        System.out.println(message);
     }
 }

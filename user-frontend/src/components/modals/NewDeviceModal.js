@@ -13,6 +13,7 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
     path: Yup.string().required('Required'),
     period: Yup.number().required('Required'),
     filter: Yup.string().required('Required'),
+    publicKey: Yup.string().required('Required'),
   });
 
   const formik = useFormik({
@@ -21,10 +22,12 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
       path: '',
       period: 1000,
       filter: '',
+      publicKey: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       formik.resetForm();
+      values.publicKey = values.publicKey.replace(/\s/g, '');
       onCreate({ ...values, householdId });
       onClose();
     },
@@ -92,6 +95,20 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
               />
               {formik.touched.filter && formik.errors.filter && (
                 <small className="form-text text-danger">{formik.errors.filter}</small>
+              )}
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Public key</Form.Label>
+              <Form.Control
+                id="publicKey"
+                name="publicKey"
+                type="text"
+                placeholder="Enter public key"
+                value={formik.values.publicKey}
+                onChange={formik.handleChange}
+              />
+              {formik.touched.publicKey && formik.errors.publicKey && (
+                <small className="form-text text-danger">{formik.errors.publicKey}</small>
               )}
             </Form.Group>
             <br />

@@ -25,21 +25,29 @@ public class DeviceService {
     private ThreadPoolTaskScheduler taskScheduler;
     @Autowired
     private HouseholdService householdService;
+    @Autowired
+    private SignatureService signatureService;
 
     private Map<ObjectId, ScheduledFuture<?>> tasks;
-    
+
     @Autowired
     private MessageService messageService;
     @Autowired
     public SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private CustomLogger logger;
 
     @PostConstruct
     public void startThreads() {
         tasks = new HashMap<>();
         for (Household h : householdService.getAll()) {
-            if (h.getDevices() == null) continue;
+            if (h.getDevices() == null)
+                continue;
             for (Device d : h.getDevices()) {
-                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(new MessageReaderRunnable(d, h, this, messageService), d.getPeriod()));
+                tasks.put(d.getId(),
+                        taskScheduler.scheduleAtFixedRate(
+                                new MessageReaderRunnable(d, h, this, messageService, signatureService, logger),
+                                d.getPeriod()));
             }
         }
         System.out.println("TASKS STARTED");
@@ -53,20 +61,25 @@ public class DeviceService {
     public void addTask(ObjectId houseId, ObjectId deviceId) {
         Optional<Household> optionalHousehold = householdService.findById(houseId);
         if (!optionalHousehold.isPresent()) {
-            System.out.println("Household not found "+houseId);
+            System.out.println("Household not found " + houseId);
             return;
         }
         Household household = optionalHousehold.get();
-        if (household.getDevices() == null) household.setDevices(new ArrayList<>());
-        Optional<Device> optionalDevice = household.getDevices().stream().filter(d -> deviceId.equals(d.getId())).findAny();
+        if (household.getDevices() == null)
+            household.setDevices(new ArrayList<>());
+
+        Optional<Device> optionalDevice = household.getDevices().stream().filter(d -> deviceId.equals(d.getId()))
+                .findAny();
         if (!optionalDevice.isPresent()) {
-            System.out.println("Device not found "+deviceId);
+            System.out.println("Device not found " + deviceId);
             return;
         }
         Device device = optionalDevice.get();
-        tasks.put(device.getId(), taskScheduler.scheduleAtFixedRate(
-                new MessageReaderRunnable(device, household, this, messageService), device.getPeriod())
-        );
+        tasks.put(device.getId(),
+                taskScheduler.scheduleAtFixedRate(
+                        new MessageReaderRunnable(device, household, this, messageService, signatureService, logger),
+                        device.getPeriod()));
+
     }
 
     public void notifyUsers(Household household, String message) {

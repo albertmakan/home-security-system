@@ -14,15 +14,8 @@ public class AlarmRule {
     @Id
     private ObjectId id;
     private DeviceType deviceType;
-    private ObjectId deviceId;
     private List<Condition> conditions;
     private String alarmText;
-
-    public String deviceTypeOrIdString() {
-        if (deviceId != null)
-            return "deviceId == "+deviceId;
-        return "deviceType == DeviceType."+deviceType;
-    }
 
     public String conditionsString() {
         StringBuilder statementBuilder = new StringBuilder();

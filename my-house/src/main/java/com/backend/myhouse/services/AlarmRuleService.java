@@ -39,7 +39,7 @@ public class AlarmRuleService {
     public void createKieSession() {
         List<AlarmRule> alarmRules = getAll();
         List<TemplateModel> data = alarmRules.stream()
-                .map(rule -> new TemplateModel(rule.conditionsString(), rule.deviceTypeOrIdString(), rule.getAlarmText()))
+                .map(rule -> new TemplateModel(rule.conditionsString(), rule.getDeviceType().toString(), rule.getAlarmText()))
                 .collect(Collectors.toList());
         ObjectDataCompiler converter = new ObjectDataCompiler();
 

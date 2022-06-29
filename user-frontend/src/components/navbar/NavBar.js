@@ -58,6 +58,9 @@ const NavBar = () => {
                 <NavLink className="nav-link" to="/admin/logs">
                   Logs
                 </NavLink>
+                <NavLink className="nav-link" to="/admin/alarm-rules">
+                  AlarmRules
+                </NavLink>
               </>
             )}
             {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (

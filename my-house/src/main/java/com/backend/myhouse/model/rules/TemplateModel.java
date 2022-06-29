@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class TemplateModel {
-    private String conditions, deviceTypeOrId, alarmText;
+    private String conditions, deviceType, alarmText;
 }

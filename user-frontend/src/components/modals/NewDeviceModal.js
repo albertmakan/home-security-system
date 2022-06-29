@@ -13,6 +13,7 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
     path: Yup.string().required('Required'),
     period: Yup.number().required('Required'),
     filter: Yup.string().required('Required'),
+    type: Yup.string().required('Required'),
   });
 
   const formik = useFormik({
@@ -21,6 +22,7 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
       path: '',
       period: 1000,
       filter: '',
+      type: '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -29,6 +31,8 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
       onClose();
     },
   });
+
+  const deviceTypes = ['CAMERA', 'DOOR'];
 
   return (
     <Modal show={show} onHide={onClose} centered>
@@ -93,6 +97,20 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
               {formik.touched.filter && formik.errors.filter && (
                 <small className="form-text text-danger">{formik.errors.filter}</small>
               )}
+            </Form.Group>
+            <Form.Group>
+              <Form.Control
+                id="type"
+                as="select"
+                name="type"
+                value={formik.values.type}
+                onChange={formik.handleChange}
+              >
+                <option value="">Select type</option>
+                {deviceTypes.map((t) => (
+                  <option value={t}>{t}</option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <br />
             <Button variant="primary" type="submit">

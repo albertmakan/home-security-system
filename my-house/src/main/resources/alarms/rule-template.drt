@@ -1,7 +1,7 @@
 template header
 
 conditions
-deviceTypeOrId
+deviceType
 alarmText
 
 package com.backend.myhouse;
@@ -14,7 +14,7 @@ template "alarm"
 rule "alarm_@{row.rowNumber}"
 no-loop
 when
-    $msg: Message(@{deviceTypeOrId}, @{conditions})
+    $msg: Message(deviceType == DeviceType.@{deviceType}, @{conditions})
 then
     $msg.setAlarm("@{alarmText}");
     System.out.println("TEMPLATE SUCCESS");

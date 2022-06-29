@@ -12,7 +12,10 @@
     { "name": "CHANGE_PASSWORD" },
     { "name": "DELETE_USER" },
     { "name": "CREATE_HOUSEHOLD" },
-    { "name": "RECEIVE_NOTIFICATION_LOGS" }
+    { "name": "RECEIVE_NOTIFICATION_LOGS" },
+    { "name": "READ_ALARM_RULES" },
+    { "name": "CREATE_ALARM_RULES" },
+    { "name": "DELETE_ALARM_RULES" }
   ]
 },
 {

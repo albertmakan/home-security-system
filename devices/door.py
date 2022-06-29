@@ -39,7 +39,7 @@ states = ["open", "closed"]
 while True:
     day = 0
     new_state = random.choice(states)
-    message["stateTime"] = message["stateTime"] + 1 if new_state == message["state"] else 0
+    message["stateTime"] = message["stateTime"] + period if new_state == message["state"] else 0
     message["state"] = new_state
     message["day"] = True if day <= 720 else False
 

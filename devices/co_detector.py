@@ -10,7 +10,7 @@ import json
 
 folder_path = "../my-house/target/classes/devices"
 device_path = "/house5/co-detector1"
-period = 20  # in seconds
+period = 2  # in seconds
 private_key_str = "\
 MIICXAIBAAKBgQCvoRpDUw84yGIRHRhGV9TkFSBEBZBCeyyGCtTi70Vbmcan7r8l\
 GipBmPurE9/CbyjuZPGO5xICJRKHhUeBRptEnlVI9KcACzszwS3WAHLE6j8w+I56\
@@ -39,7 +39,7 @@ values = [40, 50, 70, 150]
 while True:
     day = 0
     new_value = random.choice(values)
-    message["stateTime"] = random.randint(0, 20) # hrs spent in state
+    message["stateTime"] = message["stateTime"] + period if new_value == message["value"] else 0
     message["value"] = new_value
     message["day"] = True if day <= 720 else False
 

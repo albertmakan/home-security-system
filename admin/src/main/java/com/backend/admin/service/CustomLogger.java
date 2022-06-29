@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import com.backend.admin.exception.BadRequestException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,6 +29,8 @@ public class CustomLogger {
     private final KieSession rulesSession;
 
     private LogsRepository logsRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public String info(String message) {
         Log log = new Log("INFO", message);
@@ -44,6 +47,7 @@ public class CustomLogger {
         rulesSession.insert(log);
         rulesSession.fireAllRules();
         logsRepository.save(log);
+        notify(log);
         return message;
 
     }
@@ -54,6 +58,7 @@ public class CustomLogger {
         rulesSession.insert(log);
         rulesSession.fireAllRules();
         logsRepository.save(log);
+        notify(log);
         return message;
     }
 
@@ -88,5 +93,9 @@ public class CustomLogger {
 
     private Date toDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public void notify(Log log) {
+        messagingTemplate.convertAndSend("/topic/warn-logs", log);
     }
 }

@@ -11,7 +11,8 @@
     { "name": "MANAGE_USERS_HOUSEHOLDS" },
     { "name": "CHANGE_PASSWORD" },
     { "name": "DELETE_USER" },
-    { "name": "CREATE_HOUSEHOLD" }
+    { "name": "CREATE_HOUSEHOLD" },
+    { "name": "RECEIVE_NOTIFICATION_LOGS" }
   ]
 },
 {
@@ -20,7 +21,8 @@
   "privileges": [
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
-    { "name": "READ_MESSAGES"}
+    { "name": "READ_MESSAGES"},
+    { "name": "RECEIVE_NOTIFICATION_LOGS"}
   ]
 },
 {
@@ -29,6 +31,7 @@
   "privileges": [
     { "name": "REVOKE_TOKEN" },
     { "name": "CHANGE_PASSWORD" },
-    { "name": "READ_MESSAGES"}
+    { "name": "READ_MESSAGES"},
+    { "name": "RECEIVE_NOTIFICATION_LOGS"}
   ]
 }]

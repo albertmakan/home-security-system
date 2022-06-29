@@ -10,6 +10,12 @@ import com.backend.myhouse.model.Log;
 import com.backend.myhouse.repository.LogsRepository;
 
 import lombok.AllArgsConstructor;
+import com.backend.myhouse.dto.mq.MyHouseLog;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
+
+import java.util.Date;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +25,8 @@ public class CustomLogger {
     private final KieSession rulesSession;
     
     private LogsRepository logsRepository;
+    @Autowired
+    KafkaTemplate<String, MyHouseLog> kafkaTemplate;
 
     public String info(String message) {
         Log log = new Log("INFO", message);
@@ -36,6 +44,7 @@ public class CustomLogger {
         rulesSession.insert(log);
         rulesSession.fireAllRules();
         logsRepository.save(log);
+        kafkaTemplate.send("MY_HOUSE_LOG", new MyHouseLog(new Date(), "WARN", message));
         return message; 
 
     }
@@ -46,6 +55,7 @@ public class CustomLogger {
         rulesSession.insert(log);
         rulesSession.fireAllRules();
         logsRepository.save(log);
+        kafkaTemplate.send("MY_HOUSE_LOG", new MyHouseLog(new Date(), "ERROR", message));
         return message;
     }
 

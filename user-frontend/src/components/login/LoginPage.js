@@ -25,6 +25,7 @@ const LoginPage = () => {
       toastSuccessMessage('Login successful');
       sessionStorage.setItem('token', response.accessToken);
       console.log(response);
+      sessionStorage.setItem('justLoggedIn', 'true');
       window.location.replace('/home');
     });
   };

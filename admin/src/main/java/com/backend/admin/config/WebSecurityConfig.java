@@ -8,6 +8,7 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,6 +32,7 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @AllArgsConstructor
+@Import(KieConfig.class)
 // Ukljucivanje podrske za anotacije "@Pre*" i "@Post*" koje ce aktivirati autorizacione provere za svaki pristup metodi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -44,10 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private MaliciousRequestCheckFilter maliciousRequestCheckFilter;
 
-    // @Qualifier("rulesSession")
-    // private final KieSession rulesSession;
-
-    // private MaliciousRequestCheckFilter filter;
+    private KieConfig kieConfig;
 
 	// Implementacija PasswordEncoder-a koriscenjem BCrypt hashing funkcije.
 	// BCrypt po defalt-u radi 10 rundi hesiranja prosledjene vrednosti.
@@ -56,22 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
-    @Bean
-    public KieContainer kieContainer() {
-        KieServices ks = KieServices.Factory.get();
-        return ks.getKieClasspathContainer();
-    }
-
-    @Bean(name = "rulesSession")
-    public KieSession rulesSession() {
-        return kieContainer().newKieSession("rulesSession");
-    }
-
 	@PostConstruct
 	public void init() throws Exception {
 		customUserDetailsService.setPasswordEncoder(passwordEncoder());
 		customUserDetailsService.setAuthenticationManager(authenticationManagerBean());
-        maliciousRequestCheckFilter.setRulesSession(rulesSession());
+        maliciousRequestCheckFilter.setRulesSession(kieConfig.rulesSession());
 
 	}
 

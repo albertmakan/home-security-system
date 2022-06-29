@@ -8,19 +8,19 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.AllArgsConstructor;
 
-// @Configuration
-// @AllArgsConstructor
-// public class KieConfig {
+@Configuration
+@AllArgsConstructor
+public class KieConfig {
 
-//     @Bean
-//     public KieContainer kieContainer() {
-//         KieServices ks = KieServices.Factory.get();
-//         return ks.getKieClasspathContainer();
-//     }
+    @Bean
+    public KieContainer kieContainer() {
+        KieServices ks = KieServices.Factory.get();
+        return ks.getKieClasspathContainer();
+    }
 
-//     @Bean(name = "rulesSession")
-//     public KieSession rulesSession() {
-//         return kieContainer().newKieSession("rulesSession");
-//     }
+    @Bean(name = "rulesSession")
+    public KieSession rulesSession() {
+        return kieContainer().newKieSession("rulesSession");
+    }
 
-// }
+}

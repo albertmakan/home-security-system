@@ -27,7 +27,7 @@
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
     { "name": "READ_OWN_HOUSEHOLDS" },
-    { "name": "RECEIVE_NOTIFICATION_LOGS"}
+    { "name": "RECEIVE_NOTIFICATION_LOGS"},
     { "name": "RECEIVE_NOTIFICATION_ALARMS"},
     { "name": "READ_MY_HOUSEHOLDS"}
   ]
@@ -40,7 +40,7 @@
     { "name": "CHANGE_PASSWORD" },
     { "name": "READ_MESSAGES"},
     { "name": "READ_OWN_HOUSEHOLDS" },
-    { "name": "RECEIVE_NOTIFICATION_LOGS"}
+    { "name": "RECEIVE_NOTIFICATION_LOGS"},
     { "name": "RECEIVE_NOTIFICATION_ALARMS"},
     { "name": "READ_MY_HOUSEHOLDS"}
   ]

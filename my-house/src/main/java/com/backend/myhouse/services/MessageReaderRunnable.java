@@ -66,10 +66,12 @@ public class MessageReaderRunnable implements Runnable {
                     messageService.save(new Message(msg, this.device, new Date()));
                     System.out.print("VERIFIED: ");
                     deviceService.notifyUsers(household, message);
+                } else {
+                    logger.warn("POTENTIAL ATTACK! DEVICE PATH: " + device.getPath());
                 }
             }
             System.out.println(msg);
-            logger.warn("POTENTIAL ATTACK! DEVICE PATH: " + device.getPath());
+
         } catch (Exception e) {
             return;
         }

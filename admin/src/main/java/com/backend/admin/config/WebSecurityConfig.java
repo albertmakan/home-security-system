@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.backend.admin.security.MaliciousRequestCheckFilter.MaliciousRequestCheckFilter;
 import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
 import com.backend.admin.security.auth.TokenAuthenticationFilter;
+import com.backend.admin.security.xssAttackFilter.XSSFilter;
 import com.backend.admin.service.auth.UserService;
 import com.backend.admin.util.TokenUtils;
 
@@ -114,9 +115,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             //CUSTOM REQUEST FILTER -> MALICIOUS IPS AND TOO MANY REQUESTS CHECKS
             .addFilterBefore(maliciousRequestCheckFilter, BasicAuthenticationFilter.class)
 
+
 			// umetni custom filter TokenAuthenticationFilter kako bi se vrsila provera JWT tokena umesto cistih korisnickog imena i lozinke (koje radi BasicAuthenticationFilter)
-			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
+			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class)
 		
+            .addFilterBefore(new XSSFilter(), BasicAuthenticationFilter.class);
+
 		// zbog jednostavnosti primera ne koristimo Anti-CSRF token (https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
 		http.csrf().disable();
 

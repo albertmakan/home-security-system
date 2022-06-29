@@ -21,9 +21,10 @@ public class MessageReaderRunnable implements Runnable {
 
     private final MessageService messageService;
     private final SignatureService signatureService;
+    private final CustomLogger logger;
 
     public MessageReaderRunnable(Device device, Household household, DeviceService deviceService,
-            MessageService messageService, SignatureService signatureService) {
+            MessageService messageService, SignatureService signatureService, CustomLogger logger) {
         this.deviceService = deviceService;
         System.out.println("STARTING THREAD: " + device.getName());
         this.device = device;
@@ -35,6 +36,7 @@ public class MessageReaderRunnable implements Runnable {
         }
         this.messageService = messageService;
         this.signatureService = signatureService;
+        this.logger = logger;
     }
 
     @Override
@@ -67,6 +69,7 @@ public class MessageReaderRunnable implements Runnable {
                 }
             }
             System.out.println(msg);
+            logger.warn("POTENTIAL ATTACK! DEVICE PATH: " + device.getPath());
         } catch (Exception e) {
             return;
         }

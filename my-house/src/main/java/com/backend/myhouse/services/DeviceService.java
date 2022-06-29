@@ -34,6 +34,8 @@ public class DeviceService {
     private MessageService messageService;
     @Autowired
     public SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private CustomLogger logger;
 
     @PostConstruct
     public void startThreads() {
@@ -42,8 +44,10 @@ public class DeviceService {
             if (h.getDevices() == null)
                 continue;
             for (Device d : h.getDevices()) {
-                tasks.put(d.getId(), taskScheduler.scheduleAtFixedRate(
-                        new MessageReaderRunnable(d, h, this, messageService, signatureService), d.getPeriod()));
+                tasks.put(d.getId(),
+                        taskScheduler.scheduleAtFixedRate(
+                                new MessageReaderRunnable(d, h, this, messageService, signatureService, logger),
+                                d.getPeriod()));
             }
         }
         System.out.println("TASKS STARTED");
@@ -73,7 +77,7 @@ public class DeviceService {
         Device device = optionalDevice.get();
         tasks.put(device.getId(),
                 taskScheduler.scheduleAtFixedRate(
-                        new MessageReaderRunnable(device, household, this, messageService, signatureService),
+                        new MessageReaderRunnable(device, household, this, messageService, signatureService, logger),
                         device.getPeriod()));
 
     }

@@ -6,18 +6,21 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class KieConfig {
+import lombok.AllArgsConstructor;
 
-    @Bean
-    public KieContainer kieContainer() {
-        KieServices ks = KieServices.Factory.get();
-        return ks.getKieClasspathContainer();
-    }
+// @Configuration
+// @AllArgsConstructor
+// public class KieConfig {
 
-    @Bean(name = "rules-session")
-    public KieSession rulesSession() {
-        return kieContainer().newKieSession("ksession-rules");
-    }
+//     @Bean
+//     public KieContainer kieContainer() {
+//         KieServices ks = KieServices.Factory.get();
+//         return ks.getKieClasspathContainer();
+//     }
 
-}
+//     @Bean(name = "rulesSession")
+//     public KieSession rulesSession() {
+//         return kieContainer().newKieSession("rulesSession");
+//     }
+
+// }

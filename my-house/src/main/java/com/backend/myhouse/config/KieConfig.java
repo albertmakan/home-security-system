@@ -15,9 +15,9 @@ public class KieConfig {
         return ks.getKieClasspathContainer();
     }
 
-    @Bean(name = "rules-session")
+    @Bean(name = "rulesSession")
     public KieSession rulesSession() {
-        return kieContainer().newKieSession("ksession-rules");
+        return kieContainer().newKieSession("rulesSession");
     }
 
 }

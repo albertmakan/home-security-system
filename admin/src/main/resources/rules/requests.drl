@@ -1,0 +1,10 @@
+import com.backend.admin.model.request.AppRequest;
+
+rule "req"
+agenda-group "requests"
+    when
+        $req : AppRequest()
+    then
+        System.out.println("//////////////////////////////////////////////// REQ");
+        //TODO: notification?
+end

@@ -1,11 +1,10 @@
 package com.backend.admin.config;
 
-import com.backend.admin.security.MaliciousRequestCheckFilter.MaliciousRequestCheckFilter;
-import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
-import com.backend.admin.security.auth.TokenAuthenticationFilter;
-import com.backend.admin.service.auth.UserService;
-import com.backend.admin.util.TokenUtils;
-import lombok.AllArgsConstructor;
+import javax.annotation.PostConstruct;
+
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +20,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.annotation.PostConstruct;
+import com.backend.admin.security.MaliciousRequestCheckFilter.MaliciousRequestCheckFilter;
+import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
+import com.backend.admin.security.auth.TokenAuthenticationFilter;
+import com.backend.admin.service.auth.UserService;
+import com.backend.admin.util.TokenUtils;
+
+import lombok.AllArgsConstructor;
 
 
 @Configuration
@@ -37,6 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo njene metode za rad sa JWT u TokenAuthenticationFilteru
 	private TokenUtils tokenUtils;
 
+    private MaliciousRequestCheckFilter maliciousRequestCheckFilter;
+
+    // @Qualifier("rulesSession")
+    // private final KieSession rulesSession;
+
+    // private MaliciousRequestCheckFilter filter;
+
 	// Implementacija PasswordEncoder-a koriscenjem BCrypt hashing funkcije.
 	// BCrypt po defalt-u radi 10 rundi hesiranja prosledjene vrednosti.
 	@Bean
@@ -44,10 +56,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
+    @Bean
+    public KieContainer kieContainer() {
+        KieServices ks = KieServices.Factory.get();
+        return ks.getKieClasspathContainer();
+    }
+
+    @Bean(name = "rulesSession")
+    public KieSession rulesSession() {
+        return kieContainer().newKieSession("rulesSession");
+    }
+
 	@PostConstruct
 	public void init() throws Exception {
 		customUserDetailsService.setPasswordEncoder(passwordEncoder());
 		customUserDetailsService.setAuthenticationManager(authenticationManagerBean());
+        maliciousRequestCheckFilter.setRulesSession(rulesSession());
+
 	}
 
 	// Registrujemo authentication manager koji ce da uradi autentifikaciju korisnika za nas
@@ -101,7 +126,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.cors().and()
 
             //CUSTOM REQUEST FILTER -> MALICIOUS IPS AND TOO MANY REQUESTS CHECKS
-            .addFilterBefore(new MaliciousRequestCheckFilter(), BasicAuthenticationFilter.class)
+            .addFilterBefore(maliciousRequestCheckFilter, BasicAuthenticationFilter.class)
 
 			// umetni custom filter TokenAuthenticationFilter kako bi se vrsila provera JWT tokena umesto cistih korisnickog imena i lozinke (koje radi BasicAuthenticationFilter)
 			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);

@@ -2,12 +2,14 @@ import os
 from time import sleep
 from keygen import sign
 from Cryptodome.PublicKey import RSA
-from base64 import b64decode, b64encode
+from base64 import b64decode
 
+import random
+import json
 
 folder_path = "../my-house/target/classes/devices"
-device_path = "/house5/door1"
-period = 3  # in seconds
+device_path = "/house5/camera1"
+period = 20  # in seconds
 private_key_str = "\
 MIICXAIBAAKBgQCvoRpDUw84yGIRHRhGV9TkFSBEBZBCeyyGCtTi70Vbmcan7r8l\
 GipBmPurE9/CbyjuZPGO5xICJRKHhUeBRptEnlVI9KcACzszwS3WAHLE6j8w+I56\
@@ -29,7 +31,34 @@ if not os.path.exists(path):
 
 key = RSA.importKey(b64decode(private_key_str))
 
-for i in range(2):
+with open('images/bear.txt', 'r') as f:
+    bear = {"frame": f.read(), "text": "bear"}
+with open('images/dog1.txt', 'r') as f:
+    dog1 = {"frame": f.read(), "text": "dog"}
+with open('images/dog2.txt', 'r') as f:
+    dog2 = {"frame": f.read(), "text": "dog"}
+with open('images/alien.txt', 'r') as f:
+    alien = {"frame": f.read(), "text": "alien"}
+
+
+message = {"text": bear["text"], "day": True, "frame": bear["frame"]}
+
+frames = [bear, dog1, dog2, alien]
+
+
+while True:
+    day = 0
+    new_object = random.choice(frames)
+
+    message["text"] = new_object["text"]
+    message["frame"] = new_object["frame"]
+    message["day"] = True if day <= 720 else False
+
+    day = day + 1 if day <= 1440 else 0
+
+    message_str = json.dumps(message)
     with open(folder_path+device_path, 'w') as f:
-        f.write("Message " + sign(key, "Message"))
+        f.write(message_str + " " + sign(key, message_str))
+        print(message_str + " " + sign(key, message_str))
     sleep(period)
+

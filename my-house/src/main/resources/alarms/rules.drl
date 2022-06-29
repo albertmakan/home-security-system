@@ -1,0 +1,41 @@
+import com.backend.myhouse.model.Device;
+import com.backend.myhouse.model.Message;
+
+rule "Check device1"
+    when
+        Device(name == "AAA")
+    then
+        System.out.println("NEW DEVICE DETECTED1");
+end
+
+
+rule "Check device2"
+    when
+        Device(name < "AAB")
+    then
+        System.out.println("NEW DEVICE DETECTED2");
+end
+
+
+rule "Check device3"
+    when
+        Device(name != "AAA")
+    then
+        System.out.println("NEW DEVICE DETECTED3");
+end
+
+
+rule "Check message"
+    when
+        Message(data.get('aaa') < 23, data.get('bbb') == 'WWW')
+    then
+        System.out.println("MESSAGE OK");
+end
+
+
+rule "Check message1"
+    when
+        Message(data.get("vaa") == null)
+    then
+        System.out.println("MESSAGE OK1");
+end

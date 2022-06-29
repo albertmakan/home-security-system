@@ -63,7 +63,14 @@ const Messages = () => {
       toastErrorMessage('Invalid date values');
     } else {
       MessageService.getAll(filter, date).then((response) => {
-        setHouseholdMessages(response);
+        let data = response.map((household) => ({
+          ...household,
+          messages: household.messages.map((message) => ({
+            ...message,
+            message: JSON.parse(message.message),
+          })),
+        }));
+        setHouseholdMessages(data);
       });
     }
   };
@@ -71,7 +78,14 @@ const Messages = () => {
   const filterMessages = () => {
     if (filter) {
       MessageService.getAll(filter, date).then((response) => {
-        setHouseholdMessages(response);
+        let data = response.map((household) => ({
+          ...household,
+          messages: household.messages.map((message) => ({
+            ...message,
+            message: JSON.parse(message.message),
+          })),
+        }));
+        setHouseholdMessages(data);
       });
     }
   };
@@ -156,6 +170,7 @@ const Messages = () => {
                         <BiSortAlt2 />
                       </a>
                     </th>
+                    <th>Alarm</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -178,6 +193,7 @@ const Messages = () => {
                         )}
                       </td>
                       <td>{household.deviceNames[message.deviceId]}</td>
+                      <td>{message.alarm}</td>
                     </tr>
                   ))}
                 </tbody>

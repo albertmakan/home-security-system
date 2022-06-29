@@ -2,6 +2,8 @@ package com.backend.myhouse.model;
 
 import com.backend.myhouse.model.auth.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document
 public class Household {
-    @Id
+    @Id @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     private String name;
@@ -25,6 +27,5 @@ public class Household {
     private List<Device> devices;
 
     @DBRef(lazy = true)
-    @JsonIgnore
     private List<User> users;
 }

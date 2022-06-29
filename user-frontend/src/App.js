@@ -25,6 +25,7 @@ import LogsPage from './components/logs/LogsPage';
 import Messages from './components/messages/Messages';
 import UsersHouseholdPage from './components/users-households/UsersHouseholdPage';
 import UsersHouseholdList from './components/users-households/UsersHouseholdList';
+import AlarmRulePage from './components/alarm-rules/AlarmRulesPage';
 
 function App() {
   const [user, setUser] = useState({ ROLE: 'NONE' });
@@ -56,6 +57,9 @@ function App() {
           <Route path="/admin/household/:householdId" element={<HouseholdPage />} />
         )}
         {user.ROLE === 'ROLE_ADMIN' && <Route path="/admin/logs" element={<LogsPage />} />}
+        {user.ROLE === 'ROLE_ADMIN' && (
+          <Route path="/admin/alarm-rules" element={<AlarmRulePage />} />
+        )}
         {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
           <Route path="/user/messages" element={<Messages />} />
         )}

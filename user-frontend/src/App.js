@@ -64,7 +64,7 @@ function App() {
           <Route path="/user/messages" element={<Messages />} />
         )}
         {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
-          <Route path="/my-houses" element={<UsersHouseholdList />} />
+          <Route path="/user/households" element={<UsersHouseholdList />} />
         )}
         {(user.ROLE === 'ROLE_OWNER' || user.ROLE === 'ROLE_TENANT') && (
           <Route path="/my-houses/:householdId" element={<UsersHouseholdPage />} />

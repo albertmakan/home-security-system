@@ -81,10 +81,14 @@ public class HouseholdService {
         device.setId(new ObjectId());
         device.setPublicKey(request.getPublicKey());
 
+        household.getDevices().add(device);
+        save(household);
+
+        System.out.println("HH " + household.getId() + " " + request.getHouseholdId());
+        System.out.println("DEV " + device.getId());
         kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId()));
 
-        household.getDevices().add(device);
-        return save(household);
+        return household;
     }
 
     public Household removeDevice(ObjectId houseId, ObjectId deviceId) {

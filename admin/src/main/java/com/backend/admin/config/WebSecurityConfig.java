@@ -1,5 +1,6 @@
 package com.backend.admin.config;
 
+import com.backend.admin.security.MaliciousRequestCheckFilter.MaliciousRequestCheckFilter;
 import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
 import com.backend.admin.security.auth.TokenAuthenticationFilter;
 import com.backend.admin.service.auth.UserService;
@@ -98,6 +99,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			// za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
 			.cors().and()
+
+            //CUSTOM REQUEST FILTER -> MALICIOUS IPS AND TOO MANY REQUESTS CHECKS
+            .addFilterBefore(new MaliciousRequestCheckFilter(), BasicAuthenticationFilter.class)
+
 			// umetni custom filter TokenAuthenticationFilter kako bi se vrsila provera JWT tokena umesto cistih korisnickog imena i lozinke (koje radi BasicAuthenticationFilter)
 			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
 		

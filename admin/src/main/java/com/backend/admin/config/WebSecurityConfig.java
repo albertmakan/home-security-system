@@ -1,13 +1,11 @@
 package com.backend.admin.config;
 
-import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
-import com.backend.admin.security.auth.TokenAuthenticationFilter;
-import com.backend.admin.service.auth.UserService;
-import com.backend.admin.util.TokenUtils;
-import lombok.AllArgsConstructor;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,11 +18,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.annotation.PostConstruct;
+import com.backend.admin.security.MaliciousRequestCheckFilter.MaliciousRequestCheckFilter;
+import com.backend.admin.security.auth.RestAuthenticationEntryPoint;
+import com.backend.admin.security.auth.TokenAuthenticationFilter;
+import com.backend.admin.service.auth.UserService;
+import com.backend.admin.util.TokenUtils;
+
+import lombok.AllArgsConstructor;
 
 
 @Configuration
 @AllArgsConstructor
+@Import(KieConfig.class)
 // Ukljucivanje podrske za anotacije "@Pre*" i "@Post*" koje ce aktivirati autorizacione provere za svaki pristup metodi
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,6 +40,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 	// Injektujemo implementaciju iz TokenUtils klase kako bismo mogli da koristimo njene metode za rad sa JWT u TokenAuthenticationFilteru
 	private TokenUtils tokenUtils;
+
+    private MaliciousRequestCheckFilter maliciousRequestCheckFilter;
+
+    private KieConfig kieConfig;
 
 	// Implementacija PasswordEncoder-a koriscenjem BCrypt hashing funkcije.
 	// BCrypt po defalt-u radi 10 rundi hesiranja prosledjene vrednosti.
@@ -47,6 +56,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void init() throws Exception {
 		customUserDetailsService.setPasswordEncoder(passwordEncoder());
 		customUserDetailsService.setAuthenticationManager(authenticationManagerBean());
+        maliciousRequestCheckFilter.setRulesSession(kieConfig.rulesSession());
+        maliciousRequestCheckFilter.setEventsSession(kieConfig.eventsSession());
+
 	}
 
 	// Registrujemo authentication manager koji ce da uradi autentifikaciju korisnika za nas
@@ -98,6 +110,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			
 			// za development svrhe ukljuci konfiguraciju za CORS iz WebConfig klase
 			.cors().and()
+
+            //CUSTOM REQUEST FILTER -> MALICIOUS IPS AND TOO MANY REQUESTS CHECKS
+            .addFilterBefore(maliciousRequestCheckFilter, BasicAuthenticationFilter.class)
+
 			// umetni custom filter TokenAuthenticationFilter kako bi se vrsila provera JWT tokena umesto cistih korisnickog imena i lozinke (koje radi BasicAuthenticationFilter)
 			.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, customUserDetailsService), BasicAuthenticationFilter.class);
 		

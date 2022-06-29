@@ -1,0 +1,24 @@
+import com.backend.admin.model.request.AppRequest;
+
+declare RequestLimitEvent
+    @role(event)
+    @expires(30m)
+    ipAddress: String
+    reason: String
+end;
+
+rule "More than 1000 requests in 1min" salience 1
+    agenda-group "requests"
+    when
+        $e1 : AppRequest($ipAddress : ipAddress)
+        Number(this >= 1000) from accumulate(
+            $e: AppRequest(
+                ipAddress.equals($ipAddress)
+            ) over window:time( 1m ),
+            count()
+        )
+        // not (RequestLimitEvent(ipAddress.equals($ipAddress)))
+    then
+        insert(new RequestLimitEvent($ipAddress, "More than 1000 requests in 1m"));
+        System.out.println("======> More than 1000 requests in 1m ");
+end

@@ -7,7 +7,7 @@ const CameraImageModal = ({ show, onClose, image }) => {
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>
-          {image.text}, {image.day ? 'Day' : 'Night'}
+          {image.text}, {image.day ? 'day' : 'night'}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

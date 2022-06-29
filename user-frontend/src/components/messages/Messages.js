@@ -171,7 +171,7 @@ const Messages = () => {
                               handleShow();
                             }}
                           >
-                            {message.message.text}, {message.message ? 'Day' : 'Night'}
+                            {message.message.text}, {message.message ? 'day' : 'night'}
                           </Button>
                         ) : (
                           JSON.stringify(message.message)

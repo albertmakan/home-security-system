@@ -1,5 +1,4 @@
 import httpClient from '../config/httpClient';
-import tokenUtils from '../utils/TokenUtils';
 
 class HouseholdService {
   getAll(detailed = false) {

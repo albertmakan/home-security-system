@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidAlgorithmParameterException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +66,7 @@ public class HouseholdService {
         return save(household);
     }
 
-    public Household addDevice(DeviceRequest request) throws InvalidAlgorithmParameterException {
+    public Household addDevice(DeviceRequest request) {
         Household household = findById(request.getHouseholdId())
                 .orElseThrow(() -> new NotFoundException("Household not found"));
         if (household.getDevices() == null)
@@ -78,6 +76,7 @@ public class HouseholdService {
         device.setFilter(request.getFilter());
         device.setPath(request.getPath());
         device.setPeriod(request.getPeriod());
+        device.setType(request.getType());
         device.setId(new ObjectId());
         device.setPublicKey(request.getPublicKey());
 
@@ -86,7 +85,7 @@ public class HouseholdService {
 
         System.out.println("HH " + household.getId() + " " + request.getHouseholdId());
         System.out.println("DEV " + device.getId());
-        kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId(), true));
+        kafkaTemplate.send("NEW_DEVICE", new NewDevice(request.getHouseholdId(), device.getId(), false));
 
         return household;
     }
@@ -101,7 +100,7 @@ public class HouseholdService {
     }
 
     public List<Household> getByUser(User user) {
-        List<Household> list = new ArrayList<Household>();
+        List<Household> list = new ArrayList<>();
         for (Household h : getAll()){
             for (User u : h.getUsers()){
                 if (u.getUsername().equals(user.getUsername())){

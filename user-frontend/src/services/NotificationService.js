@@ -16,7 +16,7 @@ export const connectLogs = () => {
     () => {
       setTimeout(() => {
         stompClient?.subscribe(`/topic/warn-logs`, (m) => {
-          toast.info(JSON.stringify(m.body));
+          toast.warn(JSON.parse(m.body).message);
         });
       }, 500);
     },

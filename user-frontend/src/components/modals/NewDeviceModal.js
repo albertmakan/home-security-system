@@ -35,7 +35,16 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
     },
   });
 
-  const deviceTypes = ['CAMERA', 'DOOR'];
+  const deviceTypes = [
+    'CAMERA',
+    'DOOR',
+    'CO_DETECTOR',
+    'FRIDGE',
+    'OVEN',
+    'MOISTURE_METER',
+    'THERMOSTAT',
+    'OTHER',
+  ];
 
   return (
     <Modal show={show} onHide={onClose} centered>
@@ -102,6 +111,7 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
               )}
             </Form.Group>
             <Form.Group>
+              <Form.Label>Type</Form.Label>
               <Form.Control
                 id="type"
                 as="select"
@@ -111,7 +121,9 @@ const NewDeviceModal = ({ show, onClose, onCreate, householdId }) => {
               >
                 <option value="">Select type</option>
                 {deviceTypes.map((t) => (
-                  <option value={t}>{t}</option>
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
                 ))}
               </Form.Control>
             </Form.Group>

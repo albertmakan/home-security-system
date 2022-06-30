@@ -9,14 +9,13 @@ import * as Yup from 'yup';
 
 const NewAlarmRuleModal = ({ show, onClose, onCreate }) => {
   const validationSchema = Yup.object({
-    // TODO validate, regex,...
     deviceType: Yup.string().required('Required'),
-    alarmText: Yup.string().required('Required'),
+    alarmText: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
     conditions: Yup.array(
       Yup.object().shape({
-        field: Yup.string().required('Required'),
+        field: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
         operator: Yup.string().required('Required'),
-        value: Yup.string().required('Required'),
+        value: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
       }),
     ).min(1),
   });
@@ -36,7 +35,16 @@ const NewAlarmRuleModal = ({ show, onClose, onCreate }) => {
   });
 
   const ops = { EQ: '==', NEQ: '!=', GT: '>', LT: '<', GTE: '>=', LTE: '<=' };
-  const deviceTypes = ['CAMERA', 'DOOR'];
+  const deviceTypes = [
+    'CAMERA',
+    'DOOR',
+    'CO_DETECTOR',
+    'FRIDGE',
+    'OVEN',
+    'MOISTURE_METER',
+    'THERMOSTAT',
+    'OTHER',
+  ];
 
   return (
     <Modal show={show} onHide={onClose} centered>

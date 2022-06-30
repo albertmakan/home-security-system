@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import HouseholdService from '../../services/HouseholdService';
+import MyHouseholdService from '../../services/MyHouseholdService';
 import Table from 'react-bootstrap/Table';
 
 const UsersHouseholdPage = () => {
@@ -8,10 +8,8 @@ const UsersHouseholdPage = () => {
   const [household, setHousehold] = useState({ id: householdId });
 
   useEffect(() => {
-    HouseholdService.getByIdAndUser(householdId).then((h) => setHousehold(h));
+    MyHouseholdService.getMyHouseholdById(householdId).then((h) => setHousehold(h));
   }, [householdId]);
-
-
 
   return (
     <>
@@ -28,7 +26,7 @@ const UsersHouseholdPage = () => {
           {household.users?.map((u) => (
             <tr key={u.id}>
               <td>{u.username}</td>
-              <td>{u.roles}</td>
+              <td>{u.roles.map((r) => r.name)}</td>
             </tr>
           ))}
         </tbody>
@@ -54,7 +52,6 @@ const UsersHouseholdPage = () => {
           ))}
         </tbody>
       </Table>
-
     </>
   );
 };

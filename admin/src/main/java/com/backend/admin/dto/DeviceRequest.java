@@ -1,5 +1,6 @@
 package com.backend.admin.dto;
 
+import com.backend.admin.model.DeviceType;
 import lombok.Data;
 import org.bson.types.ObjectId;
 
@@ -21,4 +22,6 @@ public class DeviceRequest {
     private String filter;
     @NotBlank
     private String publicKey;
+    @NotNull
+    private DeviceType type;
 }

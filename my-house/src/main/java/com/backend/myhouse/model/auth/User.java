@@ -2,6 +2,8 @@ package com.backend.myhouse.model.auth;
 
 import com.backend.myhouse.model.Household;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -18,7 +20,7 @@ import java.util.List;
 @Data
 @Document
 public class User implements UserDetails {
-    @Id
+    @Id @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     private String username;

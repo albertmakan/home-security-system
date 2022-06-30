@@ -19,5 +19,6 @@ public class AlarmRule {
     private DeviceType deviceType;
     @NotNull
     private List<Condition> conditions;
+
     private String alarmText;
 }

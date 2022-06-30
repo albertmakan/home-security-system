@@ -30,5 +30,6 @@ public class AlarmRuleService {
 
     public void delete(ObjectId id) {
         alarmRuleRepository.deleteById(id);
+        kafkaTemplate.send("NEW_DEVICE", new NewDevice(new ObjectId(), new ObjectId(), true));
     }
 }

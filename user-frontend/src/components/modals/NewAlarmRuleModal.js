@@ -10,12 +10,18 @@ import * as Yup from 'yup';
 const NewAlarmRuleModal = ({ show, onClose, onCreate }) => {
   const validationSchema = Yup.object({
     deviceType: Yup.string().required('Required'),
-    alarmText: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+    alarmText: Yup.string()
+      .required('Required')
+      .matches(/^[-\w\s]+$/, 'Invalid input'),
     conditions: Yup.array(
       Yup.object().shape({
-        field: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+        field: Yup.string()
+          .required('Required')
+          .matches(/^[-\w\s]+$/, 'Invalid input'),
         operator: Yup.string().required('Required'),
-        value: Yup.string().required('Required').matches('^[a-zA-Z]{0,25}$', 'Invalid input'),
+        value: Yup.string()
+          .required('Required')
+          .matches(/^[-\w\s]+$/, 'Invalid input'),
       }),
     ).min(1),
   });
